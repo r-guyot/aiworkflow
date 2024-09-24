@@ -1,9 +1,9 @@
 # AIworkflow Package for R
 
-This package, aiworkflow, is aimed at making it simple to interact with local LLMs when using R.
+This package, **aiworkflow**, is aimed at making it simple to interact with local LLMs when using R.
 This package is NOT aimed at creating chat clients (while it could definitely support such a use case) but rather executing LLMs over a large amount of data, in a reproducible way. Think about executing LLMs NLP tasks on dataframes as a typical use case.
 
-This package is very much in alpha stages. It can already do a lot of things, but it lacks complete testing coverage, and the API of the package is subject to change. You should be aware that functions may change and be deprecated until the 1.0 version is reached. 
+This package is very much in *alpha* stages. It can already do a lot of things, but it lacks complete testing coverage, and the API of the package is subject to change. You should be aware that functions may change and be deprecated until the 1.0 version is reached. 
 
 ## License
 
