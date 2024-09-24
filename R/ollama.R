@@ -94,6 +94,7 @@ get_list_ollama_models <- function(ollama_connection) {
 #' `apply_processing_skill` applies a processing skill (i.e. a pre-engineered prompt)
 #'
 #' @importFrom glue glue
+#' @importFrom cli cli_alert
 #'
 #' @details
 #' A simple function to apply a pre-defined prompt format (i.e. a processing skill) to the current workflow.
@@ -110,7 +111,7 @@ apply_processing_skill <- function(prompts_vector, processing_skill=NA, processi
   
     if (!identical(processing_skill_args,list())) {
       list2env(processing_skill_args,envir = .GlobalEnv)
-      print("Applying variables to env")
+      cli::cli_alert("Applying additional variables to working env")
     }  
   
   text_to_replace <- prompts_vector
@@ -256,6 +257,7 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
 #' @importFrom httr2 resp_body_json
 #' @importFrom httr2 req_body_json
 #' @importFrom glue glue
+#' @importFrom cli cli_alert
 #' 
 #' @details
 #' A function to get a chat completion from an ollama server.
@@ -298,7 +300,7 @@ get_ollama_chat_completion <- function(ollama_connection,
 
   tryCatch({
     
-    print(prompts_vector)
+    #print(prompts_vector)
     
     options_combined <- list(
       num_predict=num_predict, 
@@ -309,7 +311,7 @@ get_ollama_chat_completion <- function(ollama_connection,
     req <- httr2::request(url) 
     
     result_list <- list()
-    print(length(prompts_vector))
+    #print(length(prompts_vector))
     
     for (one_prompt in prompts_vector) {
       
@@ -356,7 +358,7 @@ get_ollama_chat_completion <- function(ollama_connection,
       )
       
       if (any(!is.na(tools))) {
-        print("adding tools")
+        cli::cli_alert("Adding tools")
         data_to_send$tools <- tools
       }
       
@@ -368,7 +370,7 @@ get_ollama_chat_completion <- function(ollama_connection,
     if (result$status_code=="200") { 
       # it tools are used we force output_text_only=F for now to analyze the answer
       if (output_text_only==F | any(!is.na(tools))) {
-        print("going through tools path")
+        #print("going through tools path")
         result_list[[one_prompt]] <- httr2::resp_body_json(result)
         
         # process tool calls if they exist
@@ -441,7 +443,7 @@ get_ollama_chat_completion <- function(ollama_connection,
             httr2::req_perform()
           
           result_list[[one_prompt]] <- httr2::resp_body_json(result)
-          print(result_list[[one_prompt]])
+          #print(result_list[[one_prompt]])
           answer_is_complete <- TRUE
         }
         

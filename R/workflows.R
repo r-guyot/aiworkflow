@@ -3,6 +3,7 @@
 #' @description
 #' `execute_workflow` executes an AI workflow by combining prompt vectors and a workflow object.
 #'
+#' @importFrom  cli cli_alert
 #' @details
 #' This function executes an AI workflow by combining prompt vectors and a workflow object.
 #'
@@ -78,7 +79,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
     ollama_conn <- get_ollama_connection(ip_ad = workflow_obj[["ip_addr"]], port = workflow_obj[["port"]])
     
     if (workflow_obj[["mode"]] == "completion") {
-      print("completion")
+      cli::cli_alert("Completion mode")
       result <- get_ollama_completion(ollama_connection = ollama_conn, 
                                       model = workflow_obj[["model"]],
                                       prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
@@ -90,7 +91,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
     }
     
     if (workflow_obj[["mode"]] == "chat") {
-      print("chat")
+      cli::cli_alert("Chat mode")
       result <- get_ollama_chat_completion(ollama_connection = ollama_conn, 
                                            model = workflow_obj[["model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
