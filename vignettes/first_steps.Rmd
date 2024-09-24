@@ -23,7 +23,8 @@ library(aiworkflow)
 
 ## Setting up your Ollama connection
 
-Ensure that you have a running Ollama instance on your local machine or somewhere available in your network.
+Ensure that you have a running [Ollama instance](https://ollama.com/download) on your local machine or somewhere available in your network. Installing Ollama is very easy and works on multiple platforms. Ollama will work even on machines equipped only with CPUs, while having machines with GPUs (especially Nvidia) will make processing much faster. Once you have Ollama installed you need to [download at least one model](https://ollama.com/library) to get started. 
+
 You can establish a connection using the below function.
 
 ```{r connection to Ollama}
@@ -56,7 +57,7 @@ wflow_basic <- ai_workflow() |>
 ```
 
 When selecting the ollama connector, it will use the default connection parameters. 
-You can however set arbiratry IP and port parameters as described below, if you want to connect to an Ollama instance that is living on a different machine.
+You can however set arbitrary IP and port parameters as described below, if you want to connect to an Ollama instance that is living on a different machine.
 
 ```{r first workflow with different parameters}
 
@@ -72,10 +73,37 @@ At this stage your workflow exists, but does not do anything.
 
 The next steps is to ask it to run some specific tasks. We can ask with a simple prompt.
 
-
 ```{r first workflow execution}
 
 wflow_basic |> 
-  process_prompts(prompts_vector = "why is the sky blue?")
+  process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
+  pull_final_answer() |> cat()
 
 ```
+
+By default the model answers with a list, so you want to use the pull_final_answer() function to fetch the final textual answer from the list.
+
+## Customizing Output
+
+You can now leverage more features from the package. Such as setting the audience for your answers.
+Here we specify that the audience is 5 years old kids.
+
+```{r eli5}
+
+wflow_eli5 <- ai_workflow() |>
+  set_connector("ollama")  |>
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
+  set_audience("Five years old kids")
+  
+```
+
+You can see how it changes the output. Don't expect a great explanation!
+
+```{r eli5 example}
+
+wflow_eli5 |> 
+  process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
+  pull_final_answer() |> cat()
+
+```
+
