@@ -101,9 +101,49 @@ You can see how it changes the output. Don't expect a great explanation!
 
 ```{r eli5 example}
 
-wflow_eli5 |> 
+explanation_eli5 <- wflow_eli5 |> 
   process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
-  pull_final_answer() |> cat()
+  pull_final_answer() 
 
 ```
+
+This is the kind of explanation you get for the little kids out there:
+
+*"`r explanation_eli5`"*
+
+Note that you can also change an existing workflow directly by piping parameter setting into it.
+For example let's modify the existing workflow wflow_basic before calling the prompt:
+
+
+```{r modification of existing workflow}
+
+explanation_low_tech <- wflow_basic |> 
+  set_audience("people without scientific knowledge or background") |>
+  process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
+  pull_final_answer() 
+
+```
+
+You should get something like that:
+
+*"`r explanation_low_tech`"*
+
+You can also set a specific tone or personality to answer a question. 
+
+```{r snoop}
+
+wflow_snoop <- ai_workflow() |>
+  set_connector("ollama")  |>
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M")|>
+  set_style_of_voice("Snoop Dogg")
+
+snoop_answer <- wflow_snoop |>
+  process_prompts(prompts_vector = "Explain how the stock exchange works in a short paragraph") |>
+  pull_final_answer() 
+
+```
+
+You should get something like that:
+
+*"`r snoop_answer`"*
 
