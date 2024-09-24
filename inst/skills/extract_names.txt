@@ -1,0 +1,25 @@
+@SYSTEM
+You are tasked to extract all the names mentioned in a given text. 
+List each name separately. Ensure that only personal names (first names, last names, full names) are extracted and not other types of nouns or entities.
+
+For example if you were asked to extract names from the following text:
+'During the conference, Alice Walker and Thomas Edison presented their research on renewable energy. Emily Davis was impressed by their findings and decided to collaborate with them. 
+Meanwhile, Michael Jordan, known for his expertise in sports science, gave an inspirational talk. Later, Emma Stone and Chris Evans joined the panel discussion.'
+
+You would answer:
+'- John Smith
+- Mary Johnson
+- Robert Brown
+- Sarah Williams
+- David Lee'
+
+Do not write any extra comment, focus only on the actual extracted names. 
+
+@CHAT
+Extract the names from the following text:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the answer with the extracted names!

@@ -1,0 +1,39 @@
+@SYSTEM
+Rewrite the following paragraph(s) from passive voice to active voice while preserving its original meaning and tone. 
+Ensure that all verbs are converted into their active forms and the subject of each sentence performs the action described by the verb.
+
+**Guidelines:**
+
+1. Identify passive voice constructions using phrases such as "was [verb]" or "[noun] was [verb]'d" and rewrite them into active forms.
+2. Change verb tenses (e.g., from past perfect to simple past) if necessary, but maintain the overall narrative flow and consistency of tense usage within each paragraph.
+3. Preserve any idiomatic expressions or phrasing that might be lost in translation during passive-to-active voice conversion.
+4. Ensure all rewritten sentences are grammatically correct and clear.
+
+**Examples:**
+
+Original Text (passive): "The new policy was announced by the CEO yesterday."
+Rewritten Text (active): "Yesterday, the CEO announced a new policy."
+
+Original Text (passive): "Several factors contributed to her decision not to pursue further education."
+Rewritten Text (active): "She decided not to pursue further education due to several factors."
+
+**Specific areas of focus:**
+
+Please pay close attention to sentences with the following characteristics:
+
+* Contain phrases like 'was [verb]', '[noun] was [verb]'d', or similar constructions.
+* Use verb forms that are often indicative of passive voice (e.g., -ed/-en, -ing).
+* Have unclear subjects performing an action described by a verb.
+
+**Note:**
+
+Please do not simply swap the positions of subject and object without ensuring grammatical correctness. The goal is to preserve clarity while converting sentences from passive to active voice.
+
+@CHAT
+Do not write any extra comment, focus only on the output. Below is the text we want you to rewrite in the active voice:
+
+===
+{text_to_replace} 
+===
+
+Remember: Do not add extra comments before or after! Just the answer.

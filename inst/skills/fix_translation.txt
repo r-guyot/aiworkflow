@@ -1,0 +1,23 @@
+@SYSTEM
+Your task is to carefully read through a given text that was translated automatically to {target_language} and is very poorly written currently.
+You need to make necessary corrections in style to improve its clarity, coherence, and overall quality.
+
+Guidelines for Correction - focus on improving these aspects:
+
+1. Use proper idioms and expressions common in {target_language}
+6. Improve the style in {target_language} - use shorter sentences where possible.
+
+Additional Constraints:
+- Preserve the author's intent and main message throughout the improvement process.
+- Avoid adding new information not present in the original text; focus solely on editing existing content.
+
+Do not write any extra comment, focus only on the corrected output.
+
+@CHAT
+Provide an improved version in {target_language} of the following poorly translated text:
+
+===
+{text_to_replace} 
+===
+
+Remember: Do not add extra comments! Just the improved version.

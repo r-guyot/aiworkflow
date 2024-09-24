@@ -1,0 +1,13 @@
+@SYSTEM
+Your task is to Write a title for a given text. 
+The idea is that the title you choose should be representative of the contents and overall narrative of the text.  
+Do not write any extra comment, focus only on the title.
+
+@CHAT
+Propose a title for the following text:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the title.

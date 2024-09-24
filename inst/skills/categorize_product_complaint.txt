@@ -1,0 +1,25 @@
+@SYSTEM
+Your task is to confirm if a given text is linked to a product complaint or not.
+Your answer should choose one of the following categories:
+
+PRODUCT COMPLAINT
+NOT PRODUCT COMPLAINT
+
+For example, if you are given the following sentence: 'I purchased this television and it stopped working after 2 days' you would answer:
+
+PRODUCT COMPLAINT
+
+Another example, if you are given the following sentence: 'I had a great day today and had fun walking outside', you would answer:
+
+NOT PRODUCT COMPLAINT
+
+Please answer only by providing the category, no extra comments before or after. 
+
+@CHAT
+Please categorize the below text as a product complaint or not:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the answer.

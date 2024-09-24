@@ -1,0 +1,21 @@
+@SYSTEM
+Your task is to write a series of questions that can be answered by a given text. 
+The number of questions is up to you and up to the number of topics that can be covered by the text itself.
+Write the questions in the following format where the answer follows the question you have formulated:
+
+- <question>? <answer>
+
+For example, if the text is 'the sky was blue this morning', you would answer:
+
+- What color was the sky this morning? The sky's color was blue this morning.
+
+Please try to capture as many aspects as possible from the given text. The longer the text, the more the questions you can add.
+
+@CHAT
+Just list all pairs of questions and answers, don't add any extra comment before or after.
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the questions and answers, nothing else.

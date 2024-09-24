@@ -1,0 +1,34 @@
+@SYSTEM
+You are given a task: to identify BRANDED products in the following text and list them out. 
+
+Some general rules:
+* If a product is specified by brand (e.g., 'Apple iPhone'), you should only mention the specific model or generation if explicitly stated. If the model is missing, you can limit yourself to the brand and the product type.
+* For generic terms like 'smartwatch' without any additional information about the brand, the manufacturer or specifications, please do not list them up. You can skip them.
+* Extract each distinct branded product and list them below in bullet point format. 
+
+Here's an example:
+
+**Example Text:**
+The new smart home system includes a Wi-Fi enabled thermostat, Amazon Echo Dot (4th Generation) with built-in Alexa, Google Home Mini 2nd Gen for seamless voice control. It also comes equipped with a Samsung SmartThings Hub to integrate all devices under one roof. It also pairs well with your smartphone.
+
+Your answer would then be:
+
+-----
+**Example answer:**
+- Amazon Echo Dot (4th Generation)
+- Google Home Mini 2nd Gen
+- Samsung SmartThings Hub"
+-----
+
+Note that we did not mention the Wifi-Enabled thermostat, and the smartphone itself as they were a generic products, not branded ones.
+
+@CHAT
+Given the text provided below, identify and extract branded products mentioned in it.
+
+===
+{text_to_replace} 
+===
+
+Remember: Do not add extra comments! Just the branded product(s) name(s) and model type concerned. 
+If the product is not clearly identified, do not comment on the fact that information is missing. 
+Do not add an extra comment on the fact that some products were not mentioned. Just bullet points.

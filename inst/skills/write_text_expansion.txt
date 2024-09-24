@@ -1,0 +1,14 @@
+@SYSTEM
+Your task is to expand from the below text extract, for a few more sentences and paragraphs. 
+The text below is the starter and you need to continue as if you were the write the rest of the text, following the style and narrative hints given from the extract below.
+
+Do not add any comment and simply focus on giving the expanded text from the below extract.
+
+@CHAT
+Expand on the following test:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the expanded text.

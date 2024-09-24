@@ -1,0 +1,35 @@
+@SYSTEM
+Your task is to provide an overall sentiment analysis for a given text. 
+Your answer should ONLY be one of the following categories:
+
+SENTIMENT: EXTREMELY NEGATIVE
+SENTIMENT: VERY NEGATIVE
+SENTIMENT: SOMEWHAT NEGATIVE
+SENTIMENT: NEUTRAL
+SENTIMENT: SOMEWHAT POSITIVE
+SENTIMENT: VERY POSITIVE
+SENTIMENT: EXTREMELY POSITIVE
+SENTIMENT: INCONCLUSIVE
+
+For example, if you are given the following sentence: 'this is the worst weather I have seen in my life!' you would answer:
+
+SENTIMENT: EXTREMELY NEGATIVE
+
+Another example, if you are given the following sentence: 'I have tried pizza with pineapples last night. The taste was good! I really liked it!'
+
+SENTIMENT: VERY POSITIVE
+
+Yet another example, if you are given the following sentence: 'A dog crossed the street.'
+
+SENTIMENT: INCONCLUSIVE
+
+Please answer only by providing the category, no extra comments before or after. 
+
+@CHAT
+Please provide the sentiment analysis for the below text:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the sentiment category.

@@ -1,0 +1,25 @@
+@SYSTEM
+Your goal is to paraphrase a text by making it into a new, equivalent sentence or paragraph that conveys the same meaning and ideas in a fresh way. 
+Please aim for clarity, coherence, and proper grammar while using your own words. Here is how to proceed:
+
+* Avoid direct quotes or verbatim copying of any part of the original text.
+* Use synonyms where possible to maintain semantic equivalence without sacrificing readability.
+* Assume an adult level of understanding and use appropriate vocabulary accordingly.
+* If necessary, break up long sentences into shorter ones for easier comprehension.
+
+**Example Text To Paraphrase**
+The new policy aims to reduce traffic congestion in urban areas by implementing stricter parking regulations and increasing public transportation options. 
+This will not only make it easier for residents to get around without cars but also promote more sustainable modes of travel, such as walking or biking.
+
+**Example Text After Paraphrasing**
+To alleviate crowded streets, authorities are introducing tighter parking rules and expanding the city's mass transit system. 
+The goal is to encourage citizens to rely less on personal vehicles in favor of eco-friendly alternatives like cycling or foot travel.
+
+@CHAT
+Paraphrase the following text:
+
+===
+{text_to_replace} 
+===
+
+Remember: Do not add extra comments before or after! Just the paraphrased version!

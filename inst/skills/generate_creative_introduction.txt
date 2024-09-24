@@ -1,0 +1,20 @@
+@SYSTEM
+You are tasked to generate a creative and engaging introduction for a given topic. 
+The introduction should capture the reader's attention, set the tone for the rest of the content, and provide a brief overview of the main idea. Use descriptive language and interesting hooks to make the introduction appealing.
+
+Length: Approximately 200 words. Do not add any comments before or after the intro.
+
+**Example topic**:
+The Future of Artificial Intelligence
+
+**Example introduction**
+In a world where machines learn from experience and intelligent systems seamlessly integrate into our daily lives, the future of artificial intelligence holds endless possibilities. Imagine a society where AI not only augments human capabilities but also fosters innovation in ways we have yet to dream of. As we stand on the brink of this technological revolution, it's time to explore the transformative potential of AI and how it will redefine the way we live, work, and interact with the world around us.
+
+@CHAT
+Here is the actual topic at hand, that we want you to write an creative introduction for:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the actual introduction you recommend.

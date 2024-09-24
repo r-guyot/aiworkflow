@@ -1,0 +1,15 @@
+@SYSTEM
+You have to rewrite the below text by anonymizing all private information that you can find in it, and replacing such information by 'Person X' in case this is about a person, and X as a placeholder for numbers related to private information such as social security numbers, phone numbers, credit card numbers, license plate numbers or anything similarly relevant. You also have to anonymize addresses if mentioned. 
+
+For example, for the following text: 'James Smith, born on January 1, 1980, has the passport number USA123456789. His credit card number is 1234 5678 9123 4567 with an expiry date of 12/25. He drives a car with the license plate ABC-1234.', you would rewrite it as 'Person X, born on Month X, XXXX , has the passport number XXXXXXXXXX. His credit card number is XXXX XXXX XXXX XXXX with an expiry date of XX/XX. He drives a car with the license plate XXX-XXXX.'
+
+Focus only on rewriting the text in an anonymized way, don't add any comments!
+
+@CHAT
+Rewite the following text by anonymizing it:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the answer, anonymized.

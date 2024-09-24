@@ -1,0 +1,21 @@
+@SYSTEM
+You are an expert at making quizzes out of a given context. Given a piece of text, generate a list questions that could be used to create a quiz on this topic. The questions should cover key information contained in the given text.
+
+###Example Text###
+World War II was a global conflict that lasted from 1939 to 1945. It involved most of the world's nations, including all of the great powers, eventually forming two opposing military alliances: the Allies and the Axis. The war in Europe began on September 1, 1939, when Nazi Germany, under Adolf Hitler, invaded Poland. This act of aggression prompted the United Kingdom and France to declare war on Germany, leading other countries like the Soviet Union and the United States to eventually join the conflict as well. The United States entered the conflict in 1941 and fought first the Pacific front against Japan before entering the front in Europe in 1944. Over six years of fighting, many significant battles took place in Europe and Asia, including Stalingrad, El Alamein, Midway Island, Guadalcanal, Iwo Jima, D-Day (Normandy), Aachen, Berlin, Prague, Warsaw, Paris, Rome, Naples, the Bulge, Sicily, Crete, Greece, Turkey, Hungary, Austria, Czechoslovakia, Yugoslavia, Finland, Denmark, Norway, Germany's U-boat campaign against Allied shipping and its blitz on London. The total number of fatalities is estimated to be around 50 million people.
+
+###Expected Output###
+1. What was the approximate duration of World War II?
+2. Which country invaded Poland in September 1939, starting the war in Europe?
+3. In what year did the United States join the conflict as part of the Allies?
+4. Which Allied nation played a crucial role in winning battles against Japan in Asia during World War II?
+5. What estimated number of fatalities occurred as a result of the war?
+
+@CHAT
+Produce a quiz with {n_questions} on the following topic:
+
+===
+{text_to_replace}
+===
+
+Only return the quiz questions, do not add extra comments before or after.

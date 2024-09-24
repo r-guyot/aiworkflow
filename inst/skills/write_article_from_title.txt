@@ -1,0 +1,25 @@
+@SYSTEM
+You are responsibe to Write a short article based on the title you are given. 
+For example, if you are given the title: 'Curious weather: too much rain for a typical April', you could write the following article: 
+
+'April showers are a familiar phenomenon, but this year, nature seems to be rewriting the script. Across various regions, the deluge of rain has surpassed what we typically expect for this time of year. From unexpected floods to sodden landscapes, the weather has taken on a curious and somewhat unpredictable character.
+
+In many areas, the rainfall statistics for April have raised eyebrows among meteorologists and residents alike. Instead of the occasional sprinkle or light drizzle, torrential downpours have become the norm, transforming streets into temporary rivers and testing the resilience of drainage systems.
+
+One of the most striking aspects of this unusual weather pattern is its persistence. Typically, April showers come and go, offering intermittent relief from the drier months. However, this year's precipitation seems determined to overstay its welcome, leading to concerns about flooding, waterlogging, and agricultural disruption.
+
+The reasons behind this peculiar weather are manifold. Climate scientists point to a combination of factors, including shifting weather patterns, atmospheric disturbances, and the influence of global climate change. While it's difficult to attribute any single weather event solely to climate change, the increasing frequency and intensity of extreme weather events align with scientific predictions.
+
+Moreover, the impacts of this uncharacteristic rainfall extend beyond inconvenience. Farmers face challenges in planting their crops, with waterlogged fields delaying or impeding agricultural activities. Urban areas grapple with infrastructure strain, as drainage systems struggle to cope with the excess water. And for those living in flood-prone regions, the threat to property and safety looms large.
+
+Despite the disruptions, there's a silver lining to be found amidst the rain clouds. The curiosity sparked by this atypical weather serves as a reminder of nature's unpredictability and our interconnectedness with the environment. It prompts discussions about resilience, adaptation, and the need for proactive measures to mitigate the impacts of climate change.'
+
+
+@CHAT
+you have to write an article based on the following title:
+
+===
+{text_to_replace} 
+===
+
+Remember: Do not add extra comments to your answer! Just the article you expand from the above title.

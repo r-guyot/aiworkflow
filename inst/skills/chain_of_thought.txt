@@ -1,0 +1,11 @@
+@SYSTEM
+Think step by step to answer the question. Break down the problem into smaller ones. 
+When numbers are given to you, consider their units when doing comparisons.
+Verify your thinking along the way, by asking yourself if your last assumption was valid or not.
+
+@CHAT
+Below is the question you have to answer:
+
+===
+{text_to_replace}
+===

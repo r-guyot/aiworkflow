@@ -1,0 +1,62 @@
+@SYSTEM
+Your goal is to write an astract for a publication. The abstract needs to be fairly short (about one or two paragraphs) and should capture the essential results from the publication, as well as express the key conclusions from the study.
+
+Here is an example below:
+
+###Example Text###
+**Introduction**
+
+Adelie penguins are found on the Antarctic Peninsula and surrounding islands, where they breed in large colonies during the austral summer (November-February). Previous studies have suggested that these colonies may be sensitive to changes in food availability, with some research indicating that colony shifts can occur when sea ice cover decreases or increases. However, little is known about how lunar cycles affect Adelie penguin behavior and habitat use.
+
+**Methods**
+
+We monitored three Adelie penguin colonies along the Antarctic Peninsula during the 2018-19 austral summer using camera traps, GPS tracking devices, and manual counts of breeding pairs. We collected data on colony size, location, and composition (e.g., age class, sex ratio) at weekly intervals from November to February.
+
+**Results**
+
+Our results indicate that Adelie penguins are more likely to shift their colonies during periods with high lunar illumination (i.e., full moon). Specifically:
+
+* During weeks when the full moon occurred within 3-4 days of data collection, colony shifts were significantly higher than in other weeks (p < 0.01).
+* Colony shifts increased by an average of 25% on nights following a new moon compared to those preceding it.
+
+We also observed that colonies with access to more abundant krill resources (>100 mg/m2) exhibited lower rates of shiftiness (~10%) compared to those with limited food availability (<50 mg/m2, ~30%).
+
+**Discussion**
+
+Our study suggests that Adelie penguins adjust their colony locations in response to changes in lunar illumination and local food availability. We hypothesize that these shifts are related to the energy costs associated with foraging under optimal conditions (e.g., at high tides or during periods of peak krill abundance). Further research is needed to explore how global climate change may impact Adelie penguin behavior, particularly as sea ice cover continues to decrease.
+
+**Conclusion**
+
+This study provides evidence that lunar cycles and food availability play a significant role in shaping the summer colony dynamics of Adelie penguins. We recommend continued monitoring of these factors to better understand their effects on this iconic species and its habitat use patterns.
+
+---
+
+**Appendix A: Data Tables**
+
+Table 1: Colony shift frequencies by week (2018-19)
+
+| Week | Lunar Cycle | Food Availability (mg/m2) |
+| --- | --- | --- |
+| Nov. 15 | New Moon | 25 |
+| Nov. 22 | Waxing Crescent | 50 |
+| Dec. 3 | Full Moon | 100 |
+| Jan. 10 | Waning Gibbous | 75 |
+
+Table 2: Summary statistics for colony shift frequencies
+
+| Lunar Cycle | Colony Shifts (n) | % Shifting Colonies |
+| --- | --- | --- |
+| New Moon | 8/15 = 53% | ~28% |
+| Full Moon | 12/20 = 60% | ~36% |
+
+###Example Abstract###
+Adelie penguins (Pygoscelis adeliae) are known for their highly social colonies, which can reach densities of up to 75 individuals per square meter. However, recent observations have suggested that these colonies may be shifting their breeding sites in response to changes in lunar cycles and food availability. This study aimed to investigate the relationship between summer colony shifts in Adelie penguins and various environmental factors.
+
+@CHAT
+Produce an abstract for the following publication text:
+
+===
+{text_to_replace}
+===
+
+Only return the abstract, do not add extra comments. 

@@ -1,0 +1,34 @@
+@SYSTEM
+Extract the main actions performed by individuals or entities mentioned in this text and list them in bullet points. 
+Identify who performed each action (e.g., 'John did', 'The company announced').
+
+**Requirements:**
+  
+* Identify the main actions performed by individuals or entities
+* Specify who performed each action (e.g., 'John did', 'The company announced')
+* List the extracted actions in bullet points
+
+Example text:
+'The new policy was introduced yesterday morning at 9 AM. John, the CEO of XYZ Corporation, presented it to all employees via a video conference. The employees were surprised.'
+
+You would answer in this way:
+
+Example answer:
+- the company introduced new policy yesterday at 9AM
+- John, CEO of XYZ corporation, presented it to employees
+
+Example text:
+'Emily decided she wanted to start learning how to play chess online so she signed up for an account on Chess.com and began playing casual games against other users.'
+
+Example answer:
+- Emily signed up for an account on Chess.com
+- Emily began playing casual chess games
+
+@CHAT
+Extract the actions from the below text: 
+  
+===
+{text_to_replace}
+===
+  
+Only give the bullet points as an answer, no other comments.

@@ -1,0 +1,17 @@
+@SYSTEM
+Please rewrite the below passage in the first-person perspective. Ensure that the main ideas, details, and overall meaning are preserved while changing the narrative to reflect a personal viewpoint. Use appropriate first-person pronouns and adjust the text to make it sound like it is being told by someone who personally experienced the events. Only answer with the rewritten text, without any added comment before or after.
+
+###Example input###
+The bustling marketplace was filled with vibrant colors and the enticing aroma of street food. Vendors shouted to attract customers, while children ran around playing games. It was a scene of controlled chaos, with people moving in every direction, all focused on their own tasks.
+
+###Example output###
+As I walked through the bustling marketplace, I was struck by the vibrant colors and the enticing aroma of street food. Vendors shouted to attract me and other customers, while children ran around playing games. To me, it felt like a scene of controlled chaos, with people moving in every direction, each focused on their own tasks.
+
+@CHAT
+Here is the actual text passage to rewrite in the first-person:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the actual rewritten text in first-person.

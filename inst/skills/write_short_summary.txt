@@ -1,0 +1,35 @@
+@SYSTEM
+Your task is to write a 2-3 sentence concise summary (no more, no less) based on the text provided. Ensure your summary is clear and easy to understand by following these guidelines: 
+
+* Use present tense when describing ongoing or universal truths
+* Avoid using quotes unless directly quoting the source material
+* Keep proper nouns capitalized if they appear in the text (e.g. names of people, places)
+* Focus on summarizing key points rather than providing background information
+* Aim for a neutral tone; avoid adding personal opinions or biases
+
+Also note that your summary should:
+
+* Not contain new information not present in the original text
+* Be written entirely from scratch, without copying any sentences directly from the source material 
+
+**Example text**
+
+The effects of climate change are far-reaching and devastating. Rising global temperatures have led to more frequent and severe heatwaves, droughts, and storms worldwide. The consequences for human health, economies, and ecosystems are dire. For instance, a study published in the journal Nature found that extreme weather events caused by climate change resulted in over 15% of all deaths globally between 1999 and 2016 (1). This is particularly concerning given the projected increase in global temperatures expected to reach as high as 3.2°C above pre-industrial levels if greenhouse gas emissions continue at their current rate.
+
+Climate change also has significant economic implications, with some estimates suggesting that it could lead to a loss of up to $14 trillion in GDP globally by 2100 (2). This is due not only to the direct costs associated with disaster relief and recovery but also to the indirect impacts on productivity and human well-being. Furthermore, climate-related disasters can disproportionately affect vulnerable populations such as low-income communities and developing countries.
+
+Despite these alarming findings, there are reasons for optimism. Many governments, corporations, and individuals around the world have committed to reducing greenhouse gas emissions in line with international agreements like the Paris Agreement (3). Renewable energy sources continue to become more cost-competitive with fossil fuels, while innovations such as carbon capture technology offer new hope for mitigating climate change.
+
+**Expected Summary**
+
+Climate change has severe consequences on human health and economies worldwide, driven by rising global temperatures that lead to extreme weather events. However, there is also growing momentum towards reducing greenhouse gas emissions through international agreements, renewable energy adoption, and innovative technologies.
+
+
+@CHAT
+Write a short summary for the following text:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments! Just the summary.

@@ -1,0 +1,27 @@
+@SYSTEM
+Given a brief description or summary of a project, product, service, or idea, write a clear and compelling pitch that highlights its key benefits, unique value proposition, target audience, competitive advantage, and call-to-action. The pitch should be engaging, concise (less than 250 words), and tailored to persuade the reader to take action.
+
+For each of the example texts above, I expect a well-crafted pitch with the following elements:
+
+1. **Problem Statement**: A clear identification of the problem or need in the market.
+2. **Solution Overview**: A concise description of how your project/product/service solves the identified problem.
+3. **Key Benefits**: An explanation of what sets your solution apart and why it's better than existing solutions (e.g., "wireless charging capabilities" for example 1).
+4. **Target Audience**: Identification of who will benefit most from this product or service (e.g., busy professionals, environmentally conscious consumers, language learners).
+5. **Competitive Advantage**: A statement that highlights what makes your solution unique and competitive in the market.
+6. **Call-to-Action**: A clear invitation to take action, such as investing in the startup, trying out the new feature, or signing up for a free trial.
+
+###Example Text###
+Our company has developed an innovative new smartphone case with built-in wireless charging capabilities.
+
+###Example Output###
+Are you tired of dealing with tangled cords and dead batteries on your phone? Introducing our innovative smartphone case with built-in wireless charging capabilities. This sleek design not only charges your device without wires but also provides an additional layer of protection against scratches and drops. With its long-lasting battery life, this is the perfect accessory for busy professionals who are always on-the-go.
+
+
+@CHAT
+Write a pitch for the following text:
+
+===
+{text_to_replace}
+===
+
+Only return the proposed pitch, do not add extra comments. 

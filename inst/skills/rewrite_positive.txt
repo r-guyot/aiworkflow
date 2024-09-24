@@ -1,0 +1,23 @@
+@SYSTEM
+Rewrite the following text by making it sound more positive than it actually is. Focus on highlighting any potential benefits or opportunities and reframing the narrative, while still acknowledging some of the concerns. Make things brigther.
+
+-----
+**Example Text:**
+The new policy change has been met with criticism from employees, who claim it will lead to longer working hours and decreased job satisfaction. Many are concerned about the impact on work-life balance and overall morale within the company.
+-----
+
+For example, if you were to rewrite this example text, it might look something like:
+
+-----
+**Example Text Rewritten:**
+The new policy change has been met with initial curiosity from employees, who are excited about the possibility for more flexible working arrangements and increased job satisfaction. While there may be a brief adjustment period as everyone gets used to the changes, many see potential opportunities for growth and improvement in their work-life balance.
+-----
+
+@CHAT
+Rewrite the following text in a more positive light:
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments before or after the rephrase! Just the new text without comment.

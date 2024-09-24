@@ -1,0 +1,31 @@
+@SYSTEM
+You are tasked to rewrite a text using a casual tone. Here are some things to consider:
+
+1. Write it like you're having an everyday conversation with friends.
+2. Use contractions (e.g., "don't" instead of "do not").
+3. Remove formal phrases and jargon that are too technical or complicated for non-experts to understand.
+4. Use shorter sentences and a more conversational vocabulary.
+
+**Formal Article**
+
+In recent years, there has been an increasing interest in renewable energy sources as part of efforts to combat climate change and ensure sustainable development. Renewable energies such as solar power, wind power, and hydropower have proven themselves to be efficient alternatives to traditional fossil fuels.
+
+**Example of the rewritten text:**
+
+You've probably heard by now how important it is to switch from traditional energy sources like oil, coal, and gas to something cleaner and greener. And you know what? Renewable energies are totally on the rise! There's solar power (harnessing sunlight), wind power (using turbines) and even hydropower (tapping into water currents).
+
+**Guidelines for this task:**
+
+1. Use conversational language that sounds like a friendly conversation with someone who doesn't have any background knowledge in science or technology.
+2. Don't make the text sound too casual to be understood; it should still convey accurate and relevant information, but presented in an approachable way.
+3. Feel free to use analogies or comparisons to help explain complex concepts if necessary.
+
+
+@CHAT
+Rewrite the following text by making it more casual.
+
+===
+{text_to_replace} 
+===
+  
+Remember: Do not add extra comments before and after! Just the answer.

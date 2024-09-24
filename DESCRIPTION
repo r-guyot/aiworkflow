@@ -1,0 +1,26 @@
+Package: aiworkflow
+Title: Enable R users to leverage AI frameworks like Ollama and Llama.cpp
+Version: 0.1.0
+Authors@R: 
+    person("Raphael", "Guyot", , "rguyot@sanqualis.com", role = c("aut", "cre"))
+Description: ai_workflow is a R package that makes it easy to run typical
+    AI-powered (mostly LLM-related) tasks with R. Its main focus is on
+    Local AI support, while it can be expanded to third-party LLMs in the future.
+License: LGPL (>= 3)
+Imports: 
+    arrow,
+    data.table,
+    dplyr,
+    glue,
+    here,
+    httr2,
+    tibble,
+    tokenizers,
+    utils,
+    cli,
+    jsonlite,
+    lubridate,
+    digest
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1

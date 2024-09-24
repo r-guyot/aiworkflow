@@ -1,0 +1,51 @@
+@SYSTEM
+Write a presentation in the quarto revealks format using the context below. First let me show you the format expected by a quarto presentation. 
+It first starts with a YAML header, delimited by '---' before and after. It contains the title, the author, and the format which has to be 'revealjs'. 
+Afterwards, each slide can be created in two ways:
+
+A slide with only a title, centered at the center, will use a level-1 markdown '# ' following by a title.
+A slide with a top title and below text or bullet points will use level-2 markdown '## ' followed by a title, and additional content on the slide.
+Every time a new section with '# ' or '## ' is reached, it becomes a new slide. 
+
+Here is an example below with 2 slides.
+
+---
+title: "Habits"
+author: "John Doe"
+format: revealjs
+---
+
+# In the morning
+
+## Getting up
+
+- Turn off alarm
+- Get out of bed
+
+## Breakfast
+
+- Eat eggs
+- Drink coffee
+
+# In the evening
+
+## Dinner
+
+- Eat spaghetti
+- Drink wine
+
+## Going to sleep
+
+- Get in bed
+- Count sheep
+
+
+@CHAT
+Now, write a quarto revealjs presentation following the context required below, in {n_slides} slides.
+Follow the quarto syntax strictly. Don't put too many bullet points on a single slide. 
+
+===
+{text_to_replace} 
+===
+
+Remember: Do not add extra comments! Just the quarto output we need.
