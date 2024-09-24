@@ -1,0 +1,70 @@
+---
+title: "First Steps with aiworkflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{first_steps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Load the package at first.
+
+```{r setup}
+library(aiworkflow)
+
+```
+
+## Setting up your Ollama connection
+
+Ensure that you have a running Ollama instance on your local machine or somewhere available in your network.
+You can establish a connection using the below function.
+
+```{r connection to Ollama}
+
+conn <- get_ollama_connection()
+
+```
+
+By default it will use localhost and the 11434 port. 
+If you want to use a different setup, you can change such parameters:
+
+```{r connection to Ollama with different parameters}
+
+conn <- get_ollama_connection(ip_ad = "127.0.0.1",port = "3524")
+
+```
+
+## Your First workflow
+
+This is one of the most simple workflows you can make.
+To create a workflow, you need to start with the ai_workflow() container command, and then pipe instructions to it.
+In the below example we specify that we want to use the ollama connector, and that we will use the llama3.1 model.
+
+```{r first workflow }
+
+wflow_basic <- ai_workflow() |>
+  set_connector("ollama")  |>
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") 
+
+```
+
+When selecting the ollama connector, it will use the default connection parameters. 
+You can however set arbiratry IP and port parameters as described below, if you want to connect to an Ollama instance that is living on a different machine.
+
+```{r first workflow with different parameters}
+
+wflow_basic <- ai_workflow() |>
+  set_connector("ollama")  |>
+  set_ip_addr(ip_addr = "192.168.1.12") |>
+  set_port(port = 5256) |>
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") 
+
+```
+

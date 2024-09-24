@@ -408,6 +408,7 @@ set_connector <- function(workflow_obj, connector) {
 #' @export
 set_ip_addr <- function(workflow_obj, ip_addr) {
   workflow_obj[["ip_addr"]] <- ip_addr
+  cli::cli_alert("IP address has been changed to {ip_addr}.")
   return(workflow_obj)
 }
 
@@ -427,6 +428,7 @@ set_ip_addr <- function(workflow_obj, ip_addr) {
 #' @export
 set_port <- function(workflow_obj, port) {
   workflow_obj[["port"]] <- port
+  cli::cli_alert("Port has been changed to {port}.")
   return(workflow_obj)
 }
 
