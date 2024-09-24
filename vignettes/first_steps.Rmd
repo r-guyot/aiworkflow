@@ -41,7 +41,7 @@ conn <- get_ollama_connection(ip_ad = "127.0.0.1",port = "3524")
 
 ```
 
-## Your First workflow
+## Your First Workflow
 
 This is one of the most simple workflows you can make.
 To create a workflow, you need to start with the ai_workflow() container command, and then pipe instructions to it.
@@ -60,7 +60,7 @@ You can however set arbiratry IP and port parameters as described below, if you 
 
 ```{r first workflow with different parameters}
 
-wflow_basic <- ai_workflow() |>
+wflow_basic_on_different_machine <- ai_workflow() |>
   set_connector("ollama")  |>
   set_ip_addr(ip_addr = "192.168.1.12") |>
   set_port(port = 5256) |>
@@ -68,3 +68,14 @@ wflow_basic <- ai_workflow() |>
 
 ```
 
+At this stage your workflow exists, but does not do anything. 
+
+The next steps is to ask it to run some specific tasks. We can ask with a simple prompt.
+
+
+```{r first workflow execution}
+
+wflow_basic |> 
+  process_prompts(prompts_vector = "why is the sky blue?")
+
+```
