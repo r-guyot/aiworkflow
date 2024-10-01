@@ -16,6 +16,7 @@ get_ollama_chat_completion(
   seed = sample(1:1e+07, 1),
   system_prompt = NA,
   context_info = NA,
+  num_ctx = NA,
   tools = NA
 )
 }

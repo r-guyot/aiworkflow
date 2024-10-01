@@ -6,7 +6,7 @@
 \alias{aiworkflow-package}
 \title{aiworkflow: Enable R users to leverage AI frameworks like Ollama and Llama.cpp}
 \description{
-ai_workflow is a R package that makes it easy to run typical AI-powered (mostly LLM-related) tasks with R. Its main focus is on Local AI support.
+ai_workflow is a R package that makes it easy to run typical AI-powered (mostly LLM-related) tasks with R. Its main focus is on Local AI support, while it can be expanded to third-party LLMs in the future.
 }
 \author{
 \strong{Maintainer}: Raphael Guyot \email{rguyot@sanqualis.com}

@@ -74,6 +74,18 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
     context_to_pass <- NA
   }
   
+  if ("num_ctx" %in% names(workflow_obj)) {
+    num_ctx_to_pass <- workflow_obj[["num_ctx"]]
+  } else {
+    num_ctx_to_pass <- NA_integer_
+  }
+  
+  if ("seed" %in% names(workflow_obj)) {
+    seed_to_pass <- workflow_obj[["seed"]]
+  } else {
+    seed_to_pass <- NA_integer_
+  }
+  
   if (workflow_obj[["connector"]] == "ollama") {
     
     ollama_conn <- get_ollama_connection(ip_ad = workflow_obj[["ip_addr"]], port = workflow_obj[["port"]])
@@ -96,10 +108,12 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
                                            model = workflow_obj[["model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
                                            output_text_only = T,
+                                           seed = seed_to_pass,
                                            num_predict = workflow_obj[["n_predict"]],
                                            temperature = workflow_obj[["temperature"]],
                                            system_prompt = workflow_obj[["system_prompt"]],
                                            context_info = context_to_pass,
+                                           num_ctx = num_ctx_to_pass,
                                            tools = tools_to_pass
       )
     }
@@ -806,6 +820,38 @@ set_overall_background <- function(workflow_obj, overall_background) {
   
   workflow_obj[["overall_background"]] <- overall_background
   return(workflow_obj)
+  
+}
+
+#' Set the length of the context to be handled by the model
+#'
+#' @description
+#' `set_num_ctx` lets you define the length of the context to be supported by the model
+#'
+#' @details
+#' Depending on the server settings, the length of the context handled by the model may be shorter than you expect.
+#' For example, Ollama seems to default to a context size of 1024 tokens even if the model actually supports more. 
+#' In order to be able to fully use the capabilities of the model, you can specify the length that you expect it to support with num_ctx.
+#'  
+#' @returns a workflow object with the new added num_ctx parameter
+#'
+#' @param workflow_obj A workflow object containing all parameters describing the workflow required
+#' @param num_ctx a numerical value defining the length of the context to be used, in tokens.
+#'
+#' @examples
+#' my_workflow <- ai_workflow() |> 
+#' set_model(model_name="llama3:8b-instruct-q5_0") |> 
+#' set_num_ctx(num_ctx=2048)
+#'
+#' @export
+set_num_ctx <- function(workflow_obj, num_ctx) {
+  
+  if (is.numeric(num_ctx)) {
+  workflow_obj[["num_ctx"]] <- num_ctx
+  return(workflow_obj)
+  } else {
+    stop("num_ctx needs to be a numeric value.")
+  }
   
 }
 

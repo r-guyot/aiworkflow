@@ -144,7 +144,13 @@ apply_processing_skill <- function(prompts_vector, processing_skill=NA, processi
 #' @param system_prompt The system prompt used for your LLM.
 #' @param temperature The temperature value for the answer of the model. A temperature of 0 gives always the same answer. A temperature of 1 has a lot more variation. Default is 0.8.
 #' @export
-get_ollama_completion <- function(ollama_connection, model, prompts_vector, output_text_only=F, num_predict=200, temperature=0.8, system_prompt=NA) {
+get_ollama_completion <- function(ollama_connection, 
+                                  model, 
+                                  prompts_vector, 
+                                  output_text_only=F, 
+                                  num_predict=200, 
+                                  temperature=0.8, 
+                                  system_prompt=NA) {
   
   url <- glue::glue("{ollama_connection$ollama_server_ip}:{ollama_connection$ollama_server_port}/api/generate")
   # streaming if off by default right now
@@ -290,6 +296,7 @@ get_ollama_chat_completion <- function(ollama_connection,
                                        seed=sample(1:10000000,1),
                                        system_prompt=NA,
                                        context_info=NA,
+                                       num_ctx=NA,
                                        tools=NA
                                        ) {
   
@@ -298,6 +305,14 @@ get_ollama_chat_completion <- function(ollama_connection,
   # streaming if off by default right now
   stream=F
 
+  if (is.na(seed)) {
+    seed <- sample(1:10000000,1)
+  }
+  
+  if (is.na(num_ctx)) {
+    num_ctx <- 2048
+  }
+  
   tryCatch({
     
     #print(prompts_vector)
@@ -306,7 +321,10 @@ get_ollama_chat_completion <- function(ollama_connection,
       num_predict=num_predict, 
       temperature=temperature,
       repeat_penalty=repeat_penalty,
+      num_ctx=num_ctx,
       seed=seed)
+    
+    print(options_combined)
     
     req <- httr2::request(url) 
     
@@ -350,6 +368,8 @@ get_ollama_chat_completion <- function(ollama_connection,
         ))
     }
     
+    print(messages_to_send)
+      
       data_to_send <- list(
         model=model,
         messages=messages_to_send,
