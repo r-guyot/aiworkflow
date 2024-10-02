@@ -5,6 +5,22 @@ This package is NOT aimed at creating chat clients (while it could definitely su
 
 This package is very much in *alpha* stages. It can already do a lot of things, but it lacks complete testing coverage, and the API of the package is subject to change. You should be aware that functions may change and be deprecated until the 1.0 version is reached. 
 
+## Installation
+
+You can use install the github version directly with devtools:
+
+```
+devtools::install_github("r-guyot/aiworkflow")
+```
+
+or pak:
+
+```
+pak::pkg_install("r-guyot/aiworkflow")
+```
+
+There is currently no CRAN package but this may change in the near future.
+
 ## License
 
 LGPL v3, which means, in layman terms:
@@ -26,6 +42,7 @@ to be able to use this package at the moment. A qdrant instance is optional.
 
 In its current version it brings the following features:
 
+
 - pipes support for LLM operations
 - client for Ollama to run local LLM operations
 - client for Qdrant database to store vector embeddings
@@ -38,6 +55,7 @@ In its current version it brings the following features:
 - support for JSON output extraction
 - and probably some more...
 
+
 ## Upcoming Features
 
 ### CRAN
@@ -47,9 +65,12 @@ The goal is to have this published on CRAN once this is robust enough and in a m
 ### LLM Backend support 
 
 Ultimately the idea of this package is to expand to more backends to run LLMs:
+
+
 - llama.cpp
 - VLLM
 - llamafile
+
 
 ### Vision LLM Support
 
