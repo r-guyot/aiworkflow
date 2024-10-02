@@ -1,0 +1,13 @@
+{
+  "connector": ["ollama"],
+  "model": ["llama3:8b-instruct-q5_K_S"],
+  "ip_addr": ["127.0.0.1"],
+  "port": ["11434"],
+  "n_predict": [500],
+  "temperature": [0.8],
+  "frequency_penalty": [1],
+  "presence_penalty": [1.5],
+  "repeat_penalty": [1.2],
+  "mode": ["chat"],
+  "system_prompt": ["You are a computer hardware and software specialist."]
+}
