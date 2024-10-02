@@ -8,6 +8,13 @@
 \description{
 ai_workflow is a R package that makes it easy to run typical AI-powered (mostly LLM-related) tasks with R. Its main focus is on Local AI support, while it can be expanded to third-party LLMs in the future.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://r-guyot.github.io/aiworkflow/}
+}
+
+}
 \author{
 \strong{Maintainer}: Raphael Guyot \email{rguyot@sanqualis.com}
 
