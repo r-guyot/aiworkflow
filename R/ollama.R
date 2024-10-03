@@ -459,10 +459,10 @@ get_ollama_chat_completion <- function(ollama_connection,
           
           result <- req |> 
             httr2::req_body_json(data = data_to_send
-            ) |> httr2::req_verbose(body_req=T) |>
+            ) |> 
+            #httr2::req_verbose(body_req=T) |>
             httr2::req_perform()
           
-        
           # next line makes the result available for text extraction
           if (output_text_only==F) {
             result_list[[one_prompt]] <- httr2::resp_body_json(result)  
