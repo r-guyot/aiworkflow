@@ -155,6 +155,7 @@ process_prompts <- function(workflow_obj, prompts_vector) {
     }
     return(workflow_memory)
   }
+    # if the workflow is atomic
   } else {
   
   # create memory of workflow objects used

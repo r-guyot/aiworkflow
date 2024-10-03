@@ -324,7 +324,7 @@ get_ollama_chat_completion <- function(ollama_connection,
       num_ctx=num_ctx,
       seed=seed)
     
-    print(options_combined)
+    #print(options_combined)
     
     req <- httr2::request(url) 
     
@@ -368,7 +368,7 @@ get_ollama_chat_completion <- function(ollama_connection,
         ))
     }
     
-    print(messages_to_send)
+    #print(messages_to_send)
       
       data_to_send <- list(
         model=model,
@@ -407,7 +407,7 @@ get_ollama_chat_completion <- function(ollama_connection,
               arguments[[one_arg]] <- one_tool$`function`$arguments[[one_arg]]
             }
             #calling the function here
-            #need to implement a check if the function does not exist
+            #implement a check if the function does not exist
             if (function_name_found %in% list_global_functions()) {
               tool_result[[i]] <- do.call(get(function_name_found), arguments)
             } else {
@@ -462,8 +462,15 @@ get_ollama_chat_completion <- function(ollama_connection,
             ) |> httr2::req_verbose(body_req=T) |>
             httr2::req_perform()
           
-          result_list[[one_prompt]] <- httr2::resp_body_json(result)
-          #print(result_list[[one_prompt]])
+        
+          # next line makes the result available for text extraction
+          if (output_text_only==F) {
+            result_list[[one_prompt]] <- httr2::resp_body_json(result)  
+          }
+          if (output_text_only==T) {
+          result_list[[one_prompt]] <- httr2::resp_body_json(result)$message$content
+          }
+          
           answer_is_complete <- TRUE
         }
         
@@ -471,12 +478,18 @@ get_ollama_chat_completion <- function(ollama_connection,
       } 
       
       } else {
+        # the result list is a list that contains fields like model, created_at, 
+        # message (message contains sub fields such as role and content)
+        # done_reason, done, total_duration, load_duration, 
+        # prompt_eval_count, prompt_eval_duration, eval_count, eval_duration
+        # message -> content contains the text answer from the LLM
         result_list[[one_prompt]] <- httr2::resp_body_json(result)$message$content
       }
     }
     
     }
     
+    # final formatting
     if (output_text_only==F) {
       result_flat <- data.table::rbindlist(result_list)
     } else {
