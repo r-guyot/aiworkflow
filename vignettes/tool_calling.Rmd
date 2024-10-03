@@ -22,7 +22,7 @@ library(aiworkflow)
 
 We are going to see in this vignette how you can declare tools to be used as part of a LLM workflow.
 
-## Tool Declaration
+## Tool Preparation
 
 What are tools exactly? Let's not try to make things more complicated than they are - tools are actually just functions that you can call. The idea is that some of the LLMs are trained during their development process on how to call functions in case they want to get specific information that is not part of their knowledge base. Not all LLMs support tool calling - you can use for example Llama 3.1 and Llama 3.2 for tool calling at the moment.
 
@@ -48,11 +48,15 @@ get_recent_disasters <- function(type_disaster=NA, country_filter=NA, ...) {
   return(res_f)
 }
 
-
 ```
 
+Note that when you write a function for a LLM, you need to ensure that:
 
-As you can see the function accepts filters such as:
+- the function returns data in JSON format
+- the function is loaded in the global environment first before the LLM tries to call it
+
+
+In the above function, we have added filters such as:
 
 - type_disaster: the type of disaster to filter results by, if needed.
 - country_filter: the country of interest, if any.
@@ -60,6 +64,8 @@ As you can see the function accepts filters such as:
 Note that we have also added a "..." extra argument. This is on purpose. This means the function will also accept as input other parameters beyond type_disaster and country_filter. The reason why we are doing this, is to take care of hallucinations. LLMs have a tendency to come up with additional arguments that do not exist for a given function (even when you give them exactly the list of arguments accepted) and adding this "..." parameter will make it possible for the function to *ignore such additional* parameters without failing and returning an error.
 
 Note that smaller models are more prone to hallucinations when it comes to tool calling.
+
+## Tool Declaration
 
 Now that we have our function, we need to prepare the declaration. 
 We declare it as a list in R. You can follow the format below, as advised in the case of Llama3.1 and beyond:
@@ -92,8 +98,9 @@ tool_list <- list(
 As you can see, you need to specify what the arguments mean, what the function does, so that the LLM can *grasp* when it is a good time to use it.
 Note that you are not limited to declaring a single function. You can have several functions (tools) as part of the above declaration. This way, you can increase the capability of your workflow to handle different types of requests.
 
-Now let's build a workflow that will integrate this tool calling capability:
+## Building a workflow with tools
 
+Now let's build a workflow that will integrate this tool calling capability, using the `add_tools_declaration()` function:
 
 ```{r, tool as part of workflow}
 
@@ -106,6 +113,8 @@ wflow_tool <- ai_workflow() |>
 
 ```
 
+Now that the workflow is ready, we can try it out. While you won't see the internal details, what is actually happening is that the LLM will first do function call, to confirm what happened in Mexico first, and based on the information it received from the function, the LLM will formulate a second answer (the final one) that uses that info.
+
 ```{r, testing prompt}
 
 wflow_tool |> 
@@ -113,6 +122,7 @@ wflow_tool |>
   pull_final_answer()
 
 ```
+
 You can see the difference versus the same kind of workflow, with no tools support:
 
 ```{r, no tool as part of workflow}
@@ -130,3 +140,86 @@ wflow_no_tool |>
 
 As you can see, if you don't provide any tools, the LLM will use whatever memory it can recollect from its training (or whatever it can hallucinate...).
 
+## Offline Tools
+
+While you often see examples online of tools that are used to connect to API or online sources to pull information, it does not have to be this way. You can for example build a tool that will support calculations and math operations, since LLMs are notoriously bad at that (for good reasons, they don't embed the concept of numbers, only tokens).
+
+Let's first declare a function to do maths:
+
+```{r, math function}
+
+do_math <- function(expression_to_evaluate) {
+  
+  res <- eval(parse(text=expression_to_evaluate))
+  return(paste0("{'expression':'",expression_to_evaluate,",'result':'",res,"'}"))
+  
+}
+
+```
+
+Don't expect too much from the above function. It will only work for simple operations. It won't solve binomial equations or something.
+
+Now we declare our math tool:
+
+```{r, tool for math}
+
+tool_list <- list(
+  list(type="function",
+       "function"=list(
+         name="do_math",
+         description="Do simple math calculations by providing a math expression to evaluate",
+         parameters= list(
+           type="object",
+           properties = list(
+             expression_to_evaluate=list(
+               type="string",
+               description="the mathematical expression to evaluate, without an equal sign"
+             )
+           ),
+           required=list("expression_to_evaluate")
+         ))
+  )
+)
+
+```
+
+
+Let's ask Snoop Dogg to answer a math problem:
+
+```{r, snoop dogg answers math}
+
+myflow_math <- ai_workflow() |>
+  set_connector("ollama")  |>
+  set_model(model_name= "llama3.2:latest") |> 
+  set_n_predict(1000) |>
+  set_temperature(0.2) |> 
+  set_style_of_voice("Snoop Dogg") |> 
+  add_tools_declaration(tools = tool_list)
+
+myflow_math |>
+  process_prompts(prompts_vector = "Can you help me solve this math problem? How much is 1321212* 3 , and dividing this whole thing by 7 in the end?") |>
+  pull_final_answer()
+
+```
+
+If you take a calculator, you will see that you expect the answer to be 566233.71 more or less. The above LLM equipped with the tool should give you the right answer.
+
+Now you can see the difference it makes when not having it equipped with the same tool:
+
+```{r, snoop dogg cannot answer math}
+
+myflow_clueless_at_math <- ai_workflow() |>
+  set_connector("ollama")  |>
+  set_model(model_name= "llama3.2:latest") |> 
+  set_n_predict(1000) |>
+  set_temperature(0.2) |> 
+  set_style_of_voice("Snoop Dogg") 
+
+myflow_clueless_at_math |>
+  process_prompts(prompts_vector = "Can you help me solve this math problem? How much is 1321212* 3 , and dividing this whole thing by 7 in the end?") |>
+  pull_final_answer()
+
+```
+The answer differs somewhat. In this case, it's not too far, while still incorrect. 
+
+So our LLM equipped with tools will typically perform better across a range of different problems.

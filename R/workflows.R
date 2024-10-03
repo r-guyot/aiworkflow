@@ -1196,7 +1196,7 @@ split_text_as_sentences <- function(text) {
 #' Add tools declaration for the LLM to use
 #'
 #' @description
-#' `split_text_as_sentences` lets you add some tools (functions) that can be used if needed by the LLM to answer questions
+#' `add_tools_declaration` lets you add some tools (functions) that can be used if needed by the LLM to answer specific questions
 #'
 #' @details
 #' Lets you add some tools (functions) that can be used by the LLM. 

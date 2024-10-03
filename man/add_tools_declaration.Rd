@@ -12,7 +12,7 @@ add_tools_declaration(workflow_obj, tools)
 \item{tools}{a list of tools declared a R list, see examples.}
 }
 \description{
-\code{split_text_as_sentences} lets you add some tools (functions) that can be used if needed by the LLM to answer questions
+\code{add_tools_declaration} lets you add some tools (functions) that can be used if needed by the LLM to answer specific questions
 }
 \details{
 Lets you add some tools (functions) that can be used by the LLM.
