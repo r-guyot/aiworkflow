@@ -70,11 +70,9 @@ Returns TRUE or FALSE</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_qdrant_connection.html">get_qdrant_connection</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in httr2::req_perform(req):</span> Failed to perform HTTP request.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `curl::curl_fetch_memory()`:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Failed to connect to localhost port 6333 after 0 ms: Could not connect to server</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Connection to Qdrant confirmed</span>
 <span class="r-in"><span><span class="fu">qdrant_check_collection_existence</span><span class="op">(</span><span class="va">conn</span>, collection_name<span class="op">=</span><span class="st">"hi_there"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'conn' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

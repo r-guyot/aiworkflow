@@ -69,15 +69,116 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_qdrant_connection.html">get_qdrant_connection</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in httr2::req_perform(req):</span> Failed to perform HTTP request.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `curl::curl_fetch_memory()`:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Failed to connect to localhost port 6333 after 0 ms: Could not connect to server</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Connection to Qdrant confirmed</span>
 <span class="r-in"><span><span class="fu"><a href="qdrant_create_new_collection.html">qdrant_create_new_collection</a></span><span class="op">(</span><span class="va">conn</span>, collection_name<span class="op">=</span><span class="st">"story_of_my_life"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'conn' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Collection story_of_my_life was just created on the qdrant instance.</span>
 <span class="r-in"><span><span class="fu">qdrant_get_collection_details</span><span class="op">(</span><span class="va">conn</span>, collection_name<span class="op">=</span><span class="st">"story_of_my_life"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'conn' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$status</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "green"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$optimizer_status</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ok"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$indexed_vectors_count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$points_count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$segments_count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$vectors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$vectors$size</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 384</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$vectors$distance</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Cosine"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$shard_number</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$replication_factor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$write_consistency_factor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$params$on_disk_payload</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$hnsw_config</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$hnsw_config$m</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$hnsw_config$ef_construct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$hnsw_config$full_scan_threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$hnsw_config$max_indexing_threads</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$hnsw_config$on_disk</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$deleted_threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$vacuum_min_vector_number</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$default_segment_number</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$max_segment_size</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$memmap_threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$indexing_threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$flush_interval_sec</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$optimizer_config$max_optimization_threads</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$wal_config</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$wal_config$wal_capacity_mb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$wal_config$wal_segments_ahead</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$config$quantization_config</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $result$payload_schema</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> named list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $status</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ok"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.004219316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="qdrant_delete_collection.html">qdrant_delete_collection</a></span><span class="op">(</span><span class="va">conn</span>, collection_name<span class="op">=</span><span class="st">"story_of_my_life"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'conn' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Collection story_of_my_life was just deleted on the qdrant instance.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
