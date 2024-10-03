@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aiworkflow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/first_steps.html">First Steps with aiworkflow</a></li>
+    <li><a class="dropdown-item" href="../articles/tool_calling.html">Tool Calling</a></li>
   </ul>
 </li>
       </ul>
@@ -132,37 +133,6 @@ with a simple prompt.</p>
 <span><span class="co">#&gt; → Mode was not specified and 'chat' was selected by default.</span></span>
 <span><span class="co">#&gt; → System Prompt was not specified and given a default value of 'You are a helpful AI assistant.'.</span></span>
 <span><span class="co">#&gt; → Chat mode</span></span>
-<span><span class="co">#&gt; $num_predict</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $temperature</span></span>
-<span><span class="co">#&gt; [1] 0.8</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $repeat_penalty</span></span>
-<span><span class="co">#&gt; [1] 1.2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $num_ctx</span></span>
-<span><span class="co">#&gt; [1] 2048</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $seed</span></span>
-<span><span class="co">#&gt; [1] 7227951</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [[1]]$role</span></span>
-<span><span class="co">#&gt; [1] "system"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]$content</span></span>
-<span><span class="co">#&gt; [1] "You are a helpful AI assistant."</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [[2]]$role</span></span>
-<span><span class="co">#&gt; [1] "user"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$content</span></span>
-<span><span class="co">#&gt; [1] "why is the sky blue? Answer with a short explanation"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The sky appears blue because of a phenomenon called scattering, where shorter (blue) wavelengths of light are scattered more than longer (red) wavelengths by tiny molecules of gases in the atmosphere. This scattering effect gives our sky its distinct blue color!</span></span></code></pre></div>
 <p>By default the model answers with a list, so you want to use the
 pull_final_answer() function to fetch the final textual answer from the
@@ -196,36 +166,7 @@ explanation!</p>
 <span><span class="co">#&gt; → N_predict was not specified and given a default value of 200.</span></span>
 <span><span class="co">#&gt; → Mode was not specified and 'chat' was selected by default.</span></span>
 <span><span class="co">#&gt; → System Prompt was not specified and given a default value of 'You are a helpful AI assistant.'.</span></span>
-<span><span class="co">#&gt; → Chat mode</span></span>
-<span><span class="co">#&gt; $num_predict</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $temperature</span></span>
-<span><span class="co">#&gt; [1] 0.8</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $repeat_penalty</span></span>
-<span><span class="co">#&gt; [1] 1.2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $num_ctx</span></span>
-<span><span class="co">#&gt; [1] 2048</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $seed</span></span>
-<span><span class="co">#&gt; [1] 5115981</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [[1]]$role</span></span>
-<span><span class="co">#&gt; [1] "system"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]$content</span></span>
-<span><span class="co">#&gt; [1] "You are a helpful AI assistant.\nYou are writing for the following audience: Five years old kids, so adapt your answers accordingly to match their expectations."</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [[2]]$role</span></span>
-<span><span class="co">#&gt; [1] "user"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$content</span></span>
-<span><span class="co">#&gt; [1] "why is the sky blue? Answer with a short explanation"</span></span></code></pre></div>
+<span><span class="co">#&gt; → Chat mode</span></span></code></pre></div>
 <p>This is the kind of explanation you get for the little kids out
 there:</p>
 <p>*“Let me tell you a SECRET about the SKY!</p>
@@ -254,36 +195,7 @@ workflow wflow_basic before calling the prompt:</p>
 <span><span class="co">#&gt; → N_predict was not specified and given a default value of 200.</span></span>
 <span><span class="co">#&gt; → Mode was not specified and 'chat' was selected by default.</span></span>
 <span><span class="co">#&gt; → System Prompt was not specified and given a default value of 'You are a helpful AI assistant.'.</span></span>
-<span><span class="co">#&gt; → Chat mode</span></span>
-<span><span class="co">#&gt; $num_predict</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $temperature</span></span>
-<span><span class="co">#&gt; [1] 0.8</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $repeat_penalty</span></span>
-<span><span class="co">#&gt; [1] 1.2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $num_ctx</span></span>
-<span><span class="co">#&gt; [1] 2048</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $seed</span></span>
-<span><span class="co">#&gt; [1] 8518078</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [[1]]$role</span></span>
-<span><span class="co">#&gt; [1] "system"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]$content</span></span>
-<span><span class="co">#&gt; [1] "You are a helpful AI assistant.\nYou are writing for the following audience: people without scientific knowledge or background, so adapt your answers accordingly to match their expectations."</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [[2]]$role</span></span>
-<span><span class="co">#&gt; [1] "user"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$content</span></span>
-<span><span class="co">#&gt; [1] "why is the sky blue? Answer with a short explanation"</span></span></code></pre></div>
+<span><span class="co">#&gt; → Chat mode</span></span></code></pre></div>
 <p>You should get something like that:</p>
 <p>*“The sky appears blue because of something called light
 scattering.</p>
@@ -315,36 +227,7 @@ question.</p>
 <span><span class="co">#&gt; → N_predict was not specified and given a default value of 200.</span></span>
 <span><span class="co">#&gt; → Mode was not specified and 'chat' was selected by default.</span></span>
 <span><span class="co">#&gt; → System Prompt was not specified and given a default value of 'You are a helpful AI assistant.'.</span></span>
-<span><span class="co">#&gt; → Chat mode</span></span>
-<span><span class="co">#&gt; $num_predict</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $temperature</span></span>
-<span><span class="co">#&gt; [1] 0.8</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $repeat_penalty</span></span>
-<span><span class="co">#&gt; [1] 1.2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $num_ctx</span></span>
-<span><span class="co">#&gt; [1] 2048</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $seed</span></span>
-<span><span class="co">#&gt; [1] 3583403</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [[1]]$role</span></span>
-<span><span class="co">#&gt; [1] "system"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[1]]$content</span></span>
-<span><span class="co">#&gt; [1] "You are a helpful AI assistant.\nAnswer in the voice and speaking style of the following character: Snoop Dogg, and adapt your answers accordingly to be as similar as possible to this persona."</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [[2]]$role</span></span>
-<span><span class="co">#&gt; [1] "user"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$content</span></span>
-<span><span class="co">#&gt; [1] "Explain how the stock exchange works in a short paragraph"</span></span></code></pre></div>
+<span><span class="co">#&gt; → Chat mode</span></span></code></pre></div>
 <p>You should get something like that:</p>
 <p><em>“Yo what’s good fam? Alright so you wanna know ‘bout da stock
 exchangah, right? Okay lemme break it down for ya. See, it’s like one
