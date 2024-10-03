@@ -721,7 +721,7 @@ list_processing_skills <- function() {
 #'
 #' @param processing_skill the name of the processing skill you want the model to use for a specific task
 #' @examples
-#' inspect_processing_skill("break_down_task")
+#' inspect_processing_skill("break_down_tasks")
 #'
 #' @export
 inspect_processing_skill <- function(processing_skill) {

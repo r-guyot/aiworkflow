@@ -1,0 +1,192 @@
+---
+title: "Processing Skills"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Processing Skills}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aiworkflow)
+```
+
+## What are Processing Skills?
+
+Processing skills is a fancy name for a series of pre-defined prompts that can process inputs in a specific way. Instead of leaving you hanging, *aiworkflow* comes with batteries included to help with numerous tasks out of the box. First, to get to know what kind of skills are available, you can use the 'list_processing_skills()` function. This will give you the name of skills available right now in the current version of the package.
+
+```{r, list skills}
+list_processing_skills()
+```
+
+## Applying Skills to a Workflow
+
+As you have seen from the above list, we have quite a few things to choose from. Let's start with something simple. We can ask the LLM to write a pitch for us, for a simple product idea. We use the `set_processing_skill()` function to specify which skill we want to use.
+
+```{r, skill for pitch}
+
+myflow_pitch <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.2:latest") |>
+  set_processing_skill(processing_skill = "write_pitch") |>
+  set_n_predict(1500)
+
+```
+
+Now let's test it out. We are trying to sell new razors...
+
+```{r, pitching}
+
+myflow_pitch |>
+  process_prompts(prompts_vector = "A new razor with 20 blades and a lot of springs for an ultimate and safe shaving experience aimed at adult men") |>
+  pull_final_answer()
+
+```
+
+Let's try one more example out. This next skill will add more color to your sentences by sprinkling emojis here and there.
+
+```{r, skill for emoji}
+
+myflow_emoji <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.2:latest") |>
+  set_processing_skill(processing_skill = "add_emoji") |>
+  set_n_predict(1500) |>
+  set_temperature(0.5)
+
+```
+
+
+```{r, emoji skill applied}
+
+myflow_emoji |>
+  process_prompts("The sun is shining today. Just the right temperature. I can finally relax and enjoy a good book.") |>
+  pull_final_answer()
+
+```
+
+## Applying Skills in Sequence
+
+You may be wondering... great, I can do single-action skills, but is there a way to combine them one after the other? And the answer is YES!
+
+Let's start from this depressing piece of news:
+
+```{r, not good financials}
+
+company_report <- "The Q2 quarter was awful. Our leading product, CLEAN-Z, has lost 15% market share in a few months, hurting our bottom line very badly. We now have too much inventory on our hands and wholesalers may be shipping more back to us if we can't rapidly increase our sales. Our Product development team lucked out and failed to release the new formula on time. It looks like it will be delayed another 2 or three months. The oulook for the rest of the year looks grim."
+
+
+```
+
+Let's make a workflow that turns this into a more positive light.
+
+```{r, positive}
+
+myflow_positive <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.2:latest") |>
+  set_processing_skill(processing_skill = "rewrite_positive") |>
+  set_n_predict(1500) |>
+  set_temperature(0.5)
+
+
+```
+
+But we don't just want to add positivity. We also want to add more details to this summary.
+
+```{r, more details}
+
+myflow_more_details <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.2:latest") |>
+  set_processing_skill(processing_skill = "add_details") |>
+  set_n_predict(1500) |>
+  set_temperature(0.5)
+
+
+```
+
+Now let's chain them together by using the `switch_to_workflow()` function, using pipes.
+
+
+```{r, chaining}
+
+# you start from the first workflow here
+myflow_positive |> 
+  # you bring your first prompt here
+  process_prompts(prompts_vector = company_report) |>
+  # you can display the intermediate answer if needed
+  display_intermediate_answer() |>
+  # and then answer from the previous workflow becomes the input for the next one
+  switch_to_workflow(new_workflow = myflow_more_details) |>
+  # and we pull the final answer
+  pull_final_answer()
+
+```
+
+## Chaining Workflows (Other Method)
+
+There is another way to chain workflow together, using the `add_workflow_step()` function.
+
+```{r, chaining, method 2}
+
+# you start from the first workflow here
+myflow_chained <-
+  myflow_positive |>
+  add_workflow_step(myflow_more_details)
+  
+```
+
+And the result should be very similar to the previous example:
+
+```{r, chaining, with new method}
+
+# you start from the combined workflow here
+myflow_chained |> 
+  # you bring your prompt here
+  process_prompts(prompts_vector = company_report) |>
+  pull_final_answer()
+
+```
+
+The only key difference is that you have no way to observe the intermediate results when you do this.
+
+But it makes it easier to add more steps into a single workflow:
+
+```{r, chaining more stuff}
+
+myflow_translate_to_spanish <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.2:latest") |>
+  set_processing_skill(processing_skill = "translate",target_language="spanish") |>
+  set_n_predict(2000) |>
+  set_temperature(0.5)
+
+myflow_chained <-
+  myflow_positive |>
+  add_workflow_step(myflow_more_details) |>
+  add_workflow_step(myflow_translate_to_spanish)
+
+
+```
+And now you should be able to get in one go, the final text translated in Spanish this way.
+
+```{r, chaining spanish}
+
+# you start from the combined workflow here
+myflow_chained |> 
+  # you bring your prompt here
+  process_prompts(prompts_vector = company_report) |>
+  pull_final_answer()
+
+```
+Note that the quality of the Spanish translation in this case will depend heavily on how well the model you have selected can handle this kind of tasks. Not all models are equal when it comes to multilingual capabilities.
+
+
