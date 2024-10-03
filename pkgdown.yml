@@ -4,8 +4,9 @@ pkgdown_sha: 0cb9d38d1dc25946f01ee7500be9665985d8784e
 articles:
   first_steps: first_steps.html
   processing_skills: processing_skills.html
+  saving_workflows: saving_workflows.html
   tool_calling: tool_calling.html
-last_built: 2024-10-03T16:28Z
+last_built: 2024-10-03T23:37Z
 urls:
   reference: https://r-guyot.github.io/aiworkflow/reference
   article: https://r-guyot.github.io/aiworkflow/articles
