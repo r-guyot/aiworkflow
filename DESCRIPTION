@@ -1,6 +1,6 @@
 Package: aiworkflow
 Title: Enable R users to leverage AI frameworks like Ollama and Llama.cpp
-Version: 0.1.2.1
+Version: 0.1.2.2
 Authors@R: 
     person("Raphael", "Guyot", , "rguyot@sanqualis.com", role = c("aut", "cre"))
 Description: ai_workflow is a R package that makes it easy to run typical
