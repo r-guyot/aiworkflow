@@ -19,6 +19,6 @@ a text vector containing the exact prompt used by that processing skill.
 This outputs the text contained in the processing skill. If the processing skill name you are looking for is not found, it will throw an error.
 }
 \examples{
-inspect_processing_skill("break_down_task")
+inspect_processing_skill("break_down_tasks")
 
 }

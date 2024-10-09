@@ -399,8 +399,8 @@ set_model <- function(workflow_obj, model_name) {
 #' @param model_name the name of the embedding model to use in the workflow
 #' @examples
 #' my_workflow <- ai_workflow() |> 
-#' set_model(model_name="llama3:8b-instruct-q5_0")
-#' 
+#' set_model(model_name="llama3.2:latest") |>
+#' set_embedding_model(model_name="nomic-embed-text:latest")
 #' @export
 set_embedding_model <- function(workflow_obj, model_name) {
   workflow_obj[["embedding_model"]] <- model_name
