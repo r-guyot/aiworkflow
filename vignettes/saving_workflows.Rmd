@@ -1,0 +1,59 @@
+---
+title: "Saving workflows"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Saving workflows}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aiworkflow)
+```
+
+## How to save of workflow
+
+Since workflows can contain quite a few parameter declarations, you may need to save them into specific objects for portability. This is exactly what you can do with `save_workflow()` :
+
+```{r saving}
+
+myflow_pitch <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.2:latest") |>
+  set_audience(audience = "Marketing professionals") |>
+  set_temperature(temperature = 0.6) |>
+  set_processing_skill(processing_skill = "write_pitch") |>
+  set_n_predict(3000)
+
+res <- myflow_pitch |> save_workflow(filepath = "wflow_pitch.json")
+
+```
+
+This will save the configuration of your workflow in a JSON file.
+
+## How to reload a workflow 
+
+The reverse operation uses `load_workflow()` :
+
+```{r loading}
+
+myflow_pitch_reloaded <- load_workflow(filepath = "wflow_pitch.json")
+
+```
+
+Note that JSON does not ensure the loaded workflow is identical to the one you saved before. For example, figures stored as double may be reloaded as integers. This should not lead to issues when running the workflow.
+
+Let's clean-up afterwards:
+
+```{r cleaning}
+
+unlink("wflow_pitch.json")
+
+```

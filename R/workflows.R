@@ -684,7 +684,7 @@ set_processing_skill <- function(workflow_obj, processing_skill, ...) {
   additional_args <- list(...)
   
   processing_skill_source <- glue::glue("{processing_skill}.txt")
-  inst_dir <- here::here("inst")
+  inst_dir <- system.file(package = 'aiworkflow') 
   skills <- list_processing_skills()
   if (processing_skill %in% skills) {
     processing_skill_prompt <- readLines(glue::glue("{inst_dir}/skills/{processing_skill}.txt"),warn = F) |> paste(collapse = "\n")
@@ -732,7 +732,8 @@ set_processing_skill <- function(workflow_obj, processing_skill, ...) {
 #' @export
 list_processing_skills <- function() {
   
-  inst_dir <- here::here("inst")
+  inst_dir <- system.file(package = 'aiworkflow') 
+  #inst_dir <- here::here("inst")
   files_in_inst <- list.files(glue::glue("{inst_dir}/skills"), recursive = TRUE, full.names = FALSE)
   skills <- gsub(files_in_inst, pattern="\\.txt", replacement = "")
   return(skills)
@@ -756,7 +757,7 @@ list_processing_skills <- function() {
 inspect_processing_skill <- function(processing_skill) {
   
   if (processing_skill %in% list_processing_skills()) {
-    inst_dir <- here::here("inst")
+    inst_dir <- system.file(package = 'aiworkflow') 
     cat(paste0(readLines(con = glue::glue("{inst_dir}/skills/{processing_skill}.txt")),collapse = "\n"))
   } else {
     cli::cli_alert("Could not find the processing skill {processing_skill} you asked for.")
