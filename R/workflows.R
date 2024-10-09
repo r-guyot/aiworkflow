@@ -112,7 +112,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
       cli::cli_alert("Chat mode")
       result <- get_ollama_chat_completion(ollama_connection = ollama_conn, 
                                            model = workflow_obj[["model"]],
-                                           model = workflow_obj[["embedding_model"]],
+                                           embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
                                            output_text_only = T,
                                            seed = seed_to_pass,

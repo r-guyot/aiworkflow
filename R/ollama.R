@@ -270,6 +270,7 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
 #'
 #' @param ollama_connection a connection object that has the information on how to connect to the ollama server
 #' @param model Name of the model to use on the ollama server. Note that you can only use the models that are available.
+#' @param embedding_model Name of the embedding model to use on the ollama server to create embeddings on the fly for prompts.
 #' @param prompts_vector a vector containing one or more Messages acting as prompt for the completion.
 #' @param output_text_only  A Boolean value (default False) indicating if you just want the text message as output (TRUE) or the whole response coming from the server.
 #' @param num_predict The number of tokens to generate in the response (maximum amount). Defaults to 200.
@@ -279,6 +280,7 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
 #' @param seed The seed used to generate the answer. Note that the seed has no effect if the temperature is zero. By default it is a random number between 1 and 10000000
 #' @param system_prompt The system prompt used for your LLM.
 #' @param context_info This is used for RAG, when you want to provide context to your LLM to ground its answers. Currently incompatible with template_prompt
+#' @param context_usage_mandatory a boolean value (defaults to FALSE) to let the LLM know if it should ONLY use the context to answer, or if it can use the context optionally to answer a question.
 #' @param tools a R list of tools (i.e. functions) that can be passed to the LLM. Note that this is only supported by specific LLMs like Llama3.1 - this may not work at all on LLMs that were not trained on tools calling.
 #' @examples
 #' conn <- get_ollama_connection()
@@ -286,7 +288,8 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
 #' model+"llama3:8b-instruct-q4_K_S", prompts_vector="is the sky blue at night?")
 #' @export
 get_ollama_chat_completion <- function(ollama_connection, 
-                                       model, 
+                                       model,
+                                       embedding_model,
                                        prompts_vector,
                                        output_text_only=F, 
                                        num_predict=200,
@@ -296,6 +299,7 @@ get_ollama_chat_completion <- function(ollama_connection,
                                        seed=sample(1:10000000,1),
                                        system_prompt=NA,
                                        context_info=NA,
+                                       context_usage_mandatory=FALSE,
                                        num_ctx=NA,
                                        tools=NA
                                        ) {
@@ -336,17 +340,33 @@ get_ollama_chat_completion <- function(ollama_connection,
       # in case there is context info to pass
       if (any(!is.na(context_info))) {
         
-        question_vec <- get_ollama_embeddings(ollama_connection = ollama_connection,input = one_prompt)
+        question_vec <- get_ollama_embeddings(ollama_connection = ollama_connection,input = one_prompt, model=embedding_model)
         results_similarity <- retrieve_similar_vectors(context_df = context_info, prompt_vector = question_vec, max_results = 10, similarity_threshold = 0.6)
         context_elements <- results_similarity |> paste0(collapse="\n")
+
+        if (context_usage_mandatory==FALSE) {
         
-        one_prompt <- glue::glue("Here is some factual context that needs to be used to formulate answer: 
+        one_prompt <- glue::glue("Here is some additional context that you can use to formulate your answer, if relevant: 
+    Context ---
+    {context_elements}
+    End of Context ---
+    If the context is not helpful to answer the question, you can ignore the context.
+    {one_prompt}")
+        
+        }
+        
+        if (context_usage_mandatory==TRUE) {
+                
+        one_prompt <- glue::glue("Here is some factual context that needs to be used to formulate answer:
     Context ---
     {context_elements}
     End of Context ---
     Only answer the following question using the context only and NO prior information! If the context is not helpful to answer the question, ONLY reply 'There is no such information in the context.' and nothing else.
     Keep your answer short, precise, to the point, without making useless comments about unrelated facts.
     {one_prompt}")
+        
+        }
+          
       }
     
       #using a case_when results in something really weird, a duplication of the message list. ifelse fixes that. Not sure why?
