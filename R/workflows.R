@@ -74,6 +74,12 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
     context_to_pass <- NA
   }
   
+  if ("context_usage_mandatory" %in% names(workflow_obj)) {
+    context_usage_mandatory <- workflow_obj[["context_usage_mandatory"]]
+  } else {
+    context_usage_mandatory <- NA
+  }
+  
   if ("num_ctx" %in% names(workflow_obj)) {
     num_ctx_to_pass <- workflow_obj[["num_ctx"]]
   } else {
@@ -106,6 +112,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
       cli::cli_alert("Chat mode")
       result <- get_ollama_chat_completion(ollama_connection = ollama_conn, 
                                            model = workflow_obj[["model"]],
+                                           embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
                                            output_text_only = T,
                                            seed = seed_to_pass,
@@ -113,6 +120,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
                                            temperature = workflow_obj[["temperature"]],
                                            system_prompt = workflow_obj[["system_prompt"]],
                                            context_info = context_to_pass,
+                                           context_usage_mandatory=context_usage_mandatory,
                                            num_ctx = num_ctx_to_pass,
                                            tools = tools_to_pass
       )
@@ -358,7 +366,7 @@ ai_workflow <- function() {
   return(list(connector=NA,model=NA))
 }
 
-#' Set the model to be used by the workflow
+#' Set the LLM model to be used by the workflow
 #'
 #' @description
 #' `set_model` sets the model to be used by a workflow object.
@@ -375,6 +383,27 @@ ai_workflow <- function() {
 #' @export
 set_model <- function(workflow_obj, model_name) {
   workflow_obj[["model"]] <- model_name
+  return(workflow_obj)
+}
+
+
+#' Set the embedding model to be used by the workflow
+#'
+#' @description
+#' `set_embedding_model` sets the model to be used by a workflow object.
+#'
+#' @details
+#' A simple function to set the embedding model to be used. Note that this model needs to be available at the instance you connect to.
+#'
+#' @param workflow_obj an ai_workflow object created by ai_workflow() in the first place.
+#' @param model_name the name of the embedding model to use in the workflow
+#' @examples
+#' my_workflow <- ai_workflow() |> 
+#' set_model(model_name="llama3.2:latest") |>
+#' set_embedding_model(model_name="nomic-embed-text:latest")
+#' @export
+set_embedding_model <- function(workflow_obj, model_name) {
+  workflow_obj[["embedding_model"]] <- model_name
   return(workflow_obj)
 }
 
@@ -906,6 +935,7 @@ set_current_time_and_date_reference <- function(workflow_obj) {
 #' 
 #' @param workflow_obj A workflow object containing all parameters describing the workflow required
 #' @param context_df a dataframe containing the text embeddings and text information that can be used to retrieve relevant context
+#' @param context_usage_mandatory a boolean value (defaults to FALSE) to let the LLM know if it should ONLY use the context to answer, or if it can use the context optionally to answer a question.
 #' @returns a workflow object with the new added context parameter.
 #'
 #' @examples
@@ -934,12 +964,13 @@ set_current_time_and_date_reference <- function(workflow_obj) {
 #' my_workflow <- ai_workflow() |> 
 #' set_system_prompt(system_prompt="You are a helpful AI assistant. 
 #' Answer to the best of your knowledge.") |>
-#' add_context(context_df = notre_dame_embeddings)
+#' add_context(context_df = notre_dame_embeddings, use_context_mandatory=TRUE)
 #'
 #' @export
-add_context <- function(workflow_obj, context_df) {
+add_context <- function(workflow_obj, context_df, context_usage_mandatory=FALSE) {
   
   workflow_obj[["context"]] <- context_df
+  workflow_obj[["context_usage_mandatory"]] <- context_usage_mandatory
   return(workflow_obj)
   
 }

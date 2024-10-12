@@ -4,12 +4,14 @@
 \alias{add_context}
 \title{Adds context to be used by the model when answering}
 \usage{
-add_context(workflow_obj, context_df)
+add_context(workflow_obj, context_df, context_usage_mandatory = FALSE)
 }
 \arguments{
 \item{workflow_obj}{A workflow object containing all parameters describing the workflow required}
 
 \item{context_df}{a dataframe containing the text embeddings and text information that can be used to retrieve relevant context}
+
+\item{context_usage_mandatory}{a boolean value (defaults to FALSE) to let the LLM know if it should ONLY use the context to answer, or if it can use the context optionally to answer a question.}
 }
 \value{
 a workflow object with the new added context parameter.
@@ -46,6 +48,6 @@ notre_dame_embeddings <- load_context_embeddings_from_feather_files(filenames = 
 my_workflow <- ai_workflow() |> 
 set_system_prompt(system_prompt="You are a helpful AI assistant. 
 Answer to the best of your knowledge.") |>
-add_context(context_df = notre_dame_embeddings)
+add_context(context_df = notre_dame_embeddings, use_context_mandatory=TRUE)
 
 }

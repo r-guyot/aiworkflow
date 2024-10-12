@@ -2,7 +2,7 @@
 % Please edit documentation in R/workflows.R
 \name{set_model}
 \alias{set_model}
-\title{Set the model to be used by the workflow}
+\title{Set the LLM model to be used by the workflow}
 \usage{
 set_model(workflow_obj, model_name)
 }

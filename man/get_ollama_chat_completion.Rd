@@ -7,6 +7,7 @@
 get_ollama_chat_completion(
   ollama_connection,
   model,
+  embedding_model,
   prompts_vector,
   output_text_only = F,
   num_predict = 200,
@@ -16,6 +17,7 @@ get_ollama_chat_completion(
   seed = sample(1:1e+07, 1),
   system_prompt = NA,
   context_info = NA,
+  context_usage_mandatory = FALSE,
   num_ctx = NA,
   tools = NA
 )
@@ -24,6 +26,8 @@ get_ollama_chat_completion(
 \item{ollama_connection}{a connection object that has the information on how to connect to the ollama server}
 
 \item{model}{Name of the model to use on the ollama server. Note that you can only use the models that are available.}
+
+\item{embedding_model}{Name of the embedding model to use on the ollama server to create embeddings on the fly for prompts.}
 
 \item{prompts_vector}{a vector containing one or more Messages acting as prompt for the completion.}
 
@@ -42,6 +46,8 @@ get_ollama_chat_completion(
 \item{system_prompt}{The system prompt used for your LLM.}
 
 \item{context_info}{This is used for RAG, when you want to provide context to your LLM to ground its answers. Currently incompatible with template_prompt}
+
+\item{context_usage_mandatory}{a boolean value (defaults to FALSE) to let the LLM know if it should ONLY use the context to answer, or if it can use the context optionally to answer a question.}
 
 \item{tools}{a R list of tools (i.e. functions) that can be passed to the LLM. Note that this is only supported by specific LLMs like Llama3.1 - this may not work at all on LLMs that were not trained on tools calling.}
 }
