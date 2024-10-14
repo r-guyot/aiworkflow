@@ -806,7 +806,7 @@ list_processing_skill_parameters <- function(processing_skill) {
       return(matched_variables)
     }
   } else {
-    cli::cli_alert("ERROR: Could not find the processing skill {processing_skill} you asked for.")
+    cli::cli_warn("ERROR: Could not find the processing skill {processing_skill} you asked for.")
   }
   
 }
