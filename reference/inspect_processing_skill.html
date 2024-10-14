@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aiworkflow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,8 +66,60 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">inspect_processing_skill</span><span class="op">(</span><span class="st">"break_down_task"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Could not find the processing skill break_down_task you asked for.</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">inspect_processing_skill</span><span class="op">(</span><span class="st">"break_down_tasks"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> @SYSTEM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The below text indicates a task or project that needs to be completed. </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Your role is to break-down this objective into small, actionable tasks and sub-tasks (bullet point style), in a correct and logical order to be able to reach the final objective.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> For example, if you were asked to build a surveillance camera, the planning you would output would look like this:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Define Objectives and Requirements</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Determine the primary purpose (e.g., home security, traffic monitoring).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Specify key features (e.g., resolution, night vision, motion detection).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Market research</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Analyze existing surveillance cameras.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Identify market trends and user preferences.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Study competitor products for features and pricing.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Establish technical feasibility</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Assess available technologies (e.g., camera sensors, processors, storage solutions).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Identify potential challenges (e.g., low-light performance, connectivity).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Hardware Design</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Select camera sensor (e.g., CMOS, CCD).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Choose a suitable processor (e.g., ARM, custom ASIC).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Design or select an enclosure for the camera.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Plan power supply options (e.g., battery, AC adapter).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Software Design</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Develop or choose an operating system (e.g., Linux-based).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Plan firmware for camera control and image processing.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Design user interface for configuration and monitoring (e.g., mobile app, web interface).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Connectivity and Integration:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Decide on communication protocols (e.g., Wi-Fi, Ethernet, cellular).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Plan integration with cloud storage or local storage options.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Design APIs for third-party integrations (e.g., smart home systems).  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Prototyping</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Build initial hardware prototypes.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Develop basic software functionality.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Test individual components for performance and compatibility.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Software Development</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Implement camera control algorithms.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Develop image processing and enhancement features.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Create user interface and ensure it’s user-friendly.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Integrate connectivity and storage features.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Hardware Development</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Finalize PCB design and layout.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Manufacture prototype enclosures.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   - Assemble and test complete hardware prototypes.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> @CHAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Below is the goal and objective we are trying to achieve now:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {text_to_replace}</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ===</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Answer with the list of tasks broken down in logical order.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Remember: Do not add extra comments! Just the tasks, broken down in bullet points.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

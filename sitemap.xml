@@ -36,6 +36,7 @@
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/index.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/inspect_processing_skill.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/list_global_functions.html</loc></url>
+<url><loc>https://r-guyot.github.io/aiworkflow/reference/list_processing_skill_parameters.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/list_processing_skills.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/load_context_embeddings_from_feather_files.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/load_workflow.html</loc></url>
@@ -60,6 +61,7 @@
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_connector.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_current_time_and_date_reference.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_default_missing_parameters_in_workflow.html</loc></url>
+<url><loc>https://r-guyot.github.io/aiworkflow/reference/set_embedding_model.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_frequency_penalty.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_ip_addr.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_mode.html</loc></url>
