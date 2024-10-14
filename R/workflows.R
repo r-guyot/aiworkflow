@@ -765,6 +765,53 @@ inspect_processing_skill <- function(processing_skill) {
   
 }
 
+
+
+#' List extra parameters for a given processing skill
+#'
+#' @description
+#' `list_processing_skill_parameters` returns the extra parameters required for a processing skill.
+#'
+#' @details
+#' This outputs the variable names that need to be given as extra parameters to be able to use this processing skill.
+#' If there is no extra variable, NA is returned.
+#' @returns a text vector containing the exact extra variables needed by that processing skill.
+#'
+#' @param processing_skill the name of the processing skill you want the model to use for a specific task
+#' @examples
+#' list_processing_skill_parameters("translate")
+#'
+#' @export
+list_processing_skill_parameters <- function(processing_skill) {
+  
+  processing_skill_source <- glue::glue("{processing_skill}.txt")
+  inst_dir <- system.file(package = 'aiworkflow') 
+  skills <- list_processing_skills()
+  if (processing_skill %in% skills) {
+    processing_skill_prompt <- readLines(glue::glue("{inst_dir}/skills/{processing_skill}.txt"),warn = F) |> paste(collapse = "\n")
+    
+    # find all arguments required for replacement in the prompts
+    pattern <- "\\{([^}]*)\\}"
+    
+    # Use gregexpr to find all matches
+    matches <- gregexpr(pattern, processing_skill_prompt, perl = TRUE)
+    
+    # Extract the matches
+    matched_strings <- regmatches(processing_skill_prompt, matches) |> unlist() |> unique()
+    matched_variables <- gsub(matched_strings, pattern="\\{|\\}",replacement="")
+    matched_variables <- matched_variables[matched_variables!="text_to_replace"]
+
+    if (identical(matched_variables,character(0))) { return(NA_character_) }
+    if (length(matched_variables)>0) {
+      return(matched_variables)
+    }
+  } else {
+    cli::cli_alert("ERROR: Could not find the processing skill {processing_skill} you asked for.")
+  }
+  
+}
+
+
 #' Define a specific audience you want the model to prepare an answer for
 #'
 #' @description
