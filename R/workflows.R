@@ -131,6 +131,130 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
   
 }
 
+
+#' Execute an AI workflow on a dataframe (with or without a pipe)
+#'
+#' @description
+#' `execute_workflow_on_df` executes an AI workflow by applying a workflow object on an input dataframe (or tibble).
+#'
+#' @importFrom  cli cli_alert
+#' @importFrom  cli cli_abort
+#' @importFrom  tibble tibble
+#' @importFrom  dplyr left_join
+#' 
+#' @details
+#' This function executes an AI workflow by combining prompt vectors and a workflow object.
+#' If auto_use_df_variables is set to TRUE and you have the right columns to tweak the model for every line, you will end up with different parameters applied to the workflow for every line.
+#' The parameters recognized currently as columns are:
+#' - "temperature"
+#' - "n_predict"
+#' - "seed"
+#' - "num_ctx"
+#' - "model"
+#' - "overall_background"
+#' - "system_prompt"
+#' - "style_of_voice"
+#' - "frequency_penalty"
+#' - "presence_penalty"
+#' - "repeat_penalty"
+#' - "n_predict"
+#'
+#' @param df The source dataframe or tibble to use as input for the workflow to execute. 
+#' @param prompt_column_name A vector for the name of the column that corresponds to the prompts to send to the workflow. Defaults to "prompt"
+#' @param workflow_obj A workflow object containing all parameters describing the flow required for execution
+#' @param result_column_name A vector for the name of the column that corresponds to the outcome of the workflow. Defaults to "result". This is a new column that will be created.
+#' @param auto_use_df_variables A boolean value (defaults to FALSE). If TRUE, it will attempt to find column names that corresponds to parameters that can be used to modify the workflow, such as temperature, n_ctx, etc...
+#' 
+#' @returns the original df with the new column corresponding to the results of the workflow.
+#' 
+#' @examples
+#' myflow <- ai_workflow() |> 
+#'   set_connector("ollama")  |>
+#'   set_model(model_name= "llama3.2:3b-instruct-q5_K_M") |> 
+#'   set_n_predict(3000) |> 
+#'   set_temperature(0.8) |>
+#'   set_seed(seed = 13) |> 
+#'   set_num_ctx(num_ctx = 5000) 
+#'   
+#' df_test <- tibble::tribble(~prompt,~temperature,~seed,~system_prompt,~style_of_voice,
+#' "why is the sky blue?", 0.8,13123,NA_character_,"Yoda",
+#' "why is the sky blue?", 0.6,12321255,NA_character_,"Tolkien",
+#' "why is the sky blue?", 0.2,12,"You are a expert in colorimetry.","George R Martin",
+#' "why is the sky blue?", 0,11111111,NA_character_,"CS Lewis",
+#' "what is 2+2 ??", 0.8,124,NA_character_,"Hemingway",
+#' "what is 2+2 ??", 0,34343,NA_character_,"Gandalf",
+#' "what is tequila made of?",0,34343,NA_character_,"Obama")
+#' 
+#' df_test <- df_test |> 
+#' execute_workflow_on_df(workflow_obj = myflow, auto_use_df_variables=T)
+#' 
+#' @export
+execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj, result_column_name="result", auto_use_df_variables=F) {
+  #need to implement variables check potentially...
+
+  if (! (tibble::is_tibble(df) | is.data.frame(df))) {
+    cli::cli_abort("The provided source does not appear to be a valid dataframe or tibble.")
+  }
+  
+  if (result_column_name %in% colnames(df)) {
+    cli::cli_abort("The column name to store results ('{result_column_name}') already exists in the source input. Please choose a different name.")
+  }
+  
+  # check if prompt column exists
+  if (!prompt_column_name %in% colnames(df)) {
+    cli::cli_abort("The column name {prompt_column_name} is missing and therefore the workflow can not be executed on this dataframe.")
+  }
+  
+  # check if there are variables in columns that can be used as variables for the workflow
+  if (auto_use_df_variables==T) {
+    arg_names <- colnames(df)
+    
+    accepted_arg_names <- c("temperature","n_predict",
+                            "seed","num_ctx","model",
+                            "overall_background","system_prompt",
+                            "style_of_voice","frequency_penalty",
+                            "presence_penalty","repeat_penalty",
+                            "n_predict")
+    
+    if (result_column_name %in% accepted_arg_names) {
+      cli::cli_abort("The column name to store results ('{result_column_name}') cannot use the same name as an argument that can be used by the workflow. Please choose a different name.")
+    }
+    
+    arg_names_valid <- arg_names[arg_names %in% accepted_arg_names]
+    cli::cli_alert("Will be using the following variables from the dataframe to supplement the workflow: {paste0(arg_names_valid,collapse=', ')}")
+    # create a default list to store all differences in workflow
+    workflow_obj_list <- list()
+    for (i in 1:nrow(df)) {
+      # start from the default workflow given
+      workflow_obj_list[[i]]  <- workflow_obj
+      # modify workflow at the line level
+      for (one_arg in arg_names_valid) {
+        workflow_obj_list[[i]][[one_arg]] <- df[i,][[one_arg]]
+      }
+    }
+  df[[result_column_name]] <- NA_character_
+  for (i in 1:nrow(df)) {
+    # generate the answer based on each customized workflow and prompt
+    df[i,][[result_column_name]] <- execute_workflow(prompts_vector = df[i,][[prompt_column_name]], workflow_obj = workflow_obj_list[[i]])
+  }
+  } else {
+    # if there no need to use extra parameters it will use the prompt column name only.
+    #df[[result_column_name]] <- NA_character_
+    unique_prompts <- unique(df[[prompt_column_name]])
+    unique_answers <- execute_workflow(prompts_vector = unique_prompts, workflow_obj = workflow_obj)
+    res <- tibble::tibble(unique_prompts,unique_answers)
+    res[[prompt_column_name]] <- unique_prompts
+    res[[result_column_name]] <- unique_answers
+    res$unique_prompts <- NULL
+    res$unique_answers <- NULL
+    df <- df |> dplyr::left_join(res)
+    #df[[result_column_name]] <- execute_workflow(prompts_vector = df[[prompt_column_name]], workflow_obj = workflow_obj)
+  }
+  return(df)
+  
+}
+
+
 #' Process Prompts starting from a workflow
 #'
 #' @description
