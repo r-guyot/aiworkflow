@@ -304,15 +304,16 @@ get_ollama_chat_completion <- function(ollama_connection,
                                        context_usage_mandatory=FALSE,
                                        num_ctx=NA,
                                        tools=NA,
-                                       vision=F
+                                       vision=FALSE
                                        ) {
   
   url <- glue::glue("{ollama_connection$ollama_server_ip}:{ollama_connection$ollama_server_port}/api/chat")
   
+  print(vision)
   # streaming if off by default right now
   stream=F
 
-  if (vision==T) {
+  if (vision==TRUE) {
     if (length(prompts_vector)!=length(images_vector)) {
       cli::cli_abort("The images_vector needs to have the same length as the prompts vector")
     }

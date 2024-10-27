@@ -92,6 +92,13 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
     seed_to_pass <- NA_integer_
   }
   
+  if (!("vision" %in% names(workflow_obj))) {
+    workflow_obj[["vision"]] <- FALSE
+  } else {
+    workflow_obj[["vision"]] <- TRUE
+  }
+  
+  
   if (workflow_obj[["connector"]] == "ollama") {
     
     ollama_conn <- get_ollama_connection(ip_ad = workflow_obj[["ip_addr"]], port = workflow_obj[["port"]])
@@ -114,7 +121,7 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
                                            model = workflow_obj[["model"]],
                                            embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
-                                           images_vector = resize_images_and_export_to_base64(images_vector,max_dimension = 672),
+                                           images_vector = ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,NA,resize_images_and_export_to_base64(images_vector,max_dimension = 672)),
                                            output_text_only = T,
                                            seed = seed_to_pass,
                                            num_predict = workflow_obj[["n_predict"]],
@@ -268,7 +275,7 @@ execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj
 #' @param prompts_vector A vector containing the prompts to be executed by the AI workflow 
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-process_prompts <- function(workflow_obj, prompts_vector) {
+process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
   
   # if the workflow is not atomic but a chain, follow this path
   if ("workflow_type" %in% names(workflow_obj)) {
@@ -282,7 +289,7 @@ process_prompts <- function(workflow_obj, prompts_vector) {
       if (i==1) {
       workflow_memory[["prompts_vector"]][[i]] <- list(prompts_vector)
       }
-      workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), workflow_obj = workflow_memory[["workflow"]][[i]]))
+      workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), images_vector = images_vector, workflow_obj = workflow_memory[["workflow"]][[i]]))
       if (i < length(workflow_obj[["workflow_element"]])) {
         workflow_memory[["prompts_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
       }
@@ -294,7 +301,7 @@ process_prompts <- function(workflow_obj, prompts_vector) {
   
   # create memory of workflow objects used
   workflow_memory <- list(workflow=workflow_obj, prompts_vector=list(prompts_vector))
-  workflow_memory[["res"]] <- list(execute_workflow(prompts_vector = prompts_vector, workflow_obj = workflow_obj))
+  workflow_memory[["res"]] <- list(execute_workflow(prompts_vector = prompts_vector, images_vector = images_vector, workflow_obj = workflow_obj))
   return(workflow_memory)
   }
   
@@ -316,7 +323,8 @@ switch_to_workflow <- function(workflow, new_workflow) {
   current_length_wflow <- length(workflow[["workflow"]])
   workflow[["workflow"]][[current_length_wflow+1]] <- new_workflow
   current_length <- length(workflow[["res"]])
-  workflow[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow[["res"]][[current_length]], workflow_obj = workflow[["workflow"]][[current_length_wflow+1]])
+  workflow[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow[["res"]][[current_length]], 
+                                                            workflow_obj = workflow[["workflow"]][[current_length_wflow+1]])
   return(workflow)
   
 }
