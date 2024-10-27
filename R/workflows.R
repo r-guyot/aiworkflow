@@ -1452,6 +1452,33 @@ add_tools_declaration <- function(workflow_obj, tools) {
   return(workflow_obj)
 }
 
+
+#' Add vision capability to the workflow.
+#'
+#' @description
+#' `add_vision_capability` lets you declare that this model can support the description of images. Only few models support such capabilities.
+#'
+#' @details
+#' Lets you declare that this workflow can leverage vision capabilities (i.e. you can also send images on top of the prompt, optionally).
+#' Make sure that the model you include in your workflow has such vision capability in the first place. 
+#' It is usually limited to models like llava, moondream, and llama3.2-11b models (while there are probably more).
+#' @param workflow_obj A workflow object containing all parameters describing the workflow required
+#' @examples
+#' myflow_test <- ai_workflow() |>
+#'    set_connector("ollama")  |> 
+#'    set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
+#'    set_n_predict(1000) |>
+#'    set_temperature(0.8) |> 
+#'    set_default_missing_parameters_in_workflow() |> 
+#'    add_tools_declaration(tool_list)
+#'    
+#' @export
+add_vision_capability <- function(workflow_obj) {
+  
+  workflow_obj[["vision"]] <- TRUE
+  return(workflow_obj)
+}
+
 #' Convert Batch documents to Embeddings
 #'
 #' @description
