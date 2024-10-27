@@ -14,8 +14,9 @@ For each of the example texts above, I expect a well-crafted pitch with the foll
 Our company has developed an innovative new smartphone case with built-in wireless charging capabilities.
 
 ###Example Output###
-Are you tired of dealing with tangled cords and dead batteries on your phone? Introducing our innovative smartphone case with built-in wireless charging capabilities. This sleek design not only charges your device without wires but also provides an additional layer of protection against scratches and drops. With its long-lasting battery life, this is the perfect accessory for busy professionals who are always on-the-go.
-
+Are you tired of dealing with tangled cords and dead batteries on your phone? Introducing our innovative smartphone case with built-in wireless charging capabilities. 
+This sleek design not only charges your device without wires but also provides an additional layer of protection against scratches and drops. 
+With its long-lasting battery life, this is the perfect accessory for busy professionals who are always on-the-go.
 
 @CHAT
 Write a pitch for the following text:

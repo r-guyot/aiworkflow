@@ -805,7 +805,9 @@ set_system_prompt <- function(workflow_obj, system_prompt) {
 set_processing_skill <- function(workflow_obj, processing_skill, ...) {
   
   # Capture additional arguments - since they are part of list, we get the list first element
+  if (length(list(...)) > 0) {
   additional_args <- list(...)[[1]]
+  } else { additional_args <- list() }
   
   processing_skill_source <- glue::glue("{processing_skill}.txt")
   inst_dir <- system.file(package = 'aiworkflow') 
