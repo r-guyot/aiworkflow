@@ -22,6 +22,7 @@
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/convert_ollama_tags_response_to_tibble.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/display_intermediate_answer.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/execute_workflow.html</loc></url>
+<url><loc>https://r-guyot.github.io/aiworkflow/reference/execute_workflow_on_df.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/extract_snippets.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/generate_document_embeddings.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/generate_numeric_list.html</loc></url>

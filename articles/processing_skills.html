@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aiworkflow</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,21 +87,22 @@ version of the package.</p>
 <span><span class="co">#&gt;  [9] "extract_actions"                "extract_names"                 </span></span>
 <span><span class="co">#&gt; [11] "fix_copy"                       "fix_translation"               </span></span>
 <span><span class="co">#&gt; [13] "generate_code"                  "generate_creative_introduction"</span></span>
-<span><span class="co">#&gt; [15] "generate_knowledge_graph"       "generate_quiz"                 </span></span>
-<span><span class="co">#&gt; [17] "identify_product"               "rewrite_active_voice"          </span></span>
-<span><span class="co">#&gt; [19] "rewrite_blog_copy"              "rewrite_bullet_points"         </span></span>
-<span><span class="co">#&gt; [21] "rewrite_casual"                 "rewrite_emoji"                 </span></span>
-<span><span class="co">#&gt; [23] "rewrite_in_first_person"        "rewrite_jargon"                </span></span>
-<span><span class="co">#&gt; [25] "rewrite_paraphrase"             "rewrite_passive_voice"         </span></span>
-<span><span class="co">#&gt; [27] "rewrite_positive"               "rewrite_prompt"                </span></span>
-<span><span class="co">#&gt; [29] "rewrite_text_as_anonymized"     "tldr"                          </span></span>
-<span><span class="co">#&gt; [31] "translate"                      "write_abstract"                </span></span>
-<span><span class="co">#&gt; [33] "write_article_from_title"       "write_email"                   </span></span>
-<span><span class="co">#&gt; [35] "write_fiction_chapter"          "write_pitch"                   </span></span>
-<span><span class="co">#&gt; [37] "write_qa"                       "write_quarto_presentation"     </span></span>
-<span><span class="co">#&gt; [39] "write_recommendation"           "write_resume_narrative"        </span></span>
-<span><span class="co">#&gt; [41] "write_short_summary"            "write_text_expansion"          </span></span>
-<span><span class="co">#&gt; [43] "write_title"                    "write_tweet"</span></span></code></pre></div>
+<span><span class="co">#&gt; [15] "generate_knowledge_graph_v2"    "generate_knowledge_graph"      </span></span>
+<span><span class="co">#&gt; [17] "generate_quiz_with_answers"     "generate_quiz"                 </span></span>
+<span><span class="co">#&gt; [19] "identify_product"               "rewrite_active_voice"          </span></span>
+<span><span class="co">#&gt; [21] "rewrite_blog_copy"              "rewrite_bullet_points"         </span></span>
+<span><span class="co">#&gt; [23] "rewrite_casual"                 "rewrite_emoji"                 </span></span>
+<span><span class="co">#&gt; [25] "rewrite_in_first_person"        "rewrite_jargon"                </span></span>
+<span><span class="co">#&gt; [27] "rewrite_paraphrase"             "rewrite_passive_voice"         </span></span>
+<span><span class="co">#&gt; [29] "rewrite_positive"               "rewrite_prompt"                </span></span>
+<span><span class="co">#&gt; [31] "rewrite_text_as_anonymized"     "tldr"                          </span></span>
+<span><span class="co">#&gt; [33] "translate"                      "write_abstract"                </span></span>
+<span><span class="co">#&gt; [35] "write_article_from_title"       "write_email"                   </span></span>
+<span><span class="co">#&gt; [37] "write_fiction_chapter"          "write_pitch"                   </span></span>
+<span><span class="co">#&gt; [39] "write_qa"                       "write_quarto_presentation"     </span></span>
+<span><span class="co">#&gt; [41] "write_recommendation"           "write_resume_narrative"        </span></span>
+<span><span class="co">#&gt; [43] "write_short_summary"            "write_text_expansion"          </span></span>
+<span><span class="co">#&gt; [45] "write_title"                    "write_tweet"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="applying-skills-to-a-workflow">Applying Skills to a Workflow<a class="anchor" aria-label="anchor" href="#applying-skills-to-a-workflow"></a>
@@ -133,7 +134,7 @@ want to use.</p>
 <span><span class="co">#&gt; → Mode was not specified and 'chat' was selected by default.</span></span>
 <span><span class="co">#&gt; → System Prompt was not specified and given a default value of 'You are a helpful AI assistant.'.</span></span>
 <span><span class="co">#&gt; → Chat mode</span></span>
-<span><span class="co">#&gt; [1] "Introducing Shavion: The Ultimate Razor Experience\n\nSay goodbye to ingrown hairs, nicks, and shaves that leave you feeling rough. Our new razor boasts an unprecedented 20 blades and a robust spring system designed for maximum comfort and safety.\n\nFor the modern man who demands precision and pampering, Shavion is engineered to deliver a shaving experience like no other. With its advanced blade technology and ergonomic design, you'll enjoy a closer shave in less time while minimizing irritation and discomfort.\n\nDesigned specifically with adult men in mind, Shavion is perfect for those seeking a superior shaving routine that elevates their daily grooming game. Join the ranks of discerning gentlemen who demand the best – experience the unparalleled comfort and closeness of Shavion today!"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Introducing Shavion - The Ultimate Safety Razor Experience\n\nAre you tired of dealing with nicks, cuts, and uneven shaves? Do you want to achieve a closer, smoother shave without sacrificing your safety?\n\nOur new razor features an unprecedented 20 blades and multiple springs that work together in harmony to provide the ultimate shaving experience. With Shavion, say goodbye to ingrown hairs, razor burn, and other common shaving woes.\n\nIdeal for busy professionals and men who demand the best from their grooming routine, Shavion is designed to deliver a safe, efficient, and comfortable shave every time. Whether you're looking to upgrade your morning ritual or simply want to experience the art of traditional shaving, our innovative safety razor has got you covered.\n\nJoin the smoothest revolution in shaver history - order yours today!"</span></span></code></pre></div>
 <p>Let’s try one more example out. This next skill will add more color
 to your sentences by sprinkling emojis here and there.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">

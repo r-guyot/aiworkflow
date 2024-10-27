@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: '3.2'
 pkgdown: 2.1.1.9000
 pkgdown_sha: 0cb9d38d1dc25946f01ee7500be9665985d8784e
 articles:
@@ -6,7 +6,7 @@ articles:
   processing_skills: processing_skills.html
   saving_workflows: saving_workflows.html
   tool_calling: tool_calling.html
-last_built: 2024-10-14T07:56Z
+last_built: 2024-10-27T08:34Z
 urls:
   reference: https://r-guyot.github.io/aiworkflow/reference
   article: https://r-guyot.github.io/aiworkflow/articles
