@@ -10,7 +10,7 @@
 #' @param prompts_vector A vector containing the prompts to be executed by the AI workflow 
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-execute_workflow <- function(prompts_vector, workflow_obj) {
+execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
   
   workflow_obj <- workflow_obj |> set_default_missing_parameters_in_workflow()
   
@@ -114,6 +114,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
                                            model = workflow_obj[["model"]],
                                            embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
+                                           images_vector = resize_images_and_export_to_base64(images_vector,max_dimension = 672),
                                            output_text_only = T,
                                            seed = seed_to_pass,
                                            num_predict = workflow_obj[["n_predict"]],
@@ -122,7 +123,8 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
                                            context_info = context_to_pass,
                                            context_usage_mandatory=context_usage_mandatory,
                                            num_ctx = num_ctx_to_pass,
-                                           tools = tools_to_pass
+                                           tools = tools_to_pass,
+                                           vision = workflow_obj[["vision"]]
       )
     }
     
@@ -1746,4 +1748,5 @@ parse_json_result <- function(json_string) {
   return(parsed_result)
   
 }
+
 

@@ -264,6 +264,7 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
 #' @importFrom httr2 req_body_json
 #' @importFrom glue glue
 #' @importFrom cli cli_alert
+#' @importFrom cli cli_abort
 #' 
 #' @details
 #' A function to get a chat completion from an ollama server.
@@ -291,6 +292,7 @@ get_ollama_chat_completion <- function(ollama_connection,
                                        model,
                                        embedding_model,
                                        prompts_vector,
+                                       images_vector=NA,
                                        output_text_only=F, 
                                        num_predict=200,
                                        temperature=0.8,
@@ -301,7 +303,8 @@ get_ollama_chat_completion <- function(ollama_connection,
                                        context_info=NA,
                                        context_usage_mandatory=FALSE,
                                        num_ctx=NA,
-                                       tools=NA
+                                       tools=NA,
+                                       vision=F
                                        ) {
   
   url <- glue::glue("{ollama_connection$ollama_server_ip}:{ollama_connection$ollama_server_port}/api/chat")
@@ -309,6 +312,15 @@ get_ollama_chat_completion <- function(ollama_connection,
   # streaming if off by default right now
   stream=F
 
+  if (vision==T) {
+    if (length(prompts_vector)!=length(images_vector)) {
+      cli::cli_abort("The images_vector needs to have the same length as the prompts vector")
+    }
+  } else { 
+    # if vision is turned off, ignore all images passed to the prompt
+    images_vector <- NA 
+    }
+  
   if (is.na(seed)) {
     seed <- sample(1:10000000,1)
   }
@@ -335,7 +347,11 @@ get_ollama_chat_completion <- function(ollama_connection,
     result_list <- list()
     #print(length(prompts_vector))
     
+    prompt_index <- 0
+    
     for (one_prompt in prompts_vector) {
+      
+      prompt_index <- prompt_index + 1
       
       # in case there is context info to pass
       if (any(!is.na(context_info))) {
@@ -369,13 +385,16 @@ get_ollama_chat_completion <- function(ollama_connection,
           
       }
     
-      #using a case_when results in something really weird, a duplication of the message list. ifelse fixes that. Not sure why?
+    #using a case_when results in something really weird, a duplication of the message list. ifelse fixes that. Not sure why?
     if (is.na(system_prompt)) {
     messages_to_send <-   list(
       list(
         role=role,
         content=one_prompt
       ))
+    if (vision==T) {
+      messages_to_send[[1]][["images"]] <- list(images_vector[prompt_index])
+    }
     } else {
       messages_to_send <- list(
         list(
@@ -386,6 +405,9 @@ get_ollama_chat_completion <- function(ollama_connection,
           role=role,
           content=one_prompt
         ))
+      if (vision==T) {
+        messages_to_send[[2]][["images"]] <- list(images_vector[prompt_index])
+      }
     }
     
     #print(messages_to_send)
