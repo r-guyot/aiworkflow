@@ -283,15 +283,18 @@ process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
     workflow_memory <- list()
     workflow_memory[["workflow"]] <- list()
     workflow_memory[["prompts_vector"]] <- list()
+    workflow_memory[["images_vector"]] <- list()
     workflow_memory[["res"]] <- list()
     for (i in 1:length(workflow_obj[["workflow_element"]])) {
       workflow_memory[["workflow"]][[i]] <- workflow_obj[["workflow_element"]][[i]]
       if (i==1) {
       workflow_memory[["prompts_vector"]][[i]] <- list(prompts_vector)
+      workflow_memory[["images_vector"]][[i]] <- list(prompts_vector)
       }
       workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), images_vector = images_vector, workflow_obj = workflow_memory[["workflow"]][[i]]))
       if (i < length(workflow_obj[["workflow_element"]])) {
         workflow_memory[["prompts_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
+        workflow_memory[["images_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
       }
     }
     return(workflow_memory)
