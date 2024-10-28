@@ -273,6 +273,7 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
 #' @param model Name of the model to use on the ollama server. Note that you can only use the models that are available.
 #' @param embedding_model Name of the embedding model to use on the ollama server to create embeddings on the fly for prompts.
 #' @param prompts_vector a vector containing one or more Messages acting as prompt for the completion.
+#' @param images_vector an optional vector (defaults to NA) containing images to be send to the model for completion.
 #' @param output_text_only  A Boolean value (default False) indicating if you just want the text message as output (TRUE) or the whole response coming from the server.
 #' @param num_predict The number of tokens to generate in the response (maximum amount). Defaults to 200.
 #' @param temperature The temperature value for the answer of the model. A temperature of 0 gives always the same answer. A temperature of 1 has a lot more variation. Default is 0.8.
