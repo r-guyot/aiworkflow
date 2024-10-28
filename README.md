@@ -42,10 +42,10 @@ to be able to use this package at the moment. A qdrant instance is optional.
 
 In its current version it brings the following features:
 
-
 - pipes support for LLM operations
 - client for Ollama to run local LLM operations
 - client for Qdrant database to store vector embeddings
+- support for vision models (moondream, llava:v1.6, minicpm tested and working) through Ollama
 - support for basic RAG
 - support for tool calling for LLMs that support it (like Llama3.1)
 - support for local vector embeddings database using a feather file
@@ -71,10 +71,6 @@ Ultimately the idea of this package is to expand to more backends to run LLMs:
 - VLLM
 - llamafile
 
-
-### Vision LLM Support
-
-This package will also support Vision models that accept images as inputs, down the road.
 
 ### Image Generation Support
 
