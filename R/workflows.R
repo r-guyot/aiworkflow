@@ -178,6 +178,7 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
 #'
 #' @param df The source dataframe or tibble to use as input for the workflow to execute. 
 #' @param prompt_column_name A vector for the name of the column that corresponds to the prompts to send to the workflow. Defaults to "prompt"
+#' @param image_column_name An optional vector (defaults to NA) that corresponds to the images to be sent to the workflow. It can only work if you use a model with Vision capabilities and which such capability turned on.
 #' @param workflow_obj A workflow object containing all parameters describing the flow required for execution
 #' @param result_column_name A vector for the name of the column that corresponds to the outcome of the workflow. Defaults to "result". This is a new column that will be created.
 #' @param auto_use_df_variables A boolean value (defaults to FALSE). If TRUE, it will attempt to find column names that corresponds to parameters that can be used to modify the workflow, such as temperature, n_ctx, etc...
@@ -313,6 +314,7 @@ execute_workflow_on_df <- function(df,
 #' This function provides a way to process a vector of prompts by starting from a workflow.
 #'
 #' @param prompts_vector A vector containing the prompts to be executed by the AI workflow 
+#' @param images_vector An optional vector (defaults to NA) containing the images to be send to the AI workflow
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
 process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
