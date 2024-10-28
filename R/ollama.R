@@ -310,7 +310,6 @@ get_ollama_chat_completion <- function(ollama_connection,
   
   url <- glue::glue("{ollama_connection$ollama_server_ip}:{ollama_connection$ollama_server_port}/api/chat")
   
-  print(vision)
   # streaming if off by default right now
   stream=F
 
