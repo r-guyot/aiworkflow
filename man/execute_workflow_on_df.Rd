@@ -7,6 +7,7 @@
 execute_workflow_on_df(
   df,
   prompt_column_name = "prompt",
+  image_column_name = NA_character_,
   workflow_obj,
   result_column_name = "result",
   auto_use_df_variables = F
@@ -16,6 +17,8 @@ execute_workflow_on_df(
 \item{df}{The source dataframe or tibble to use as input for the workflow to execute.}
 
 \item{prompt_column_name}{A vector for the name of the column that corresponds to the prompts to send to the workflow. Defaults to "prompt"}
+
+\item{image_column_name}{An optional vector (defaults to NA) that corresponds to the images to be sent to the workflow. It can only work if you use a model with Vision capabilities and which such capability turned on.}
 
 \item{workflow_obj}{A workflow object containing all parameters describing the flow required for execution}
 

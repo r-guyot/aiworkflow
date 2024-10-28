@@ -4,10 +4,12 @@
 \alias{execute_workflow}
 \title{Execute an AI workflow}
 \usage{
-execute_workflow(prompts_vector, workflow_obj)
+execute_workflow(prompts_vector, images_vector = NA, workflow_obj)
 }
 \arguments{
 \item{prompts_vector}{A vector containing the prompts to be executed by the AI workflow}
+
+\item{images_vector}{An optional vector containing the images to be sent as reference to the AI workflow (Defaults to NA). It needs to have the same length as prompts_vector.}
 
 \item{workflow_obj}{A workflow object containing all parameters describing the flow required}
 }
@@ -15,5 +17,5 @@ execute_workflow(prompts_vector, workflow_obj)
 \code{execute_workflow} executes an AI workflow by combining prompt vectors and a workflow object.
 }
 \details{
-This function executes an AI workflow by combining prompt vectors and a workflow object.
+This function executes an AI workflow by combining prompt vectors, a potential images vector, and a workflow object.
 }
