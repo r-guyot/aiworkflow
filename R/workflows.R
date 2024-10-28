@@ -121,7 +121,7 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
                                            model = workflow_obj[["model"]],
                                            embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
-                                           images_vector = ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,NA,resize_images_and_export_to_base64(images_vector,max_dimension = 672)),
+                                           images_vector = ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,NA, resize_images_and_export_to_base64(images_vector,max_dimension = workflow_obj[["vision_max_image_dimension"]])),
                                            output_text_only = T,
                                            seed = seed_to_pass,
                                            num_predict = workflow_obj[["n_predict"]],
@@ -1483,9 +1483,14 @@ add_tools_declaration <- function(workflow_obj, tools) {
 #'    add_tools_declaration(tool_list)
 #'    
 #' @export
-add_vision_capability <- function(workflow_obj) {
+add_vision_capability <- function(workflow_obj, max_image_dimension=NA) {
   
   workflow_obj[["vision"]] <- TRUE
+  if (is.na(max_image_dimension) | !is.numeric(max_image_dimension)) {
+    cli::cli_alert("No numerical max_image_dimension provided, will default to resizing all images to 672 pixels as max dimension.")
+    max_image_dimension <- 672
+    workflow_obj[["vision_max_image_dimension"]] <- max_image_dimension
+  }
   return(workflow_obj)
 }
 
