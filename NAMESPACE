@@ -2,6 +2,7 @@
 
 export(add_context)
 export(add_tools_declaration)
+export(add_vision_capability)
 export(add_workflow_step)
 export(ai_workflow)
 export(convert_batch_documents_to_embeddings)

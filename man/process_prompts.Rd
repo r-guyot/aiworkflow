@@ -4,12 +4,14 @@
 \alias{process_prompts}
 \title{Process Prompts starting from a workflow}
 \usage{
-process_prompts(workflow_obj, prompts_vector)
+process_prompts(workflow_obj, prompts_vector, images_vector = NA)
 }
 \arguments{
 \item{workflow_obj}{A workflow object containing all parameters describing the flow required}
 
 \item{prompts_vector}{A vector containing the prompts to be executed by the AI workflow}
+
+\item{images_vector}{An optional vector (defaults to NA) containing the images to be send to the AI workflow}
 }
 \description{
 \code{process_prompts} is a way to process a vector of prompts by starting from a workflow.

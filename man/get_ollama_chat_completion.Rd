@@ -9,6 +9,7 @@ get_ollama_chat_completion(
   model,
   embedding_model,
   prompts_vector,
+  images_vector = NA,
   output_text_only = F,
   num_predict = 200,
   temperature = 0.8,
@@ -19,7 +20,8 @@ get_ollama_chat_completion(
   context_info = NA,
   context_usage_mandatory = FALSE,
   num_ctx = NA,
-  tools = NA
+  tools = NA,
+  vision = FALSE
 )
 }
 \arguments{
@@ -30,6 +32,8 @@ get_ollama_chat_completion(
 \item{embedding_model}{Name of the embedding model to use on the ollama server to create embeddings on the fly for prompts.}
 
 \item{prompts_vector}{a vector containing one or more Messages acting as prompt for the completion.}
+
+\item{images_vector}{an optional vector (defaults to NA) containing images to be send to the model for completion.}
 
 \item{output_text_only}{A Boolean value (default False) indicating if you just want the text message as output (TRUE) or the whole response coming from the server.}
 

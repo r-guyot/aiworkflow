@@ -4,13 +4,21 @@
 #' `execute_workflow` executes an AI workflow by combining prompt vectors and a workflow object.
 #'
 #' @importFrom  cli cli_alert
+#' @importFrom  cli cli_abort
 #' @details
-#' This function executes an AI workflow by combining prompt vectors and a workflow object.
+#' This function executes an AI workflow by combining prompt vectors, a potential images vector, and a workflow object.
 #'
-#' @param prompts_vector A vector containing the prompts to be executed by the AI workflow 
+#' @param prompts_vector A vector containing the prompts to be executed by the AI workflow
+#' @param images_vector An optional vector containing the images to be sent as reference to the AI workflow (Defaults to NA). It needs to have the same length as prompts_vector.
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-execute_workflow <- function(prompts_vector, workflow_obj) {
+execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
+  
+  if (!all(is.na(images_vector))) {
+    if (nrow(prompts_vector)!=nrow(images_vector)) {
+      cli::cli_abort("Error: the length of the images_vector does not match the length of prompts_vector.")
+    }
+  }
   
   workflow_obj <- workflow_obj |> set_default_missing_parameters_in_workflow()
   
@@ -92,6 +100,13 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
     seed_to_pass <- NA_integer_
   }
   
+  if (!("vision" %in% names(workflow_obj))) {
+    workflow_obj[["vision"]] <- FALSE
+  } else {
+    workflow_obj[["vision"]] <- TRUE
+  }
+  
+  
   if (workflow_obj[["connector"]] == "ollama") {
     
     ollama_conn <- get_ollama_connection(ip_ad = workflow_obj[["ip_addr"]], port = workflow_obj[["port"]])
@@ -114,6 +129,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
                                            model = workflow_obj[["model"]],
                                            embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
+                                           images_vector = ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,NA, resize_images_and_export_to_base64(images_vector,max_dimension = workflow_obj[["vision_max_image_dimension"]])),
                                            output_text_only = T,
                                            seed = seed_to_pass,
                                            num_predict = workflow_obj[["n_predict"]],
@@ -122,7 +138,8 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
                                            context_info = context_to_pass,
                                            context_usage_mandatory=context_usage_mandatory,
                                            num_ctx = num_ctx_to_pass,
-                                           tools = tools_to_pass
+                                           tools = tools_to_pass,
+                                           vision = workflow_obj[["vision"]]
       )
     }
     
@@ -161,6 +178,7 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
 #'
 #' @param df The source dataframe or tibble to use as input for the workflow to execute. 
 #' @param prompt_column_name A vector for the name of the column that corresponds to the prompts to send to the workflow. Defaults to "prompt"
+#' @param image_column_name An optional vector (defaults to NA) that corresponds to the images to be sent to the workflow. It can only work if you use a model with Vision capabilities and which such capability turned on.
 #' @param workflow_obj A workflow object containing all parameters describing the flow required for execution
 #' @param result_column_name A vector for the name of the column that corresponds to the outcome of the workflow. Defaults to "result". This is a new column that will be created.
 #' @param auto_use_df_variables A boolean value (defaults to FALSE). If TRUE, it will attempt to find column names that corresponds to parameters that can be used to modify the workflow, such as temperature, n_ctx, etc...
@@ -189,11 +207,26 @@ execute_workflow <- function(prompts_vector, workflow_obj) {
 #' execute_workflow_on_df(workflow_obj = myflow, auto_use_df_variables=T)
 #' 
 #' @export
-execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj, result_column_name="result", auto_use_df_variables=F) {
+execute_workflow_on_df <- function(df, 
+                                   prompt_column_name="prompt", 
+                                   image_column_name=NA_character_, 
+                                   workflow_obj, 
+                                   result_column_name="result", 
+                                   auto_use_df_variables=F) {
   #need to implement variables check potentially...
 
   if (! (tibble::is_tibble(df) | is.data.frame(df))) {
     cli::cli_abort("The provided source does not appear to be a valid dataframe or tibble.")
+  }
+  
+  # confirm if there is some image input going on
+  has_image_input <- FALSE
+  if (!is.na(image_column_name)) {
+    if (!(image_column_name %in% colnames(df))) {
+      cli::cli_abort("The column name to send images ('{image_column_name}') does not seem to exist in the input dataframe.")
+    } else {
+      has_image_input <- TRUE
+    }
   }
   
   if (result_column_name %in% colnames(df)) {
@@ -209,7 +242,7 @@ execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj
   if (auto_use_df_variables==T) {
     arg_names <- colnames(df)
     
-    accepted_arg_names <- c("temperature","n_predict",
+    accepted_arg_names <- c("temperature","n_predict","model","vision",
                             "seed","num_ctx","model",
                             "overall_background","system_prompt",
                             "style_of_voice","frequency_penalty",
@@ -235,11 +268,16 @@ execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj
   df[[result_column_name]] <- NA_character_
   for (i in 1:nrow(df)) {
     # generate the answer based on each customized workflow and prompt
-    df[i,][[result_column_name]] <- execute_workflow(prompts_vector = df[i,][[prompt_column_name]], workflow_obj = workflow_obj_list[[i]])
+    if (has_image_input) { images_vector_given <- df[i,][[image_column_name]] } else { images_vector_given <- NA }
+    df[i,][[result_column_name]] <- execute_workflow(prompts_vector = df[i,][[prompt_column_name]],
+                                                     images_vector = images_vector_given,
+                                                     workflow_obj = workflow_obj_list[[i]])
   }
   } else {
     # if there no need to use extra parameters it will use the prompt column name only.
     #df[[result_column_name]] <- NA_character_
+    
+    if (has_image_input==FALSE) {
     unique_prompts <- unique(df[[prompt_column_name]])
     unique_answers <- execute_workflow(prompts_vector = unique_prompts, workflow_obj = workflow_obj)
     res <- tibble::tibble(unique_prompts,unique_answers)
@@ -247,7 +285,19 @@ execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj
     res[[result_column_name]] <- unique_answers
     res$unique_prompts <- NULL
     res$unique_answers <- NULL
-    df <- df |> dplyr::left_join(res)
+    df <- df |> dplyr::left_join(res) 
+    } else {
+      df_for_prompting <- df |> select(all_of(prompt_column_name,image_column_name)) |> distinct()
+      df_for_prompting[[result_column_name]] <- NA_character_
+      for (i in 1:nrow(df_for_prompting)) {
+        # generate the answer based on each customized workflow and prompt
+        if (has_image_input) { images_vector_given <- df_for_prompting[i,][[image_column_name]] } else { images_vector_given <- NA }
+        df_for_prompting[i,][[result_column_name]] <- execute_workflow(prompts_vector = df_for_prompting[i,][[prompt_column_name]],
+                                                         images_vector = images_vector_given,
+                                                         workflow_obj = workflow_obj_list[[i]])
+      }
+      df <- df |> dplyr::left_join(df_for_prompting) 
+    }
     #df[[result_column_name]] <- execute_workflow(prompts_vector = df[[prompt_column_name]], workflow_obj = workflow_obj)
   }
   return(df)
@@ -264,9 +314,10 @@ execute_workflow_on_df <- function(df, prompt_column_name="prompt", workflow_obj
 #' This function provides a way to process a vector of prompts by starting from a workflow.
 #'
 #' @param prompts_vector A vector containing the prompts to be executed by the AI workflow 
+#' @param images_vector An optional vector (defaults to NA) containing the images to be send to the AI workflow
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-process_prompts <- function(workflow_obj, prompts_vector) {
+process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
   
   # if the workflow is not atomic but a chain, follow this path
   if ("workflow_type" %in% names(workflow_obj)) {
@@ -274,15 +325,18 @@ process_prompts <- function(workflow_obj, prompts_vector) {
     workflow_memory <- list()
     workflow_memory[["workflow"]] <- list()
     workflow_memory[["prompts_vector"]] <- list()
+    workflow_memory[["images_vector"]] <- list()
     workflow_memory[["res"]] <- list()
     for (i in 1:length(workflow_obj[["workflow_element"]])) {
       workflow_memory[["workflow"]][[i]] <- workflow_obj[["workflow_element"]][[i]]
       if (i==1) {
       workflow_memory[["prompts_vector"]][[i]] <- list(prompts_vector)
+      workflow_memory[["images_vector"]][[i]] <- list(prompts_vector)
       }
-      workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), workflow_obj = workflow_memory[["workflow"]][[i]]))
+      workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), images_vector = images_vector, workflow_obj = workflow_memory[["workflow"]][[i]]))
       if (i < length(workflow_obj[["workflow_element"]])) {
         workflow_memory[["prompts_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
+        workflow_memory[["images_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
       }
     }
     return(workflow_memory)
@@ -292,7 +346,7 @@ process_prompts <- function(workflow_obj, prompts_vector) {
   
   # create memory of workflow objects used
   workflow_memory <- list(workflow=workflow_obj, prompts_vector=list(prompts_vector))
-  workflow_memory[["res"]] <- list(execute_workflow(prompts_vector = prompts_vector, workflow_obj = workflow_obj))
+  workflow_memory[["res"]] <- list(execute_workflow(prompts_vector = prompts_vector, images_vector = images_vector, workflow_obj = workflow_obj))
   return(workflow_memory)
   }
   
@@ -314,7 +368,8 @@ switch_to_workflow <- function(workflow, new_workflow) {
   current_length_wflow <- length(workflow[["workflow"]])
   workflow[["workflow"]][[current_length_wflow+1]] <- new_workflow
   current_length <- length(workflow[["res"]])
-  workflow[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow[["res"]][[current_length]], workflow_obj = workflow[["workflow"]][[current_length_wflow+1]])
+  workflow[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow[["res"]][[current_length]], 
+                                                            workflow_obj = workflow[["workflow"]][[current_length_wflow+1]])
   return(workflow)
   
 }
@@ -1452,6 +1507,39 @@ add_tools_declaration <- function(workflow_obj, tools) {
   return(workflow_obj)
 }
 
+
+#' Add vision capability to the workflow.
+#'
+#' @description
+#' `add_vision_capability` lets you declare that this model can support the description or extraction of information from images. Only few models support such capabilities.
+#'
+#' @details
+#' Lets you declare that this workflow can leverage vision capabilities (i.e. you can also send images on top of the prompt, optionally).
+#' Make sure that the model you include in your workflow has such vision capability in the first place. 
+#' It is usually limited to models like llava, moondream, and llama3.2-11b models (while there are probably more).
+#' @param workflow_obj A workflow object containing all parameters describing the workflow required
+#' @param max_image_dimension A numerical value (defaults to 672 if not provided) that defines the largest dimension (width or height) of the pictures to be sent to the model. 
+#' @examples
+#' myflow_test <- ai_workflow() |>
+#'    set_connector("ollama")  |> 
+#'    set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
+#'    set_n_predict(1000) |>
+#'    set_temperature(0.8) |> 
+#'    set_default_missing_parameters_in_workflow() |> 
+#'    add_vision_capability()
+#'    
+#' @export
+add_vision_capability <- function(workflow_obj, max_image_dimension=NA) {
+  
+  workflow_obj[["vision"]] <- TRUE
+  if (is.na(max_image_dimension) | !is.numeric(max_image_dimension)) {
+    cli::cli_alert("No numerical max_image_dimension provided, will default to resizing all images to 672 pixels as max dimension.")
+    max_image_dimension <- 672
+    workflow_obj[["vision_max_image_dimension"]] <- max_image_dimension
+  }
+  return(workflow_obj)
+}
+
 #' Convert Batch documents to Embeddings
 #'
 #' @description
@@ -1719,4 +1807,5 @@ parse_json_result <- function(json_string) {
   return(parsed_result)
   
 }
+
 
