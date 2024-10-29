@@ -15,7 +15,7 @@
 execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
   
   if (!all(is.na(images_vector))) {
-    if (nrow(prompts_vector)!=nrow(images_vector)) {
+    if (length(prompts_vector)!=length(images_vector)) {
       cli::cli_abort("Error: the length of the images_vector does not match the length of prompts_vector.")
     }
   }
@@ -333,7 +333,9 @@ process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
       workflow_memory[["prompts_vector"]][[i]] <- list(prompts_vector)
       workflow_memory[["images_vector"]][[i]] <- list(prompts_vector)
       }
-      workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), images_vector = images_vector, workflow_obj = workflow_memory[["workflow"]][[i]]))
+      workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), 
+                                                             images_vector = images_vector, 
+                                                             workflow_obj = workflow_memory[["workflow"]][[i]]))
       if (i < length(workflow_obj[["workflow_element"]])) {
         workflow_memory[["prompts_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
         workflow_memory[["images_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
