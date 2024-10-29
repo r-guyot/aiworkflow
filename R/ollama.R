@@ -245,7 +245,7 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
   for (one_model in ollama_response$models) {
     #one_model <- ollama_response$models[[1]]
     temp <- one_model |> tibble::as_tibble()
-    flattened_list <- purrr::map(one_model, ~ .x %>% unlist(recursive = FALSE))
+    flattened_list <- purrr::map(one_model, ~ .x |> unlist(recursive = FALSE))
     details_unpacked <- flattened_list$details |> tibble::as_tibble()
     flattened_list[["details"]] <- NULL
     result <- flattened_list |> as_tibble()
