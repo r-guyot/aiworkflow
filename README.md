@@ -50,6 +50,7 @@ In its current version it brings the following features:
 - support for tool calling for LLMs that support it (like Llama3.1)
 - support for local vector embeddings database using a feather file
 - numerous processing skills (pre-defined prompts) that can be used out of the box
+- support for creating your own custom processing skills
 - support for chaining multiple LLM operations in pipes
 - support for numerous prompt modification functions (audience, role, style, etc...)
 - support for JSON output extraction
