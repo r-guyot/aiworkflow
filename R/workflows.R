@@ -865,7 +865,10 @@ set_processing_skill <- function(workflow_obj, processing_skill, ...) {
   if (length(list(...)) > 0) {
   additional_args <- list(...)
   } else { additional_args <- list() }
-
+  if (length(additional_args)>0) {
+    additional_args <- additional_args[[1]]
+  }
+  
   processing_skill_source <- glue::glue("{processing_skill}.txt")
   inst_dir <- system.file(package = 'aiworkflow') 
   skills <- list_processing_skills()
