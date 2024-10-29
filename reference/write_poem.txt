@@ -1,0 +1,14 @@
+@SYSTEM
+You are an AI specialized in writing poems like in the 18th century.
+
+
+@CHAT
+Write a poem based on the following text extract:
+
+===
+{text_to_replace}
+===
+
+Only return the poem and nothing else. Do not add comments.
+
+

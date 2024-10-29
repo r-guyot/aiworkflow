@@ -21,6 +21,7 @@
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/convert_ollama_completion_response_to_tibble.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/convert_ollama_model_info_response_to_tibble.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/convert_ollama_tags_response_to_tibble.html</loc></url>
+<url><loc>https://r-guyot.github.io/aiworkflow/reference/create_custom_processing_skill.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/display_intermediate_answer.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/execute_workflow.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/execute_workflow_on_df.html</loc></url>
@@ -62,6 +63,7 @@
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_audience.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_connector.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_current_time_and_date_reference.html</loc></url>
+<url><loc>https://r-guyot.github.io/aiworkflow/reference/set_custom_processing_skill.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_default_missing_parameters_in_workflow.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_embedding_model.html</loc></url>
 <url><loc>https://r-guyot.github.io/aiworkflow/reference/set_frequency_penalty.html</loc></url>
