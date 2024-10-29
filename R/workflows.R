@@ -900,6 +900,109 @@ set_processing_skill <- function(workflow_obj, processing_skill, ...) {
   }
 }
 
+#' Create a processing skill template file that can be used to create your own skills
+#'
+#' @description
+#' `create_custom_processing_skill` creates a text file with a processing skill template.
+#'
+#' @importFrom cli cli_alert
+#' @importFrom cli cli_abort
+#' @importFrom tools file_ext
+#'
+#' @details
+#' This function creates a processing skill text file based on a template.
+#' If you use the arguments for system_prompt, chat_prompt and final_guidance, they all need to be present at once. If not, it will default to the standard template.
+#'
+#' @param filepath the file path where you'd like to save the processing skill. It needs to be a ".txt" file.
+#' @param system_prompt the system prompt to give to the processing skill. Optional. Defaults to NA. You are advised to put few shots examples in there.
+#' @param chat_prompt the chat prompt to give to the processing skill. Optional. Defaults to NA.
+#' @param final_guidance the final recommendations you want to give to the processing skill at the end. Optional. Defaults to NA.
+#' @examples
+#' create_custom_processing_skill("write_poem.txt")
+#' @export
+create_custom_processing_skill <- function(filepath, system_prompt=NA, chat_prompt=NA, final_guidance=NA) {
+
+  if (tools::file_ext(basename(filepath)) !="txt") {
+    cli::cli_abort("The target file needs to be have a .txt extension.")
+  }
+
+  if ((!is.na(system_prompt) & !is.na(chat_prompt) & !is.na(final_guidance))) {
+    processing_skill_template <- paste0("@SYSTEM\n",
+                                        system_prompt,
+                                        "\n\n\n@CHAT\n",
+                                        chat_prompt,"\n\n",
+                                        "===\n{text_to_replace}\n===\n\n",
+                                        final_guidance,
+                                        "\n\n")
+  } else {
+processing_skill_template <- "@SYSTEM
+(all the lines between parenthesis need to be replaced)
+(do not edit the SYSTEM and CHAT markers, they are essential for the structure of the processing skill)
+(write your system prompt here, along with few shots examples to support the guidance of your prompt.)
+
+@CHAT
+(write your prompt here, that will refer to the text_to_replace below.)
+(The text_to_replace variable will contain what you will pass as a prompt vector and will be copied in it. You can keep it as is.)
+
+===
+{text_to_replace}
+===
+
+(you can add here at the end final instructions in order to re-inforce specific guidance to the LLM.)
+"
+}
+  
+ 
+writeLines(text = processing_skill_template, con = filepath)
+cli::cli_alert("The file at {filepath} has been filled with a processing skill template. ")
+cli::cli_alert("You can now customize it, and load it once you are done with the set_custom_processing_skill() function.")
+}
+
+
+#' Set a custom processing skill (that you created) to give to the workflow.
+#'
+#' @description
+#' `set_custom_processing_skill` sets a custom made processing skill to give to the workflow.
+#'
+#' @details
+#' This sets a custom processing skill that you want to give to the workflow. 
+#' You can create a template of the skill file by using the create_custom_processing_skill() function.
+#'
+#' @importFrom cli cli_abort
+#'
+#' @param workflow_obj an ai_workflow object created by ai_workflow() in the first place.
+#' @param filepath the file path where you have saved the processing skill. It needs to be a ".txt" file.
+#' @returns the workflow object with the appropriate processing skill applied on the prompt vector(s)
+#' @examples
+#' create_custom_processing_skill("write_poem.txt",
+#'   system_prompt = "You are an AI specialized in writing poems like in the 18th century.",
+#'   chat_prompt = "Write a poem based on the following text extract:", 
+#'   final_guidance = "Only return the poem and nothing else. Do not add comments.")
+#' my_workflow <- ai_workflow() |> 
+#'   set_model(model_name="llama3:8b-instruct-q5_0") |> 
+#'   set_custom_processing_skill("write_poem.txt")
+#'   
+#' @export
+set_custom_processing_skill <- function(workflow_obj, filepath) {
+  
+  if (!file.exists(filepath)) {
+    cli::cli_abort("Cannot set this processing skill, there is no file to be found at {filepath}.")
+  }
+  processing_skill_source <- filepath
+  processing_skill_prompt <- readLines(processing_skill_source, warn = F) 
+  
+  if (any(grepl(x = processing_skill_prompt,pattern="@SYSTEM")) & any(grepl(x = processing_skill_prompt,pattern="@CHAT")) & any(grepl(x = processing_skill_prompt,pattern="\\{text_to_replace\\}"))) {
+  processing_skill_prompt <- processing_skill_prompt |> paste(collapse = "\n")
+  workflow_obj[["processing_skill"]] <- processing_skill_prompt
+  workflow_obj[["processing_skill_args"]] <- list()
+  return(workflow_obj)
+  } else {
+    cli::cli_abort("Error: the standard tags expected from a processing skill file are missing. Please fix.")
+  }
+  
+}
+
+
 #' list the processing skills 
 #'
 #' @description
