@@ -228,7 +228,10 @@ convert_ollama_completion_response_to_tibble <- function(ollama_response) {
 #' @importFrom tibble as_tibble
 #' @importFrom dplyr select
 #' @importFrom dplyr distinct
+#' @importFrom dplyr bind_cols
 #' @importFrom tibble add_column
+#' @importFrom tibble as_tibble
+#' @importFrom purrr map
 #' @importFrom data.table rbindlist
 #'
 #' @details
@@ -242,13 +245,15 @@ convert_ollama_tags_response_to_tibble <- function(ollama_response) {
   for (one_model in ollama_response$models) {
     #one_model <- ollama_response$models[[1]]
     temp <- one_model |> tibble::as_tibble()
-    details <- temp$details
-    details <- details |> tibble::as_tibble() |> dplyr::select(-families)
-    temp <- temp |> dplyr::select(-details) |> tibble::add_column(details) |> dplyr::distinct()
-    result_list[[i]] <- temp
+    flattened_list <- purrr::map(one_model, ~ .x %>% unlist(recursive = FALSE))
+    details_unpacked <- flattened_list$details |> tibble::as_tibble()
+    flattened_list[["details"]] <- NULL
+    result <- flattened_list |> as_tibble()
+    result <- result |> dplyr::bind_cols(details_unpacked)
+    result_list[[i]] <- result
     i <- i + 1
   }
-  result <- data.table::rbindlist(result_list)
+  result <- data.table::rbindlist(result_list,fill = T)
   return(result)
 }
 
