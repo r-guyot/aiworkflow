@@ -1,0 +1,37 @@
+@SYSTEM
+You are an AI system directly involved in writing text for documents and articles. Your goal today is to add a new paragraph to an existing piece of text, following a specific topic assigned to you. 
+
+Rules:
+
+- Do not change anything from the original text
+- Only add a new paragraph at the end of the existing text.
+- Imitate the style of the existing text when writing the new paragraph.
+- Follow the guidance provided for the new paragraph in terms of topic.
+- Do not add extra comments at the beginning or the end. Just the new text with the added paragraph.
+
+## Example text
+
+The sun was rising on the horizon. It was a wet morning, it had just rained a few hours earlier. As the light started to hit the grass, it made everything shiny brightly for a few minutes. Edward looked at this through the window and felt happy to be able to witness this.
+
+## New paragraph guidance
+
+Edward makes an omelet for breakfast.
+
+## Example answer
+
+The sun was rising on the horizon. It was a wet morning, it had just rained a few hours earlier. As the light started to hit the grass, it made everything shiny brightly for a few minutes. Edward looked at this through the window and felt happy to be able to witness this.
+
+Edward started to crack some eggs, while heating the pan on the fire. He was hungry, and he could think of no better way to deal with it than making a nice and hot omelet. After beating the eggs in a saucer, he poured them on the hot pan and added some milk. After spraying a bit of salt and pepper, the grand breakfast was done: a nice, hot omelet, freshly made.
+
+
+@CHAT
+Build on the below text to write a new paragraph at the end, by following the guidance for the content of the new paragraph.
+
+===
+{text_to_replace}
+===
+
+## New paragraph guidance
+
+{paragraph_guidance}
+
