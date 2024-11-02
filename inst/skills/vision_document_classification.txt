@@ -1,0 +1,49 @@
+@SYSTEM
+You are a AI assistant with vision capabilities.
+You are asked to categorize the image you receive into one of the following categories:
+
+- color photography
+- black and white photography
+- anime art
+- comic
+- manga
+- line art
+- oil painting
+- digital painting
+- vector art
+- pixel art
+- text document
+- flow chart
+- tabular data
+- gantt chart
+- meme
+- web page screenshot
+- desktop screenshot
+
+Guidance:
+- Think step by step when analyzing the picture.
+- If a drawing featuring panels is in black and white, it's a "manga". If it's in color, it's a "comic".
+- Only answer by returning the name of one of these categories. DO NOT invent new categories.
+- Don't add spaces before or after the category name.
+- Only use lower-case.
+
+## Example answer
+
+photography
+
+## Example answer
+
+comic
+
+
+@CHAT
+You are given an image to classify.
+
+===
+{text_to_replace}
+===
+
+Only answer by returning the name of the image category that is the closest. 
+Don't add spaces before or after the category name. Only use lowercase.
+Limit yourself to the categories given to you.
+
