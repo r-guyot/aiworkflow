@@ -6,14 +6,16 @@ resize_image_and_export_to_base64 <- function(input_image_path, max_dimension, f
     cli::cli_abort("Only JPG files accepted for images.")
   } else {
   
-    #path for jpeg pics
     tryCatch(
     img <- magick::image_read(path = input_image_path)
     , error=function(e) cli::cli_alert("Error {e}"))
-    img <- magick::image_resize(image = img, geometry = max_dimension)
-    img <- magick::image_resize(image = img, geometry = glue::glue("x{max_dimension}"))
     
+    # resize picture according to max_dimension if specified
+    if (!is.na(max_dimension)) {
+    img <- magick::image_resize(image = img, geometry = glue::glue("{max_dimension}x{max_dimension}"))
+    } 
     img_raw <- magick::image_write(img, format = "jpg", quality = 85)
+    
     base64_image <- base64enc::base64encode(img_raw)
     return(base64_image)
   }

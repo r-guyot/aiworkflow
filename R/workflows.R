@@ -1626,7 +1626,7 @@ add_tools_declaration <- function(workflow_obj, tools) {
 #' Make sure that the model you include in your workflow has such vision capability in the first place. 
 #' It is usually limited to models like llava, moondream, and llama3.2-11b models (while there are probably more).
 #' @param workflow_obj A workflow object containing all parameters describing the workflow required
-#' @param max_image_dimension A numerical value (defaults to 672 if not provided) that defines the largest dimension (width or height) of the pictures to be sent to the model. 
+#' @param max_image_dimension A numerical value (defaults to NA if not provided) that defines the largest dimension (width or height) of the pictures to be sent to the model. 
 #' @examples
 #' myflow_test <- ai_workflow() |>
 #'    set_connector("ollama")  |> 
@@ -1641,8 +1641,9 @@ add_vision_capability <- function(workflow_obj, max_image_dimension=NA) {
   
   workflow_obj[["vision"]] <- TRUE
   if (is.na(max_image_dimension) | !is.numeric(max_image_dimension)) {
-    cli::cli_alert("No numerical max_image_dimension provided, will default to resizing all images to 672 pixels as max dimension.")
-    max_image_dimension <- 672
+    cli::cli_alert("No numerical max_image_dimension provided, will not resize images automatically.")
+    workflow_obj[["vision_max_image_dimension"]] <- NA
+  } else {
     workflow_obj[["vision_max_image_dimension"]] <- max_image_dimension
   }
   return(workflow_obj)
