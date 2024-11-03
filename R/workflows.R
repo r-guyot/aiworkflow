@@ -594,7 +594,11 @@ set_embedding_model <- function(workflow_obj, model_name) {
 #' `set_connector` sets the connector type expected for the server calls. This can for example be an Ollama server or a Llama.cpp server.
 #'
 #' @details
-#' Set the connector required to operate the workflow. A connector is a server that will be reached by an API. It can either be a local or a remote server.
+#' Set the connector required to operate the workflow. 
+#' A connector is a server that will be reached by an API. It can either be a local or a remote server.
+#'
+#' @importFrom cli cli_abort
+#' @importFrom uuid UUIDgenerate
 #'
 #' @param workflow_obj an ai_workflow object created by ai_workflow() in the first place.
 #' @param connector the name of the connector type to use. It can be either ollama or llamacpp (to be taken care of in later versions). 
@@ -604,13 +608,22 @@ set_embedding_model <- function(workflow_obj, model_name) {
 #' @export
 set_connector <- function(workflow_obj, connector) {
   workflow_obj[["connector"]] <- connector
+  supported_connectors <- c("ollama","comfyui")
   if (connector=="ollama") {
     workflow_obj[["ip_addr"]] <- "127.0.0.1"
     cli::cli_alert("Default IP address has been set to 127.0.0.1.")
     workflow_obj[["port"]] <- "11434"
     cli::cli_alert("Default port has been set to 11434.")
-  } else {
-    stop("Connectors others than Ollama are not currently supported.")
+  }
+  if (connector=="comfyui") {
+    workflow_obj[["ip_addr"]] <- "127.0.0.1"
+    cli::cli_alert("Default IP address has been set to 127.0.0.1.")
+    workflow_obj[["port"]] <- "8188"
+    cli::cli_alert("Default port has been set to 8188.")
+    workflow_obj[["client_id"]] <- uuid::UUIDgenerate()
+  }
+  if (!connector %in% supported_connectors) {
+    cli::cli_abort("Connectors others than Ollama are not currently supported.")
   }
   return(workflow_obj)
 }
