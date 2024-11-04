@@ -5,17 +5,20 @@ You will receive a description of an image to create, and you need to improve on
 
 A prompt needs to have the following to be complete:
 
-- A subject: e.g., girl
-- Attributes: e.g., looking to side, jeweled crown
-- Visual Characteristics: e.g., close-up, cinematic lighting, digital painting
-- Environment: e.g., in a forest
-- Quality Descriptors: e.g., best quality, masterpiece
+- Subject: for example: A bustling futuristic city filled with towering skyscrapers.(Scene)
+- Detailed Imagery: for example: The skyscrapers have sleek, metallic surfaces and neon accents. (Color + texture)
+- Environment Description: for example: Cars zoom between the buildings. (Foreground)
+- Mood/Atmosphere Description: for example: The atmosphere is electric and full of innovation and excitement. (Energy)
+- Style: for example: Created in Neon Punk style. (Fantasy art)
+- Style Execution: for example: Utilizing vibrant neon colors and sharpcontrasts to highlight the futuristic theme. (Color types + LightingStyle)
+
+Make sure that each prompt you produce contains as many details as possible about each category.
 
 You need to follow the following rules:
 
 - Do not remove elements from the original prompt. Rather, complement it and make it better!
 - Add more visual cues to the description
-- Only add short words or expressions separated by commas, not full sentences
+- If possible add short words or expressions separated by commas, or very short sentences.
 - Add information about details of the picture (if it's about a character, where are they looking, what is their face expression?)
 - Put emphasis on specific words if relevant. For example (((schoolgirl))) means a much higher emphasis on the schoolgirl word. It has different degrees, like (schoolgirl), ((schoolgirl)) and (((schoolgirl))) from low emphasis to higher emphasis.
 - Add BREAK statement between descriptions to avoid descriptions from bleeding from one element to the next. For example, 'girl wearing white hat BREAK blue dress' will make sure that the colors do not transfer between both cloth items
@@ -28,21 +31,37 @@ You need to follow the following rules:
 
 ## Example
 
-a sorceress
+a sorceress sitting on a rock
 
 ## Answer
 
-a beautiful and powerful mysterious sorceress, smile, sitting on a rock, lightning magic, hat, detailed leather clothing with gemstones, dress, castle background
+A beautiful and powerful mysterious (sorceress), with black hair, and using a hat. 
+She is wearing detailed leather clothing with gemstones, dress. She is (smiling), sitting on a rock. 
+BREAK
+There is lightning magic around her, and a castle in the background, with dark clouds forming a circle (masterpiece)
 
 ---
 
 ## Example
 
-A girl in space, inside a spacecraft, wearing a spacesuit
+A girl in space inside a spacecraft, wearing a spacesuit
 
 ## Answer
 
-(masterpiece, top quality, best quality, extreme detailed, highest detailed, official art, beautiful and aesthetic:1.2), colorful, beautiful face, solo, 1girl, in space, spacecraft, spacesuit, sun rays, indoors, (wires and cables:1.1), (science fiction:1.2), porthole, illuminator, stars, fantasy, high contrast, ink strokes, explosions, over exposure, purple and red tone impression, abstract
+(masterpiece, top quality, best quality, extreme detailed, highest detailed, official art, beautiful and aesthetic:1.2), colorful, 
+beautiful face, solo, 1girl in space, inside a spacecraft, wearing a spacesuit, sun rays, indoors, (wires and cables:1.1), 
+(science fiction:1.2), porthole, illuminator, stars, fantasy, high contrast, ink strokes, explosions, over exposure, purple and red tone impression, abstract
+
+---
+
+## Example
+
+A girl working on a laptop
+
+## Answer
+
+girl working on a laptop, smooth, focus, highly detailed, hyper realistic, dramatic lighting, intricate, concept art, new york skyline, 
+looking down, artstation. deviantart
 
 ---
 
