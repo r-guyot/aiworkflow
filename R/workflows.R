@@ -609,6 +609,10 @@ set_connector <- function(workflow_obj, connector) {
     cli::cli_alert("Default IP address has been set to 127.0.0.1.")
     workflow_obj[["port"]] <- "11434"
     cli::cli_alert("Default port has been set to 11434.")
+    workflow_obj[["accepted_inputs"]] <- list("txt")
+    cli::cli_alert("Default inputs accepted set to 'txt'.")
+    workflow_obj[["outputs"]] <- list("txt")
+    cli::cli_alert("Default output set to 'txt'.")
   } else {
     stop("Connectors others than Ollama are not currently supported.")
   }
@@ -1639,7 +1643,15 @@ add_tools_declaration <- function(workflow_obj, tools) {
 #' @export
 add_vision_capability <- function(workflow_obj, max_image_dimension=NA) {
   
+  # set the flag for vision capability
   workflow_obj[["vision"]] <- TRUE
+  # add the img type to accepted inputs if not present
+  if (!"img" %in% workflow_obj[["accepted_inputs"]]) {
+  workflow_obj[["accepted_inputs"]] <- append(workflow_obj[["accepted_inputs"]],"img")
+  }
+  if (!"txt" %in% workflow_obj[["accepted_inputs"]]) {
+    workflow_obj[["accepted_inputs"]] <- append(workflow_obj[["accepted_inputs"]],"txt")
+  }
   if (is.na(max_image_dimension) | !is.numeric(max_image_dimension)) {
     cli::cli_alert("No numerical max_image_dimension provided, will not resize images automatically.")
     workflow_obj[["vision_max_image_dimension"]] <- NA
