@@ -410,6 +410,10 @@ process_prompts_comfyui <- function(workflow_obj, prompt) {
   }
   
   ws$close()
+  
+  workflow_obj[["res"]] <- unlist(resulting_images)
+  # change output to resulting_images
+  
   return(resulting_images)
   
 }
