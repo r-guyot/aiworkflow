@@ -372,17 +372,23 @@ process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
 #' This function will send the output from the previous workflow to the next one.
 #'
 #' @param new_workflow A workflow object to execute after the last one 
-#' @param workflow A workflow object containing all parameters describing the flow required
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-switch_to_workflow <- function(workflow, new_workflow) {
+switch_to_workflow <- function(workflow_obj, new_workflow) {
   
-  current_length_wflow <- length(workflow[["workflow"]])
-  workflow[["workflow"]][[current_length_wflow+1]] <- new_workflow
-  current_length <- length(workflow[["res"]])
+  #workflow <- gen_prompt
+  # if the workflow is unique, need to make it into a list of workflows
+  if (!"workflows" %in% names(workflow_obj)) {
+    workflow_obj[["workflows"]] <- list(workflow_obj[["workflow"]])
+    workflow_obj[["workflow"]] <- NULL
+  }
+  current_length_wflow <- length(workflow_obj[["workflows"]])
+  workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow
+  current_length <- length(workflow_obj[["res"]])
   #this approach does not work with image ouputs
-  workflow[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow[["res"]][[current_length]], 
-                                                            workflow_obj = workflow[["workflow"]][[current_length_wflow+1]])
-  return(workflow)
+  workflow_obj[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow_obj[["res"]][[current_length]], 
+                                                            workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]])
+  return(workflow_obj)
   
 }
 
