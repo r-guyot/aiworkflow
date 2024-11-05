@@ -404,6 +404,7 @@ process_prompts_comfyui <- function(workflow_obj, prompt) {
   pics_list <- get_comfyui_pictures_list(workflow_obj, prompt_id)
   
   resulting_images <- list()
+  
   for (one_image in pics_list) {
   resulting_images <- append(resulting_images,
                              get_image_from_comfyui(workflow_obj, one_image))
@@ -411,10 +412,11 @@ process_prompts_comfyui <- function(workflow_obj, prompt) {
   
   ws$close()
   
-  workflow_obj[["res"]] <- unlist(resulting_images)
+  workflow_obj[["res"]] <- resulting_images
+  workflow_obj[["res_object_type"]] <- lapply(pics_list, function(x) glue::glue("image / {file_ext(x)}"))
   # change output to resulting_images
   
-  return(resulting_images)
+  return(workflow_obj)
   
 }
 
@@ -439,9 +441,10 @@ get_image_from_comfyui <- function(workflow_obj, image_filename) {
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/view?filename={image_filename}"))
   result <- req |> httr2::req_perform() 
   if (result$status_code==200) {
-  result_img <- result |> httr2::resp_body_raw()
-  tempfile_for_img <- tempfile()
-  result_img_raw <- magick::image_read(path = result_img)
+    result_img <- result |> httr2::resp_body_raw()
+    tempfile_for_img <- tempfile()
+    result_img_raw <- magick::image_read(path = result_img)
+    
   return(result_img_raw)
   }
 }
