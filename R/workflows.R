@@ -386,6 +386,11 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
   workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow
   current_length <- length(workflow_obj[["res"]])
   #this approach does not work with image ouputs
+  # implement logic to fit to every kind of required input
+  
+  # if img to text, need specific logic
+  
+  # if text only this works well
   workflow_obj[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow_obj[["res"]][[current_length]], 
                                                             workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]])
   return(workflow_obj)
@@ -634,6 +639,8 @@ set_connector <- function(workflow_obj, connector) {
     cli::cli_alert("Default inputs accepted set to 'txt'.")
     workflow_obj[["outputs"]] <- list("txt")
     cli::cli_alert("Default output set to 'txt'.")
+    workflow_obj[["required_inputs"]] <- list("txt")
+    cli::cli_alert("Default required inputs set to 'txt'.")
   }
   if (connector=="comfyui") {
     workflow_obj[["ip_addr"]] <- "127.0.0.1"
@@ -645,6 +652,8 @@ set_connector <- function(workflow_obj, connector) {
     cli::cli_alert("Default inputs accepted set to 'txt'.")
     workflow_obj[["outputs"]] <- list("img")
     cli::cli_alert("Default output set to 'img'.")
+    workflow_obj[["required_inputs"]] <- list("txt")
+    cli::cli_alert("Default required inputs set to 'txt'.")
   }
   if (!connector %in% supported_connectors) {
     cli::cli_abort("Connectors other than {paste0(supported_connectors,collapse=', ')} are not currently supported.")
