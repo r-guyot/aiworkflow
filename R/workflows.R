@@ -363,6 +363,27 @@ process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
   
 }
 
+switch_to_workflow_w_extra_prompt <- function(workflow_obj, new_workflow, prompt) {
+  
+  if (!"workflows" %in% names(workflow_obj)) {
+    workflow_obj[["workflows"]] <- list(workflow_obj[["workflow"]])
+    workflow_obj[["workflow"]] <- NULL
+  }
+  current_length_wflow <- length(workflow_obj[["workflows"]])
+  workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow
+  current_length <- length(workflow_obj[["res"]])
+  
+  yo <- tempfile()
+  magick::image_write(workflow_obj[["res"]][[3]],path = yo)
+  
+  workflow_obj[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = prompt,
+                                                                images_vector = yo, 
+                                                                workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]])
+  
+  return(workflow_obj)
+}
+
+
 #' Switch to workflow
 #'
 #' @description
@@ -389,6 +410,18 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
   # implement logic to fit to every kind of required input
   
   # if img to text, need specific logic
+  if (identical(workflow_obj[["workflows"]][[current_length]][["outputs"]],list("img"))) {
+    cli::cli_abort("Error: switching from a image to a text workflow require the switch_to_workflow_w_extra_prompt() function.")
+  }
+  
+  #
+  if (workflow_obj[["workflows"]][[current_length_wflow+1]][["connector"]]=="comfyui") {
+    print("found comfy")
+    yo <- process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]],
+                                prompt = workflow_obj[["res"]][[current_length]])
+    workflow_obj[["res"]][[current_length+1]] <- yo[["res"]]
+    return(workflow_obj)
+  }
   
   # if text only this works well
   workflow_obj[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow_obj[["res"]][[current_length]], 
