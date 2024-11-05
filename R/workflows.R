@@ -123,6 +123,15 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
       )
     }
     
+    # treating the case of comfyui workflow sending image outputs as res
+    if ("res" %in% names(workflow_obj) & "res_object_type" %in% names(workflow_obj)) {
+      if (grepl(pattern = "image",x = workflow_obj[["res_object_type"]][[1]])) {
+       img_tempfile <- tempfile()
+       magick::image_write(image = workflow_obj[["res"]],path = img_tempfile)
+        images_vector_to_pass <- img_tempfile 
+      }
+    }
+    
     if (workflow_obj[["mode"]] == "chat") {
       cli::cli_alert("Chat mode")
       result <- get_ollama_chat_completion(ollama_connection = ollama_conn, 
@@ -370,6 +379,7 @@ switch_to_workflow <- function(workflow, new_workflow) {
   current_length_wflow <- length(workflow[["workflow"]])
   workflow[["workflow"]][[current_length_wflow+1]] <- new_workflow
   current_length <- length(workflow[["res"]])
+  #this approach does not work with image ouputs
   workflow[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow[["res"]][[current_length]], 
                                                             workflow_obj = workflow[["workflow"]][[current_length_wflow+1]])
   return(workflow)
@@ -623,7 +633,7 @@ set_connector <- function(workflow_obj, connector) {
     workflow_obj[["client_id"]] <- uuid::UUIDgenerate()
   }
   if (!connector %in% supported_connectors) {
-    cli::cli_abort("Connectors others than Ollama are not currently supported.")
+    cli::cli_abort("Connectors other than {paste0(supported_connectors,collapse=', ')} are not currently supported.")
   }
   return(workflow_obj)
 }
