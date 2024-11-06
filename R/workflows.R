@@ -332,19 +332,19 @@ process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
   if ("workflow_type" %in% names(workflow_obj)) {
   if (workflow_obj[["workflow_type"]]=="chain") {
     workflow_memory <- list()
-    workflow_memory[["workflow"]] <- list()
+    workflow_memory[["workflows"]] <- list()
     workflow_memory[["prompts_vector"]] <- list()
     workflow_memory[["images_vector"]] <- list()
     workflow_memory[["res"]] <- list()
     for (i in 1:length(workflow_obj[["workflow_element"]])) {
-      workflow_memory[["workflow"]][[i]] <- workflow_obj[["workflow_element"]][[i]]
+      workflow_memory[["workflows"]][[i]] <- workflow_obj[["workflow_element"]][[i]]
       if (i==1) {
       workflow_memory[["prompts_vector"]][[i]] <- list(prompts_vector)
       workflow_memory[["images_vector"]][[i]] <- list(prompts_vector)
       }
       workflow_memory[["res"]][[i]] <- list(execute_workflow(prompts_vector = unlist(workflow_memory[["prompts_vector"]][[i]]), 
                                                              images_vector = images_vector, 
-                                                             workflow_obj = workflow_memory[["workflow"]][[i]]))
+                                                             workflow_obj = workflow_memory[["workflows"]][[i]]))
       if (i < length(workflow_obj[["workflow_element"]])) {
         workflow_memory[["prompts_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
         workflow_memory[["images_vector"]][[i+1]] <- workflow_memory[["res"]][[i]]
@@ -369,12 +369,15 @@ switch_to_workflow_w_extra_prompt <- function(workflow_obj, new_workflow, prompt
     workflow_obj[["workflows"]] <- list(workflow_obj[["workflow"]])
     workflow_obj[["workflow"]] <- NULL
   }
+  # check what is the latest element
   current_length_wflow <- length(workflow_obj[["workflows"]])
+  # add new workflow to the list
   workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow
+  # check what is the latest answer
   current_length <- length(workflow_obj[["res"]])
   
   yo <- tempfile()
-  magick::image_write(workflow_obj[["res"]][[3]],path = yo)
+  magick::image_write(workflow_obj[["res"]][[current_length]],path = yo)
   
   workflow_obj[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = prompt,
                                                                 images_vector = yo, 
@@ -406,7 +409,6 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
   current_length_wflow <- length(workflow_obj[["workflows"]])
   workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow
   current_length <- length(workflow_obj[["res"]])
-  #this approach does not work with image ouputs
   # implement logic to fit to every kind of required input
   
   # if img to text, need specific logic
