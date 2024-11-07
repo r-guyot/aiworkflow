@@ -726,3 +726,33 @@ make_matrix_of_embeddings <- function(ollama_connection,text_vectors) {
 
 }
 
+
+
+unload_model <- function(workflow_obj) {
+  
+  if ("connector" %in% names(workflow_obj)) {
+  if (workflow_obj[["connector"]]!="ollama") {
+    cli::cli_abort("Error: this function to unload a model only works with Ollama.")
+  }
+    
+    url <- glue::glue("{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/api/generate")
+    data <- list("model"=workflow_obj[["model"]], "keep_alive"=0)
+  }
+  if ("connector" %in% names(workflow_obj[["workflow"]])) {
+    if (workflow_obj[["workflow"]][["connector"]]!="ollama") {
+      cli::cli_abort("Error: this function to unload a model only works with Ollama.")
+    }
+    
+    
+    url <- glue::glue("{workflow_obj[['workflow']][['ip_addr']]}:{workflow_obj[['workflow']][['port']]}/api/generate")
+    data <- list("model"=workflow_obj[['workflow']][["model"]], "keep_alive"=0)
+  }
+  
+  req <- httr2::request(url) 
+  result <- req |> 
+    httr2::req_body_json(data = data
+    ) |>
+    httr2::req_perform()
+  
+  return(workflow_obj)
+}
