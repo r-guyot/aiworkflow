@@ -117,6 +117,8 @@ set_comfyui_image_size <- function(workflow_obj, resolution) {
 }
 
 
+
+
 set_comfyui_sampler <- function(workflow_obj, sampler) {
   
   sampler_accepted <- c("euler",
@@ -129,11 +131,14 @@ set_comfyui_sampler <- function(workflow_obj, sampler) {
     cli::cli_abort("Error: sampler needs to meet one of these values: '{paste(sampler_accepted,collapse=', ')}'.")
   }
   
+  # go across all nodes of the comfyui workflow
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
     name <- names(workflow_obj[["comfyui_workflow"]][i])
     
+    # find something called inputs
     if ("inputs" %in% names(workflow_obj[["comfyui_workflow"]][[i]])) {
       
+      # find the sampler_name parameter
       if ("sampler_name" %in% names(workflow_obj[["comfyui_workflow"]][[i]][["inputs"]]) ) {
         workflow_obj[["comfyui_workflow"]][[name]][["inputs"]][["sampler_name"]] <- sampler
       }
@@ -165,6 +170,21 @@ set_comfyui_scheduler <- function(workflow_obj, scheduler) {
   } 
   return(workflow_obj)
 }
+
+
+
+
+set_seed_change_comfyui <- function(workflow_obj, seed_change) {
+  
+  accepted_values <- c("fixed","incremental","random")
+  
+  if (seed_change %in% accepted_values) {
+    workflow_obj[["seed_change"]] <- seed_change
+    
+  }
+  return(workflow_obj)
+}
+
 
 
 set_seed_comfyui <- function(workflow_obj,seed=NA) {
