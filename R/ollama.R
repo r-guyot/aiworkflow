@@ -730,6 +730,8 @@ make_matrix_of_embeddings <- function(ollama_connection,text_vectors) {
 
 unload_model <- function(workflow_obj) {
   
+  #workflow_obj <- caca
+  
   if ("connector" %in% names(workflow_obj)) {
   if (workflow_obj[["connector"]]!="ollama") {
     cli::cli_abort("Error: this function to unload a model only works with Ollama.")
@@ -743,9 +745,14 @@ unload_model <- function(workflow_obj) {
       cli::cli_abort("Error: this function to unload a model only works with Ollama.")
     }
     
-    
     url <- glue::glue("{workflow_obj[['workflow']][['ip_addr']]}:{workflow_obj[['workflow']][['port']]}/api/generate")
     data <- list("model"=workflow_obj[['workflow']][["model"]], "keep_alive"=0)
+  }
+  
+  if ("workflows" %in% names(workflow_obj)) {
+    length <- length(workflow_obj[["workflows"]])
+    url <- glue::glue("{workflow_obj[['workflows']][[length]][['ip_addr']]}:{workflow_obj[['workflows']][[length]][['port']]}/api/generate")
+    data <- list("model"=workflow_obj[['workflows']][[length]][["model"]], "keep_alive"=0)
   }
   
   req <- httr2::request(url) 

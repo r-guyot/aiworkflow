@@ -328,7 +328,7 @@ execute_workflow_on_df <- function(df,
 #' @export
 process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
   
-  # if the workflow is not atomic but a chain, follow this path
+    # if the workflow is not atomic but a chain, follow this path
   if ("workflow_type" %in% names(workflow_obj)) {
   if (workflow_obj[["workflow_type"]]=="chain") {
     workflow_memory <- list()
@@ -419,8 +419,13 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
   #
   if (workflow_obj[["workflows"]][[current_length_wflow+1]][["connector"]]=="comfyui") {
     print("found comfy")
+    
+    # get the result from the last workflow as a prompt
+    prompt_to_use <- workflow_obj[["res"]][[current_length]]
+    
     yo <- process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]],
-                                prompt = workflow_obj[["res"]][[current_length]])
+                                prompt = prompt_to_use)
+    
     workflow_obj[["res"]][[current_length+1]] <- yo[["res"]]
     return(workflow_obj)
   }
@@ -2006,4 +2011,117 @@ parse_json_result <- function(json_string) {
   
 }
 
+
+turn_into_standard_workflow_structure <- function(workflow_obj) {
+  
+  if ("connector" %in% names(workflow_obj)) {
+
+        new_workflow_obj <- list()
+        new_workflow_obj[["workflows"]] <- list(workflow_obj)
+        new_workflow_obj[["prompts"]] <- list()
+        new_workflow_obj[["res"]] <- list()
+        return(new_workflow_obj)
+    
+  }
+  
+}
+
+
+modify_prompt <- function(workflow_obj, prompt_modifier_function) {
+  # workflow_obj <- caca
+  #prompt_modifier_function <- "randomize_camera_angle"
+  if ("workflows" %in% names(workflow_obj)) {
+    length <- length(workflow_obj[["workflows"]])
+    workflow_obj[["workflows"]] <- append(workflow_obj[["workflows"]],values = list(list("prompt_modifier"=prompt_modifier_function)))
+    #workflow_obj[["workflows"]][[length+1]][["prompt_modifier"]] <- prompt_modifier_function
+    length_answers <- length(workflow_obj[["res"]])
+    workflow_obj[["res"]] <- append( workflow_obj[["res"]], list(get(prompt_modifier_function)(workflow_obj[["res"]][[length_answers]])))
+    return(workflow_obj)
+  } 
+   
+}
+
+# better function to encapsulate image and text together
+# prompts need to contain text, pictures or both
+process_prompts_new <- function(workflow_obj, prompts) {
+  
+  if ("workflows" %in% names(workflow_obj)) {
+    
+    workflow_length <- length(workflow_obj[["workflows"]])
+    
+    workflow_obj[["prompts"]] <- prompts
+    
+    for (one_prompt in workflow_obj[["prompts"]]) {
+      for (i in 1:workflow_length) {
+        
+        if (i==1) {
+        if ("text" %in% names(one_prompt)) {
+          prompt_txt <- one_prompt[["text"]]
+        } else { prompt_txt <- NA_character_ }
+        
+        if ("image" %in% names(one_prompt)) {
+          prompt_img <- one_prompt[["image"]]
+        } else { prompt_img <- NA_character_ }
+      
+        } else {
+          
+          if ("text" %in% names(workflow_obj[["res"]][[i-1]])) {
+            prompt_txt <- workflow_obj[["res"]][[i-1]][["text"]]
+          } else { prompt_txt <- NA_character_ }
+          
+          if ("images" %in% names(workflow_obj[["res"]][[i-1]])) {
+            prompt_img <- workflow_obj[["res"]][[i-1]][["image"]]
+          } else { prompt_img <- NA_character_ }
+          
+          
+        }
+        
+        #print(prompt_txt)
+        #print(prompt_img)
+        
+        accepted_inputs <- unlist(workflow_obj[["workflows"]][[i]][["accepted_inputs"]])
+        #print(accepted_inputs)
+        if (!is.na(prompt_img) & !("img" %in% accepted_inputs)) { cli::cli_abort("This model does not accept image inputs") }
+        if (!is.na(prompt_txt) & !("txt" %in% accepted_inputs)) { cli::cli_abort("This model does not accept text inputs") }
+        
+        required_inputs <- unlist(workflow_obj[["workflows"]][[i]][["required_inputs"]])
+        
+        if (is.na(prompt_txt) & ("txt" %in% required_inputs)) { cli::cli_abort("This model requires text input but this input is missing") }
+        if (is.na(prompt_img) & ("img" %in% required_inputs)) { cli::cli_abort("This model requires image input but this input is missing") }
+        
+        if (workflow_obj[["workflows"]][[i]][["connector"]]=="comfyui") {
+          print("found comfy")
+          workflow_obj[["res"]][[i]]  <- list(image=process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[i]],
+                                        prompt = prompt_txt))
+        }
+        
+
+        # store results
+        if (workflow_obj[["workflows"]][[i]][["connector"]]=="ollama") {
+        workflow_obj[["res"]][[i]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
+                                                            images_vector = prompt_img, 
+                                                            workflow_obj = workflow_obj[["workflows"]][[i]]))
+        }
+        
+      }
+    }
+    
+  }
+  
+  return(workflow_obj)
+  
+  
+}
+
+
+add_workflow_step_new <- function(workflow_obj, workflow_obj_to_add, type="chain") {
+  
+  #check current type of workflow: if it's just a single one we call it atomic.
+  
+  # if this is not an atomic workflow we add a new workflow element  
+    current_length_workflow <- length(workflow_obj[["workflows"]])
+    workflow_obj[["workflows"]][[current_length_workflow+1]] <- workflow_obj_to_add 
+    return(workflow_obj)
+  
+}
 

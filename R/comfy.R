@@ -1,4 +1,53 @@
 
+
+
+make_bw_image <- function(prompt_text, accent=1.6) {
+  
+  modified_prompt <- glue::glue("{prompt_text} (black and white image:{accent})")
+  return(modified_prompt)
+  
+}
+
+
+randomize_camera_angle <- function(prompt_text, accent=1.5) {
+  
+  camera_angles <- list(
+    "front_view",
+    "straight on shot",
+    "dutch angle shot",
+    "selfie",
+    "side view",
+    "profile",
+    "lateral view",
+    "flank view",
+    "back view",
+    "from behind",
+    "turn around",
+    "back",
+    "bird eye view",
+    "top down view",
+    "overhead shot",
+    "from above",
+    "high angle",
+    "slightly above",
+    "from below",
+    "worm eye view",
+    "low view",
+    "low angle",
+    "from bottom",
+    "fish eye shot",
+    "wide angle view",
+    "upside down view")
+  
+  addition <- sample(camera_angles,size = 1) |> unlist()
+  addition_text <- glue::glue("({addition}:{accent})")
+  
+  modified_prompt <- glue::glue("{prompt_text} {addition_text}")
+  return(modified_prompt)
+  
+}
+
+
 find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
   
   if (!polarity %in% c("positive","negative")) {
