@@ -624,6 +624,7 @@ ai_workflow <- function() {
 #' 
 #' @export
 set_model <- function(workflow_obj, model_name) {
+  
   workflow_obj[["model"]] <- model_name
   return(workflow_obj)
 }
@@ -2051,10 +2052,14 @@ process_prompts_new <- function(workflow_obj, prompts) {
     
     workflow_obj[["prompts"]] <- prompts
     
-    for (one_prompt in workflow_obj[["prompts"]]) {
+    for (p in 1:length(workflow_obj[["prompts"]])) {
+      
+      one_prompt <- workflow_obj[["prompts"]][[p]]
+      
       for (i in 1:workflow_length) {
         
         if (i==1) {
+          #print(names(one_prompt))
         if ("text" %in% names(one_prompt)) {
           prompt_txt <- one_prompt[["text"]]
         } else { prompt_txt <- NA_character_ }
@@ -2065,18 +2070,18 @@ process_prompts_new <- function(workflow_obj, prompts) {
       
         } else {
           
-          if ("text" %in% names(workflow_obj[["res"]][[i-1]])) {
-            prompt_txt <- workflow_obj[["res"]][[i-1]][["text"]]
+          if ("text" %in% names(workflow_obj[["res"]][[i-1]][[p]])) {
+            prompt_txt <- workflow_obj[["res"]][[i-1]][[p]][["text"]]
           } else { prompt_txt <- NA_character_ }
           
-          if ("images" %in% names(workflow_obj[["res"]][[i-1]])) {
-            prompt_img <- workflow_obj[["res"]][[i-1]][["image"]]
+          if ("images" %in% names(workflow_obj[["res"]][[i-1]][[p]])) {
+            prompt_img <- workflow_obj[["res"]][[i-1]][[p]][["image"]]
           } else { prompt_img <- NA_character_ }
           
           
         }
         
-        #print(prompt_txt)
+        print(prompt_txt)
         #print(prompt_img)
         
         accepted_inputs <- unlist(workflow_obj[["workflows"]][[i]][["accepted_inputs"]])
@@ -2091,14 +2096,24 @@ process_prompts_new <- function(workflow_obj, prompts) {
         
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="comfyui") {
           print("found comfy")
-          workflow_obj[["res"]][[i]]  <- list(image=process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[i]],
+          workflow_obj[["res"]][[i]][[p]]  <- list(image=process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[i]],
                                         prompt = prompt_txt))
         }
         
 
         # store results
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="ollama") {
-        workflow_obj[["res"]][[i]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
+          print("ho!")
+          print(workflow_obj[["res"]])
+        if (identical(workflow_obj[["res"]],list())) {
+          print("hey")
+          workflow_obj[["res"]][[i]] <- list()
+        }
+        if (i > length(workflow_obj[["res"]])) {
+          print("yoman!")
+          workflow_obj[["res"]][[i]] <- list()
+        }
+        workflow_obj[["res"]][[i]][[p]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
                                                             images_vector = prompt_img, 
                                                             workflow_obj = workflow_obj[["workflows"]][[i]]))
         }
@@ -2119,9 +2134,39 @@ add_workflow_step_new <- function(workflow_obj, workflow_obj_to_add, type="chain
   #check current type of workflow: if it's just a single one we call it atomic.
   
   # if this is not an atomic workflow we add a new workflow element  
-    current_length_workflow <- length(workflow_obj[["workflows"]])
-    workflow_obj[["workflows"]][[current_length_workflow+1]] <- workflow_obj_to_add 
-    return(workflow_obj)
+    #current_length_workflow <- length(workflow_obj[["workflows"]])
+    #workflow_obj[["workflows"]][[current_length_workflow+1]] <- workflow_obj_to_add 
+    #return(workflow_obj)
   
+    current_length_workflow <- length(workflow_obj[["workflows"]])
+    for (one_new_workflow in workflow_obj_to_add[["workflows"]]) {
+      workflow_obj[["workflows"]][[current_length_workflow+1]] <- one_new_workflow
+      current_length_workflow <- length(workflow_obj[["workflows"]])
+      print(current_length_workflow)
+    }
+    return(workflow_obj)
 }
 
+
+
+encapsulate <- function(workflow_obj) {
+  
+  if (!"workflows" %in% names(workflow_obj)) {
+    new_workflow_obj <- list()
+    new_workflow_obj[["res"]] <- list()
+    new_workflow_obj[["prompts"]] <- list()
+    new_workflow_obj[["workflows"]][[1]] <- workflow_obj
+    return(new_workflow_obj)
+  }
+  
+} 
+
+
+process_text_prompts <- function(workflow_obj, text_prompts) {
+  
+  if (is.vector(text_prompts)) {
+    object_prompt_to_pass <-  lapply( as.list(text_prompts), function(x) { list(text=x[1]) })
+    return(process_prompts_new(workflow_obj, prompts = object_prompt_to_pass))
+  }
+  
+}
