@@ -485,8 +485,8 @@ process_prompts_comfyui <- function(workflow_obj, prompt) {
   workflow_obj[["res_object_type"]] <- lapply(pics_list, function(x) glue::glue("image / {file_ext(x)}"))
   # change output to resulting_images
   
-  return(workflow_obj)
-  
+  #return(workflow_obj)
+  return(resulting_images)
 }
 
 

@@ -2096,6 +2096,10 @@ process_prompts_new <- function(workflow_obj, prompts) {
         
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="comfyui") {
           print("found comfy")
+          if (i > length(workflow_obj[["res"]])) {
+            print("yoman pic!")
+            workflow_obj[["res"]][[i]] <- list()
+          }
           workflow_obj[["res"]][[i]][[p]]  <- list(image=process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[i]],
                                         prompt = prompt_txt))
         }
