@@ -2084,6 +2084,12 @@ process_prompts_new <- function(workflow_obj, prompts) {
         print(prompt_txt)
         #print(prompt_img)
         
+        # for txt to img we can have a default text prompt possible
+        if ("default_text_prompt" %in% workflow_obj[["workflows"]][[i]]) {
+          prompt_txt <- workflow_obj[["workflows"]][[i]][["default_text_prompt"]]
+        }
+        print(prompt_txt)
+        
         accepted_inputs <- unlist(workflow_obj[["workflows"]][[i]][["accepted_inputs"]])
         #print(accepted_inputs)
         if (!is.na(prompt_img) & !("img" %in% accepted_inputs)) { cli::cli_abort("This model does not accept image inputs") }

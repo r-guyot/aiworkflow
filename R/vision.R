@@ -28,3 +28,10 @@ resize_images_and_export_to_base64 <- function(input_image_path_vector, max_dime
   
 }
 
+# to ensure that the image to text models always have a default text prompt if needed
+set_default_text_prompt <- function(workflow_obj, default_text_prompt) {
+  
+  workflow_obj[["workflows"]][[1]][["default_text_prompt"]] <- default_text_prompt
+  return(workflow_obj)
+  
+}
