@@ -12,7 +12,8 @@
 #' @param images_vector An optional vector containing the images to be sent as reference to the AI workflow (Defaults to NA). It needs to have the same length as prompts_vector.
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
+execute_workflow <- function(prompts_vector, images_vector=NA_character_, workflow_obj) {
+
   
   if (!all(is.na(images_vector))) {
     if (length(prompts_vector)!=length(images_vector)) {
@@ -115,7 +116,8 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
       cli::cli_alert("Completion mode")
       result <- get_ollama_completion(ollama_connection = ollama_conn, 
                                       model = workflow_obj[["model"]],
-                                      prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
+                                      prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, 
+                                                                              processing_skill_args = processing_skill_args),
                                       output_text_only = T,
                                       num_predict = workflow_obj[["n_predict"]],
                                       temperature = workflow_obj[["temperature"]],
@@ -134,11 +136,17 @@ execute_workflow <- function(prompts_vector, images_vector=NA, workflow_obj) {
     
     if (workflow_obj[["mode"]] == "chat") {
       cli::cli_alert("Chat mode")
+      
+
+      images_vector_to_pass <- ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,
+                                      NA_character_, 
+                                      resize_images_and_export_to_base64(images_vector,max_dimension = workflow_obj[["vision_max_image_dimension"]]))
+      
       result <- get_ollama_chat_completion(ollama_connection = ollama_conn, 
                                            model = workflow_obj[["model"]],
                                            embedding_model = workflow_obj[["embedding_model"]],
                                            prompts_vector = apply_processing_skill(prompts_vector, processing_skill = processing_skill, processing_skill_args = processing_skill_args),
-                                           images_vector = ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,NA, resize_images_and_export_to_base64(images_vector,max_dimension = workflow_obj[["vision_max_image_dimension"]])),
+                                           images_vector = images_vector_to_pass,
                                            output_text_only = T,
                                            seed = seed_to_pass,
                                            num_predict = workflow_obj[["n_predict"]],
@@ -423,7 +431,7 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
     # get the result from the last workflow as a prompt
     prompt_to_use <- workflow_obj[["res"]][[current_length]]
     
-    yo <- process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]],
+    yo <- cfy_process_prompts(workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]],
                                 prompt = prompt_to_use)
     
     workflow_obj[["res"]][[current_length+1]] <- yo[["res"]]
@@ -2074,7 +2082,7 @@ process_prompts_new <- function(workflow_obj, prompts) {
             prompt_txt <- workflow_obj[["res"]][[i-1]][[p]][["text"]]
           } else { prompt_txt <- NA_character_ }
           
-          if ("images" %in% names(workflow_obj[["res"]][[i-1]][[p]])) {
+          if ("image" %in% names(workflow_obj[["res"]][[i-1]][[p]])) {
             prompt_img <- workflow_obj[["res"]][[i-1]][[p]][["image"]]
           } else { prompt_img <- NA_character_ }
           
@@ -2085,7 +2093,7 @@ process_prompts_new <- function(workflow_obj, prompts) {
         #print(prompt_img)
         
         # for txt to img we can have a default text prompt possible
-        if ("default_text_prompt" %in% workflow_obj[["workflows"]][[i]]) {
+        if ("default_text_prompt" %in% names(workflow_obj[["workflows"]][[i]])) {
           prompt_txt <- workflow_obj[["workflows"]][[i]][["default_text_prompt"]]
         }
         print(prompt_txt)
@@ -2106,7 +2114,7 @@ process_prompts_new <- function(workflow_obj, prompts) {
             print("yoman pic!")
             workflow_obj[["res"]][[i]] <- list()
           }
-          workflow_obj[["res"]][[i]][[p]]  <- list(image=process_prompts_comfyui(workflow_obj = workflow_obj[["workflows"]][[i]],
+          workflow_obj[["res"]][[i]][[p]]  <- list(image=cfy_process_prompts(workflow_obj = workflow_obj[["workflows"]][[i]],
                                         prompt = prompt_txt))
         }
         
@@ -2123,6 +2131,19 @@ process_prompts_new <- function(workflow_obj, prompts) {
           print("yoman!")
           workflow_obj[["res"]][[i]] <- list()
         }
+        
+        # in case the input is a image produced by magick, the data is not in a path so we need to convert it into path
+        if (class(prompt_img)=="magick-image") {
+          prompt_img <- as.list(prompt_img)
+          prompt_img_paths <- list()
+          for (y in 1:length(prompt_img)) {
+            one_file <- tempfile(fileext = ".png")
+            magick::image_write(image = prompt_img[[y]], path = one_file)
+            prompt_img_paths <- append(prompt_img_paths,one_file)
+          }
+          prompt_img <- unlist(prompt_img_paths)
+        } 
+          
         workflow_obj[["res"]][[i]][[p]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
                                                             images_vector = prompt_img, 
                                                             workflow_obj = workflow_obj[["workflows"]][[i]]))
@@ -2171,11 +2192,11 @@ encapsulate <- function(workflow_obj) {
   
 } 
 
-
+# shortcut to only process text prompts
 process_text_prompts <- function(workflow_obj, text_prompts) {
   
   if (is.vector(text_prompts)) {
-    object_prompt_to_pass <-  lapply( as.list(text_prompts), function(x) { list(text=x[1]) })
+    object_prompt_to_pass <-  lapply(as.list(text_prompts), function(x) { list(text=x[1]) })
     return(process_prompts_new(workflow_obj, prompts = object_prompt_to_pass))
   }
   

@@ -1,7 +1,7 @@
 
 
 
-make_bw_image <- function(prompt_text, accent=1.6) {
+cfy_make_bw_image <- function(prompt_text, accent=1.6) {
   
   modified_prompt <- glue::glue("{prompt_text} (black and white image:{accent})")
   return(modified_prompt)
@@ -9,7 +9,7 @@ make_bw_image <- function(prompt_text, accent=1.6) {
 }
 
 
-randomize_camera_angle <- function(prompt_text, accent=1.5) {
+cfy_randomize_camera_angle <- function(prompt_text, accent=1.5) {
   
   camera_angles <- list(
     "front_view",
@@ -48,7 +48,7 @@ randomize_camera_angle <- function(prompt_text, accent=1.5) {
 }
 
 
-find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
+cfy_find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
   
   if (!polarity %in% c("positive","negative")) {
     cli::cli_abort("Error: polarity needs to be either 'positive' or 'negative'")
@@ -66,9 +66,9 @@ find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
   
 }
 
-set_comfyui_positive_prompt <- function(workflow_obj, positive_prompt) {
+cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
   
-  node_id <- find_pos_neg_prompt_node(workflow_obj,polarity = "positive")
+  node_id <- cfy_find_pos_neg_prompt_node(workflow_obj,polarity = "positive")
   print(node_id)
   if (workflow_obj[["comfyui_workflow"]][[node_id]][["class_type"]]=="CLIPTextEncode") {
     workflow_obj[["comfyui_workflow"]][[node_id]][["inputs"]][["text"]] <- positive_prompt
@@ -77,9 +77,9 @@ set_comfyui_positive_prompt <- function(workflow_obj, positive_prompt) {
   
 }
 
-set_comfyui_negative_prompt <- function(workflow_obj, negative_prompt) {
+cfy_set_negative_prompt <- function(workflow_obj, negative_prompt) {
   
-  node_id <- find_pos_neg_prompt_node(workflow_obj,polarity = "negative")
+  node_id <- cfy_find_pos_neg_prompt_node(workflow_obj,polarity = "negative")
   print(node_id)
   if (workflow_obj[["comfyui_workflow"]][[node_id]][["class_type"]]=="CLIPTextEncode") {
     workflow_obj[["comfyui_workflow"]][[node_id]][["inputs"]][["text"]] <- negative_prompt
@@ -88,7 +88,7 @@ set_comfyui_negative_prompt <- function(workflow_obj, negative_prompt) {
   
 }
 
-set_comfyui_image_size <- function(workflow_obj, resolution) {
+cfy_set_image_size <- function(workflow_obj, resolution) {
   
   resolution_accepted <- c("1024x1024",
                            "1152x896","896x1152",
@@ -119,7 +119,7 @@ set_comfyui_image_size <- function(workflow_obj, resolution) {
 
 
 
-set_comfyui_sampler <- function(workflow_obj, sampler) {
+cfy_set_sampler <- function(workflow_obj, sampler) {
   
   sampler_accepted <- c("euler",
                            "euler_ancestral",
@@ -148,7 +148,7 @@ set_comfyui_sampler <- function(workflow_obj, sampler) {
 }
 
 
-set_comfyui_scheduler <- function(workflow_obj, scheduler) {
+cfy_set_scheduler <- function(workflow_obj, scheduler) {
   
   scheduler_accepted <- c("normal",
                         "exponential",
@@ -174,7 +174,7 @@ set_comfyui_scheduler <- function(workflow_obj, scheduler) {
 
 
 
-set_seed_change_comfyui <- function(workflow_obj, seed_change) {
+cfy_set_seed_change <- function(workflow_obj, seed_change) {
   
   accepted_values <- c("fixed","incremental","random")
   
@@ -187,7 +187,7 @@ set_seed_change_comfyui <- function(workflow_obj, seed_change) {
 
 
 
-set_seed_comfyui <- function(workflow_obj,seed=NA) {
+cfy_set_seed <- function(workflow_obj,seed=NA) {
   
   if (is.na(seed)) {
     seed <- sample(1:10e12,1)
@@ -209,7 +209,7 @@ set_seed_comfyui <- function(workflow_obj,seed=NA) {
 }
 
 
-set_checkpoint_comfyui <- function(workflow_obj, checkpoint) {
+cfy_set_checkpoint <- function(workflow_obj, checkpoint) {
 
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
     name <- names(workflow_obj[["comfyui_workflow"]][i])
@@ -223,7 +223,7 @@ set_checkpoint_comfyui <- function(workflow_obj, checkpoint) {
   return(workflow_obj) 
 }
 
-set_cfg_comfyui <- function(workflow_obj, cfg) {
+cfy_set_cfg <- function(workflow_obj, cfg) {
   
   if (is.character(cfg)) { cfg <- as.integer(cfg) }
   if (is.na(cfg)) { cli::cli_abort("cfg needs to be defined as an integer") }
@@ -240,7 +240,7 @@ set_cfg_comfyui <- function(workflow_obj, cfg) {
   return(workflow_obj) 
 }
 
-set_steps_comfyui <- function(workflow_obj, steps=20) {
+cfy_set_steps <- function(workflow_obj, steps=20) {
   
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
     name <- names(workflow_obj[["comfyui_workflow"]][i])
@@ -254,7 +254,7 @@ set_steps_comfyui <- function(workflow_obj, steps=20) {
   return(workflow_obj) 
 }
 
-set_custom_comfyui_workflow <- function(workflow_obj, comfyui_workflow_json_filepath) {
+cfy_set_custom_workflow <- function(workflow_obj, comfyui_workflow_json_filepath) {
   
   if (file.exists(comfyui_workflow_json_filepath)) {
     json_object <- readLines(comfyui_workflow_json_filepath,warn = F)
@@ -271,7 +271,7 @@ set_custom_comfyui_workflow <- function(workflow_obj, comfyui_workflow_json_file
   
 }
 
-set_simple_comfyui_workflow_negative_prompt <- function(workflow_obj, negative_prompt) {
+cfy_set_simple_workflow_negative_prompt <- function(workflow_obj, negative_prompt) {
   
   if (!"comfyui_workflow" %in% names(workflow_obj)) {
     cli::cli_abort("Error: there is no current comfyui workflow, cannot assign negative prompt")
@@ -285,14 +285,14 @@ set_simple_comfyui_workflow_negative_prompt <- function(workflow_obj, negative_p
   return(workflow_obj)
 }
 
-set_simple_comfyui_worfklow <- function(workflow_obj, 
+cfy_set_simple_worfklow <- function(workflow_obj, 
                                         checkpoint=NA,
                                         steps=20,
                                         seed=sample(1:10000000000, 1),
                                         scheduler="normal", 
                                         sampler="euler") {
   
-  available_models <- get_comfyui_model_checkpoints(workflow_obj)
+  available_models <- cfy_get_model_checkpoints(workflow_obj)
   
   json_object = '
 {
@@ -412,7 +412,7 @@ set_simple_comfyui_worfklow <- function(workflow_obj,
 
 
 
-queue_prompt <- function(workflow_obj, prompt_json) {
+cfy_queue_prompt <- function(workflow_obj, prompt_json) {
   
   #comfy_workflow <- list()
   #comfy_workflow[["client_id"]] <- client_id
@@ -437,7 +437,7 @@ queue_prompt <- function(workflow_obj, prompt_json) {
 
 }
 
-get_history <- function(workflow_obj, prompt_id) {
+cfy_get_history <- function(workflow_obj, prompt_id) {
   
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/history/{prompt_id}"))
   result <- req |> httr2::req_perform() 
@@ -449,34 +449,34 @@ get_history <- function(workflow_obj, prompt_id) {
 }
 
 
-process_prompts_comfyui <- function(workflow_obj, prompt) {
+cfy_process_prompts <- function(workflow_obj, prompt) {
 
   #comfy_workflow <- img_gen
   #prompt <- "a beautiful Japanese woman with sunglasses with pink frames and blue tint"
   #prompt_text <- gsub(x = workflow_obj[["comfyui_workflow"]], pattern="<<<POSITIVE_PROMPT>>>",replacement = prompt)
   
-  workflow_obj <- workflow_obj |> set_comfyui_positive_prompt(positive_prompt = prompt)
+  workflow_obj <- workflow_obj |> cfy_set_positive_prompt(positive_prompt = prompt)
   
   #print(prompt_text)
   client_id <- workflow_obj[["client_id"]]
   
   ws <- websocket::WebSocket$new(glue::glue("ws://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/ws?clientID={workflow_obj[['client_id']]}"))
 
-  prompt_id <- workflow_obj |> queue_prompt(workflow_obj[["comfyui_workflow"]])
+  prompt_id <- workflow_obj |> cfy_queue_prompt(workflow_obj[["comfyui_workflow"]])
   prompt_id <- prompt_id$prompt_id
   
-  while(check_comfyui_queue_prompt_status(workflow_obj, prompt_id)=="ongoing") {
+  while(cfy_check_queue_prompt_status(workflow_obj, prompt_id)=="ongoing") {
     Sys.sleep(2)
     print("ongoing...")
   }
   
-  pics_list <- get_comfyui_pictures_list(workflow_obj, prompt_id)
+  pics_list <- cfy_get_pictures_list(workflow_obj, prompt_id)
   
   resulting_images <- list()
   
   for (one_image in pics_list) {
   resulting_images <- append(resulting_images,
-                             get_image_from_comfyui(workflow_obj, one_image))
+                             cfy_get_image(workflow_obj, one_image))
   }
   
   ws$close()
@@ -484,16 +484,14 @@ process_prompts_comfyui <- function(workflow_obj, prompt) {
   workflow_obj[["res"]] <- resulting_images
   workflow_obj[["res_object_type"]] <- lapply(pics_list, function(x) glue::glue("image / {file_ext(x)}"))
   # change output to resulting_images
-  
   #return(workflow_obj)
   return(resulting_images)
 }
 
 
-get_comfyui_model_checkpoints <- function(workflow_obj) {
+cfy_get_model_checkpoints <- function(workflow_obj) {
   
   ws <- websocket::WebSocket$new(glue::glue("ws://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/ws?clientID={workflow_obj[['client_id']]}"))
-  
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/models/checkpoints"))
   result <- req |> httr2::req_perform() 
   ws$close
@@ -505,8 +503,8 @@ get_comfyui_model_checkpoints <- function(workflow_obj) {
 
 
 
-get_image_from_comfyui <- function(workflow_obj, image_filename) {
-  print(image_filename)
+cfy_get_image <- function(workflow_obj, image_filename) {
+  #print(image_filename)
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/view?filename={image_filename}"))
   result <- req |> httr2::req_perform() 
   if (result$status_code==200) {
@@ -520,7 +518,7 @@ get_image_from_comfyui <- function(workflow_obj, image_filename) {
 
 
 
-check_comfyui_queue_prompt_status <- function(workflow_obj, prompt_id) {
+cfy_check_queue_prompt_status <- function(workflow_obj, prompt_id) {
   
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/queue"))
   result <- req |> httr2::req_perform() 
@@ -538,8 +536,8 @@ check_comfyui_queue_prompt_status <- function(workflow_obj, prompt_id) {
 }
   
 
-get_comfyui_pictures_list <- function(workflow_obj, prompt_id) {  
-  history <- workflow_obj |> get_history(prompt_id = prompt_id)
+cfy_get_pictures_list <- function(workflow_obj, prompt_id) {  
+  history <- workflow_obj |> cfy_get_history(prompt_id = prompt_id)
   history <- history[[1]]
   image_list <- list()
   for (one_node in history[["outputs"]]) {
