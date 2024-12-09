@@ -69,7 +69,7 @@ cfy_find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
 cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
   
   node_id <- cfy_find_pos_neg_prompt_node(workflow_obj,polarity = "positive")
-  print(node_id)
+  #print(node_id)
   if (workflow_obj[["comfyui_workflow"]][[node_id]][["class_type"]]=="CLIPTextEncode") {
     workflow_obj[["comfyui_workflow"]][[node_id]][["inputs"]][["text"]] <- positive_prompt
   }
@@ -80,7 +80,7 @@ cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
 cfy_set_negative_prompt <- function(workflow_obj, negative_prompt) {
   
   node_id <- cfy_find_pos_neg_prompt_node(workflow_obj,polarity = "negative")
-  print(node_id)
+  #print(node_id)
   if (workflow_obj[["comfyui_workflow"]][[node_id]][["class_type"]]=="CLIPTextEncode") {
     workflow_obj[["comfyui_workflow"]][[node_id]][["inputs"]][["text"]] <- negative_prompt
   }
@@ -227,7 +227,7 @@ cfy_set_cfg <- function(workflow_obj, cfg) {
   
   if (is.character(cfg)) { cfg <- as.integer(cfg) }
   if (is.na(cfg)) { cli::cli_abort("cfg needs to be defined as an integer") }
-    print(cfg)
+    #print(cfg)
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
     name <- names(workflow_obj[["comfyui_workflow"]][i])
     

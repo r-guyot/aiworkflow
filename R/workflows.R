@@ -2089,14 +2089,14 @@ process_prompts_new <- function(workflow_obj, prompts) {
           
         }
         
-        print(prompt_txt)
+        #print(prompt_txt)
         #print(prompt_img)
         
         # for txt to img we can have a default text prompt possible
         if ("default_text_prompt" %in% names(workflow_obj[["workflows"]][[i]])) {
           prompt_txt <- workflow_obj[["workflows"]][[i]][["default_text_prompt"]]
         }
-        print(prompt_txt)
+        #print(prompt_txt)
         
         accepted_inputs <- unlist(workflow_obj[["workflows"]][[i]][["accepted_inputs"]])
         #print(accepted_inputs)
@@ -2111,7 +2111,7 @@ process_prompts_new <- function(workflow_obj, prompts) {
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="comfyui") {
           print("found comfy")
           if (i > length(workflow_obj[["res"]])) {
-            print("yoman pic!")
+            #print("yoman pic!")
             workflow_obj[["res"]][[i]] <- list()
           }
           workflow_obj[["res"]][[i]][[p]]  <- list(image=cfy_process_prompts(workflow_obj = workflow_obj[["workflows"]][[i]],
@@ -2121,14 +2121,14 @@ process_prompts_new <- function(workflow_obj, prompts) {
 
         # store results
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="ollama") {
-          print("ho!")
+          #print("ho!")
           print(workflow_obj[["res"]])
         if (identical(workflow_obj[["res"]],list())) {
-          print("hey")
+          #print("hey")
           workflow_obj[["res"]][[i]] <- list()
         }
         if (i > length(workflow_obj[["res"]])) {
-          print("yoman!")
+          #print("yoman!")
           workflow_obj[["res"]][[i]] <- list()
         }
         
@@ -2173,21 +2173,50 @@ add_workflow_step_new <- function(workflow_obj, workflow_obj_to_add, type="chain
     for (one_new_workflow in workflow_obj_to_add[["workflows"]]) {
       workflow_obj[["workflows"]][[current_length_workflow+1]] <- one_new_workflow
       current_length_workflow <- length(workflow_obj[["workflows"]])
-      print(current_length_workflow)
+      #print(current_length_workflow)
     }
     return(workflow_obj)
 }
 
 
+# verify an encapsulated workflow
+validate_single_workflow <- function(workflow_obj) {
+  
+  workflow_contents <- workflow_obj[["workflows"]][[1]]
+  # check if we have the key components, i.e. a connector and a model
+  if ("connector" %in% names(workflow_contents) & "model" %in% names(workflow_contents)) {
+    # check if model is not NA, or that it's a comfyui workflow
+    if (!is.na(workflow_contents[["model"]]) | "comfyui_workflow" %in% workflow_contents) {
+    return(TRUE)
+    } else {
+      cli::cli_alert_warning("Your workflow does not appear to have a model assigned.")
+      return(FALSE)
+    }
+  } else {
+    cli::cli_alert_warning("Your workflow needs at least a model and a connector to be encapsulated.")
+    return(FALSE)
+  }
+  
+}
+  
+
 
 encapsulate <- function(workflow_obj) {
+  
+  if(!is.null(workflow_obj[["workflows"]])) {
+    cli::cli_abort("Your workflow seems to be already encapsulated.")
+  }
   
   if (!"workflows" %in% names(workflow_obj)) {
     new_workflow_obj <- list()
     new_workflow_obj[["res"]] <- list()
     new_workflow_obj[["prompts"]] <- list()
     new_workflow_obj[["workflows"]][[1]] <- workflow_obj
+    if (validate_single_workflow(new_workflow_obj)) {
     return(new_workflow_obj)
+    } else {
+      cli::cli_abort("The workflow could not be encapsulated.")
+    }
   }
   
 } 
