@@ -36,7 +36,8 @@ myflow_pitch <- ai_workflow() |>
   set_connector(connector = "ollama") |>
   set_model(model_name = "llama3.2:latest") |>
   set_processing_skill(processing_skill = "write_pitch") |>
-  set_n_predict(1500)
+  set_n_predict(1500) |>
+  encapsulate()
 
 ```
 
@@ -45,8 +46,8 @@ Now let's test it out. We are trying to sell new razors...
 ```{r, pitching}
 
 myflow_pitch |>
-  process_prompts(prompts_vector = "A new razor with 20 blades and a lot of springs for an ultimate and safe shaving experience aimed at adult men") |>
-  pull_final_answer()
+  process_text_prompts("A new razor with 20 blades and a lot of springs for an ultimate and safe shaving experience aimed at adult men") |>
+  pull_final_text_answer()
 
 ```
 
@@ -59,7 +60,8 @@ myflow_emoji <- ai_workflow() |>
   set_model(model_name = "llama3.2:latest") |>
   set_processing_skill(processing_skill = "add_emoji") |>
   set_n_predict(1500) |>
-  set_temperature(0.5)
+  set_temperature(0.5) |>
+  encapsulate()
 
 ```
 
@@ -67,8 +69,8 @@ myflow_emoji <- ai_workflow() |>
 ```{r, emoji skill applied}
 
 myflow_emoji |>
-  process_prompts("The sun is shining today. Just the right temperature. I can finally relax and enjoy a good book.") |>
-  pull_final_answer()
+  process_text_prompts("The sun is shining today. Just the right temperature. I can finally relax and enjoy a good book.") |>
+  pull_final_text_answer()
 
 ```
 
@@ -94,7 +96,8 @@ myflow_positive <- ai_workflow() |>
   set_model(model_name = "llama3.2:latest") |>
   set_processing_skill(processing_skill = "rewrite_positive") |>
   set_n_predict(1500) |>
-  set_temperature(0.5)
+  set_temperature(0.5) |>
+  encapsulate()
 
 
 ```
@@ -108,7 +111,8 @@ myflow_more_details <- ai_workflow() |>
   set_model(model_name = "llama3.2:latest") |>
   set_processing_skill(processing_skill = "add_details") |>
   set_n_predict(1500) |>
-  set_temperature(0.5)
+  set_temperature(0.5) |>
+  encapsulate()
 
 
 ```
@@ -121,13 +125,13 @@ Now let's chain them together by using the `switch_to_workflow()` function, usin
 # you start from the first workflow here
 myflow_positive |> 
   # you bring your first prompt here
-  process_prompts(prompts_vector = company_report) |>
+  process_text_prompts(company_report) |>
   # you can display the intermediate answer if needed
   display_intermediate_answer() |>
   # and then answer from the previous workflow becomes the input for the next one
   switch_to_workflow(new_workflow = myflow_more_details) |>
   # and we pull the final answer
-  pull_final_answer()
+  pull_final_text_answer()
 
 ```
 
@@ -152,11 +156,11 @@ And the result should be very similar to the previous example:
 myflow_chained |> 
   # you bring your prompt here
   process_prompts(prompts_vector = company_report) |>
-  pull_final_answer()
+  pull_final_text_answer()
 
 ```
 
-The only key difference is that you have no way to observe the intermediate results when you do this.
+The only key difference is that you have no way to observe the intermediate results as they run when you do this.
 
 But it makes it easier to add more steps into a single workflow:
 
@@ -174,8 +178,8 @@ myflow_chained <-
   add_workflow_step(myflow_more_details) |>
   add_workflow_step(myflow_translate_to_spanish)
 
-
 ```
+
 And now you should be able to get in one go, the final text translated in Spanish this way.
 
 ```{r, chaining spanish}
@@ -183,10 +187,11 @@ And now you should be able to get in one go, the final text translated in Spanis
 # you start from the combined workflow here
 myflow_chained |> 
   # you bring your prompt here
-  process_prompts(prompts_vector = company_report) |>
-  pull_final_answer()
+  process_text_prompts(prompts_vector = company_report) |>
+  pull_final_text_answer()
 
 ```
+
 Note that the quality of the Spanish translation in this case will depend heavily on how well the model you have selected can handle this kind of tasks. Not all models are equal when it comes to multilingual capabilities.
 
 

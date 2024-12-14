@@ -100,8 +100,6 @@ wflow_basic |>
 Note that the process_text_prompts function also accepts a list instead of vectors, if you prefer.
 
 
-
-
 ## Customizing Output
 
 You can now leverage more features from the package. Such as setting the audience for your answers.
@@ -131,10 +129,11 @@ This is the kind of explanation you get for the little kids out there:
 
 *"`r explanation_eli5`"*
 
+## Modifying an existing workflow
 
 When you want to modify an existing workflow, you need to first decapsulate() it to allow for its elements to be modified. You can imagine the encapsulation as a "lock" of current parameters, and you need to unlock things before you change the configuration. When you are done with the settings change, you finally call the encapsulate() again.
 
-For example let's modify the existing workflow wflow_basic before calling the prompt:
+For example let's modify the existing workflow *wflow_basic* before calling the prompt:
 
 ```{r modification of existing workflow}
 

@@ -415,7 +415,7 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
     workflow_obj[["workflow"]] <- NULL
   }
   current_length_wflow <- length(workflow_obj[["workflows"]])
-  workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow
+  workflow_obj[["workflows"]][[current_length_wflow+1]] <- new_workflow[["workflows"]][[1]]
   current_length <- length(workflow_obj[["res"]])
   # implement logic to fit to every kind of required input
   
@@ -424,7 +424,6 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
     cli::cli_abort("Error: switching from a image to a text workflow require the switch_to_workflow_w_extra_prompt() function.")
   }
   
-  #
   if (workflow_obj[["workflows"]][[current_length_wflow+1]][["connector"]]=="comfyui") {
     print("found comfy")
     
@@ -439,8 +438,9 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
   }
   
   # if text only this works well
-  workflow_obj[["res"]][[current_length+1]] <- execute_workflow(prompts_vector = workflow_obj[["res"]][[current_length]], 
-                                                            workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]])
+  workflow_obj[["res"]][[current_length+1]] <- list(list(text=execute_workflow(prompts_vector = workflow_obj[["res"]][[current_length]], 
+                                                            workflow_obj = workflow_obj[["workflows"]][[current_length_wflow+1]])))
+  
   return(workflow_obj)
   
 }
@@ -2074,10 +2074,12 @@ process_prompts_new <- function(workflow_obj, prompts) {
     
     workflow_obj[["prompts"]] <- prompts
     
+    # p describes the prompts
     for (p in 1:length(workflow_obj[["prompts"]])) {
       
       one_prompt <- workflow_obj[["prompts"]][[p]]
       
+      # i tracks the position in the current workflow
       for (i in 1:workflow_length) {
         
         if (i==1) {
