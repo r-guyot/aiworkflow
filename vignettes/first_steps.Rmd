@@ -45,18 +45,20 @@ conn <- get_ollama_connection(ip_ad = "127.0.0.1",port = "3524")
 ## Your First Workflow
 
 This is one of the most simple workflows you can make.
-To create a workflow, you need to start with the ai_workflow() container command, and then pipe instructions to it.
-In the below example we specify that we want to use the ollama connector, and that we will use the llama3.1 model.
+To create a workflow, you need to start with the ai_workflow() container command, and then pipe instructions to it. At the end of the preparation, you need to add an encapsulate() statement, that will prepare it to receive prompts and store answers.
+
+In the below example we specify that we want to use the ollama connector, and that we will use the llama3.1 model. These two elements are the strict minimum required to create a workflow.
 
 ```{r first workflow }
 
 wflow_basic <- ai_workflow() |>
   set_connector("ollama")  |>
-  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") 
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
+  encapsulate()
 
 ```
 
-When selecting the ollama connector, it will use the default connection parameters. 
+When selecting the ollama connector, the default connection parameters will be set. 
 You can however set arbitrary IP and port parameters as described below, if you want to connect to an Ollama instance that is living on a different machine.
 
 ```{r first workflow with different parameters}
@@ -65,7 +67,8 @@ wflow_basic_on_different_machine <- ai_workflow() |>
   set_connector("ollama")  |>
   set_ip_addr(ip_addr = "192.168.1.12") |>
   set_port(port = 5256) |>
-  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") 
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
+  encapsulate()
 
 ```
 
@@ -76,12 +79,28 @@ The next steps is to ask it to run some specific tasks. We can ask with a simple
 ```{r first workflow execution}
 
 wflow_basic |> 
-  process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
-  pull_final_answer() |> cat()
+  process_text_prompts(text_prompts = "why is the sky blue? Answer with a short explanation") |>
+  pull_final_text_answer() 
 
 ```
 
 By default the model answers with a list, so you want to use the pull_final_answer() function to fetch the final textual answer from the list.
+
+## Processing a vector of questions
+
+It is also possible to send more than one prompt to a workflow. You simply need to pass a vector instead a single chain of characters.
+
+```{r several prompts execution}
+
+wflow_basic |> 
+  process_text_prompts(text_prompts = c("why is the sky blue? Answer with a short explanation","why is the sun hot?")) |>
+  pull_final_text_answer() 
+
+```
+Note that the process_text_prompts function also accepts a list instead of vectors, if you prefer.
+
+
+
 
 ## Customizing Output
 
@@ -90,10 +109,11 @@ Here we specify that the audience is 5 years old kids.
 
 ```{r eli5}
 
-wflow_eli5 <- ai_workflow() |>
+wflow_eli5 <- ai_workflow() |> 
   set_connector("ollama")  |>
   set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
-  set_audience("Five years old kids")
+  set_audience("Five years old kids") |>
+  encapsulate()
   
 ```
 
@@ -102,7 +122,7 @@ You can see how it changes the output. Don't expect a great explanation!
 ```{r eli5 example}
 
 explanation_eli5 <- wflow_eli5 |> 
-  process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
+  process_text_prompts("why is the sky blue? Answer with a short explanation") |>
   pull_final_answer() 
 
 ```
@@ -111,15 +131,19 @@ This is the kind of explanation you get for the little kids out there:
 
 *"`r explanation_eli5`"*
 
-Note that you can also change an existing workflow directly by piping parameter setting into it.
-For example let's modify the existing workflow wflow_basic before calling the prompt:
 
+When you want to modify an existing workflow, you need to first decapsulate() it to allow for its elements to be modified. You can imagine the encapsulation as a "lock" of current parameters, and you need to unlock things before you change the configuration. When you are done with the settings change, you finally call the encapsulate() again.
+
+For example let's modify the existing workflow wflow_basic before calling the prompt:
 
 ```{r modification of existing workflow}
 
-explanation_low_tech <- wflow_basic |> 
+explainer_low_tech <- wflow_basic |> decapsulate() |>
   set_audience("people without scientific knowledge or background") |>
-  process_prompts(prompts_vector = "why is the sky blue? Answer with a short explanation") |>
+  encapsulate()
+
+explanation_low_tech <- explainer_low_tech |>
+  process_text_prompts("why is the sky blue? Answer with a short explanation") |>
   pull_final_answer() 
 
 ```
@@ -135,11 +159,12 @@ You can also set a specific tone or personality to answer a question.
 wflow_snoop <- ai_workflow() |>
   set_connector("ollama")  |>
   set_model(model_name= "llama3.1:8b-instruct-q5_K_M")|>
-  set_style_of_voice("Snoop Dogg")
+  set_style_of_voice("Snoop Dogg") |>
+  encapsulate()
 
 snoop_answer <- wflow_snoop |>
-  process_prompts(prompts_vector = "Explain how the stock exchange works in a short paragraph") |>
-  pull_final_answer() 
+  process_text_prompts("Explain how the stock exchange works in a short paragraph") |>
+  pull_final_text_answer() 
 
 ```
 

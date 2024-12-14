@@ -488,6 +488,20 @@ pull_final_answer <- function(workflow) {
 }
 
 
+pull_final_text_answer <- function(workflow) {
+  
+  if ("res" %in% names(workflow)) {
+    current_length <- length(workflow[["res"]])
+    text_answer <- sapply(workflow[["res"]][[current_length]], function(x) x$text)
+    return(text_answer)
+  } else {
+    cli::cli_abort("No result found through the workflow.")
+  }
+  
+}
+
+
+
 #' Save workflow
 #'
 #' @importFrom jsonlite toJSON
@@ -2122,7 +2136,7 @@ process_prompts_new <- function(workflow_obj, prompts) {
         # store results
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="ollama") {
           #print("ho!")
-          print(workflow_obj[["res"]])
+         # print(workflow_obj[["res"]])
         if (identical(workflow_obj[["res"]],list())) {
           #print("hey")
           workflow_obj[["res"]][[i]] <- list()
@@ -2221,11 +2235,23 @@ encapsulate <- function(workflow_obj) {
   
 } 
 
+
+decapsulate <- function(workflow_obj) {
+  
+  return(workflow_obj[["workflows"]][[1]])
+  
+}
+
 # shortcut to only process text prompts
 process_text_prompts <- function(workflow_obj, text_prompts) {
   
+  if ("glue" %in% class(text_prompts)) {
+    text_prompts <- as.vector(text_prompts)
+  }
+  
   if (is.vector(text_prompts)) {
     object_prompt_to_pass <-  lapply(as.list(text_prompts), function(x) { list(text=x[1]) })
+    #print(object_prompt_to_pass)
     return(process_prompts_new(workflow_obj, prompts = object_prompt_to_pass))
   }
   
