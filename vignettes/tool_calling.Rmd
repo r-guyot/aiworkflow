@@ -109,7 +109,8 @@ wflow_tool <- ai_workflow() |>
   set_temperature(0) |>
   set_model(model_name= "llama3.2:latest") |>
   set_system_prompt("you are an AI assistant capable of research recent disasters information with a tool connected to the Internet.") |>
-  add_tools_declaration(tools = tool_list)
+  add_tools_declaration(tools = tool_list) |>
+  encapsulate()
 
 ```
 
@@ -118,8 +119,8 @@ Now that the workflow is ready, we can try it out. While you won't see the inter
 ```{r, testing prompt}
 
 wflow_tool |> 
-  process_prompts("Tell me what recent disasters have happened in Mexico?") |> 
-  pull_final_answer()
+  process_text_prompts(text_prompts = "Tell me what recent disasters have happened in Mexico, especially in 2024?") |> 
+  pull_final_text_answer()
 
 ```
 
@@ -130,11 +131,12 @@ You can see the difference versus the same kind of workflow, with no tools suppo
 wflow_no_tool <- ai_workflow() |>
   set_connector("ollama")  |>
   set_temperature(0) |>
-  set_model(model_name= "llama3.2:latest") 
+  set_model(model_name= "llama3.2:latest") |>
+  encapsulate()
 
 wflow_no_tool |> 
-  process_prompts("Tell me what recent disasters have happened in Mexico?") |> 
-  pull_final_answer()
+  process_text_prompts("Tell me what recent disasters have happened in Mexico, especially in 2024?") |> 
+  pull_final_text_answer()
 
 ```
 
@@ -194,11 +196,12 @@ myflow_math <- ai_workflow() |>
   set_n_predict(1000) |>
   set_temperature(0.2) |> 
   set_style_of_voice("Snoop Dogg") |> 
-  add_tools_declaration(tools = tool_list)
+  add_tools_declaration(tools = tool_list) |>
+  encapsulate()
 
 myflow_math |>
-  process_prompts(prompts_vector = "Can you help me solve this math problem? How much is 1321212* 3 , and dividing this whole thing by 7 in the end?") |>
-  pull_final_answer()
+  process_text_prompts("Can you help me solve this math problem? How much is 1321212* 3 , and dividing this whole thing by 7 in the end?") |>
+  pull_final_text_answer()
 
 ```
 
@@ -213,11 +216,12 @@ myflow_clueless_at_math <- ai_workflow() |>
   set_model(model_name= "llama3.2:latest") |> 
   set_n_predict(1000) |>
   set_temperature(0.2) |> 
-  set_style_of_voice("Snoop Dogg") 
+  set_style_of_voice("Snoop Dogg") |>
+  encapsulate()
 
 myflow_clueless_at_math |>
-  process_prompts(prompts_vector = "Can you help me solve this math problem? How much is 1321212* 3 , and dividing this whole thing by 7 in the end?") |>
-  pull_final_answer()
+  process_text_prompts("Can you help me solve this math problem? How much is 1321212* 3 , and dividing this whole thing by 7 in the end?") |>
+  pull_final_text_answer()
 
 ```
 The answer differs somewhat. In this case, it's not too far, while still incorrect. 

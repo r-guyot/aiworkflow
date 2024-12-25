@@ -14,7 +14,6 @@
 #' @export
 execute_workflow <- function(prompts_vector, images_vector=NA_character_, workflow_obj) {
 
-  
   if (!all(is.na(images_vector))) {
     if (length(prompts_vector)!=length(images_vector)) {
       cli::cli_abort("Error: the length of the images_vector does not match the length of prompts_vector.")
@@ -141,7 +140,7 @@ execute_workflow <- function(prompts_vector, images_vector=NA_character_, workfl
       images_vector_to_pass <- ifelse(all(is.na(images_vector)) | workflow_obj[["vision"]]==FALSE,
                                       NA_character_, 
                                       resize_images_and_export_to_base64(images_vector,max_dimension = workflow_obj[["vision_max_image_dimension"]]))
-      
+
       result <- get_ollama_chat_completion(ollama_connection = ollama_conn, 
                                            model = workflow_obj[["model"]],
                                            embedding_model = workflow_obj[["embedding_model"]],
@@ -2159,6 +2158,9 @@ process_prompts_new <- function(workflow_obj, prompts) {
           }
           prompt_img <- unlist(prompt_img_paths)
         } 
+        
+        print(prompt_txt)
+        print(prompt_img)
           
         workflow_obj[["res"]][[i]][[p]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
                                                             images_vector = prompt_img, 

@@ -416,6 +416,8 @@ get_ollama_chat_completion <- function(ollama_connection,
       }
     }
     
+    
+      
     #print(messages_to_send)
       
       data_to_send <- list(
@@ -424,7 +426,7 @@ get_ollama_chat_completion <- function(ollama_connection,
         stream=F,
         options=options_combined
       )
-      
+    
       if (any(!is.na(tools))) {
         cli::cli_alert("Adding tools")
         data_to_send$tools <- tools
