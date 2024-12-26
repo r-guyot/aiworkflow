@@ -144,7 +144,7 @@ There is another way to chain workflow together, using the `add_workflow_step()`
 # you start from the first workflow here
 myflow_chained <-
   myflow_positive |>
-  add_workflow_step(myflow_more_details)
+  add_workflow_step_new(myflow_more_details)
   
 ```
 
@@ -155,7 +155,7 @@ And the result should be very similar to the previous example:
 # you start from the combined workflow here
 myflow_chained |> 
   # you bring your prompt here
-  process_prompts(prompts_vector = company_report) |>
+  process_text_prompts(text_prompts = company_report) |>
   pull_final_text_answer()
 
 ```
@@ -171,12 +171,13 @@ myflow_translate_to_spanish <- ai_workflow() |>
   set_model(model_name = "llama3.2:latest") |>
   set_processing_skill(processing_skill = "translate",target_language="spanish") |>
   set_n_predict(2000) |>
-  set_temperature(0.5)
+  set_temperature(0.5) |>
+  encapsulate()
 
 myflow_chained <-
   myflow_positive |>
-  add_workflow_step(myflow_more_details) |>
-  add_workflow_step(myflow_translate_to_spanish)
+  add_workflow_step_new(myflow_more_details) |>
+  add_workflow_step_new(myflow_translate_to_spanish)
 
 ```
 
@@ -187,7 +188,7 @@ And now you should be able to get in one go, the final text translated in Spanis
 # you start from the combined workflow here
 myflow_chained |> 
   # you bring your prompt here
-  process_text_prompts(prompts_vector = company_report) |>
+  process_text_prompts(company_report) |>
   pull_final_text_answer()
 
 ```

@@ -30,7 +30,8 @@ myflow_pitch <- ai_workflow() |>
   set_audience(audience = "Marketing professionals") |>
   set_temperature(temperature = 0.6) |>
   set_processing_skill(processing_skill = "write_pitch") |>
-  set_n_predict(3000)
+  set_n_predict(3000) |>
+  encapsulate()
 
 res <- myflow_pitch |> save_workflow(filepath = "wflow_pitch.json")
 

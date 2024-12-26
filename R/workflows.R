@@ -324,7 +324,7 @@ execute_workflow_on_df <- function(df,
 #' Process Prompts starting from a workflow
 #'
 #' @description
-#' `process_prompts` is a way to process a vector of prompts by starting from a workflow.
+#' `process_prompts_old` is a way to process a vector of prompts by starting from a workflow.
 #'
 #' @details
 #' This function provides a way to process a vector of prompts by starting from a workflow.
@@ -333,7 +333,7 @@ execute_workflow_on_df <- function(df,
 #' @param images_vector An optional vector (defaults to NA) containing the images to be send to the AI workflow
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
-process_prompts <- function(workflow_obj, prompts_vector, images_vector=NA) {
+process_prompts_old <- function(workflow_obj, prompts_vector, images_vector=NA) {
   
     # if the workflow is not atomic but a chain, follow this path
   if ("workflow_type" %in% names(workflow_obj)) {
@@ -972,10 +972,14 @@ set_processing_skill <- function(workflow_obj, processing_skill, ...) {
   # Capture additional arguments - since they are part of list, we get the list first element
   if (length(list(...)) > 0) {
   additional_args <- list(...)
+  #print(additional_args)
   } else { additional_args <- list() }
-  if (length(additional_args)>0) {
-    additional_args <- additional_args[[1]]
-  }
+  
+  #if (length(additional_args)>0) {
+  #  additional_args <- additional_args[[1]]
+  #}
+  
+  #print(additional_args)
   
   processing_skill_source <- glue::glue("{processing_skill}.txt")
   inst_dir <- system.file(package = 'aiworkflow') 
@@ -1896,7 +1900,7 @@ extract_snippets <- function(text) {
 #' Add a step (i.e. another workflow) to an existing workflow
 #'
 #' @description
-#' `add_workflow_step` adds another workflow to an existing one. By default it chains the new workflow to the previous one(s).
+#' `add_workflow_step_old` adds another workflow to an existing one. By default it chains the new workflow to the previous one(s).
 #'
 #' @details
 #' This function will add a new workflow to an existing one. By default the way the new workflow is added is by chaining it to the previous one.
@@ -1914,7 +1918,7 @@ extract_snippets <- function(text) {
 #' @param workflow_obj_to_add the workflow object you want to add on top of the existing one
 #' @param type the type of step you want to add to the existing workflow. Defaults to "chain". 
 #' @export
-add_workflow_step <- function(workflow_obj, workflow_obj_to_add, type="chain") {
+add_workflow_step_old <- function(workflow_obj, workflow_obj_to_add, type="chain") {
   
   #check current type of workflow: if it's just a single one we call it atomic.
   if ("workflow_type" %in% names(workflow_obj)) {
@@ -2063,9 +2067,18 @@ modify_prompt <- function(workflow_obj, prompt_modifier_function) {
    
 }
 
-# better function to encapsulate image and text together
-# prompts need to contain text, pictures or both
-process_prompts_new <- function(workflow_obj, prompts) {
+#' Process Prompts starting from a workflow
+#'
+#' @description
+#' `process_prompts` is a way to process a vector of text prompts by starting from a workflow.
+#'
+#' @details
+#' This function provides a way to process a text vector of prompts by starting from a workflow.
+#'
+#' @param prompts A list that contains a potential mixture of text and image elements  
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
+process_prompts <- function(workflow_obj, prompts) {
   
   if ("workflows" %in% names(workflow_obj)) {
     
@@ -2159,8 +2172,8 @@ process_prompts_new <- function(workflow_obj, prompts) {
           prompt_img <- unlist(prompt_img_paths)
         } 
         
-        print(prompt_txt)
-        print(prompt_img)
+        #print(prompt_txt)
+        #print(prompt_img)
           
         workflow_obj[["res"]][[i]][[p]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
                                                             images_vector = prompt_img, 
@@ -2177,8 +2190,28 @@ process_prompts_new <- function(workflow_obj, prompts) {
   
 }
 
-
-add_workflow_step_new <- function(workflow_obj, workflow_obj_to_add, type="chain") {
+#' Add a step (i.e. another workflow) to an existing workflow
+#'
+#' @description
+#' `add_workflow_step` adds another workflow to an existing one. By default it chains the new workflow to the previous one(s).
+#'
+#' @details
+#' This function will add a new workflow to an existing one. By default the way the new workflow is added is by chaining it to the previous one.
+#' The way this works is that it will use the previous output of the last workflow element as input for the next one. 
+#'
+#' @examples
+#' myflow_template <- ai_workflow() |> 
+#' set_connector("ollama") |>
+#'   set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |> 
+#'   set_n_predict(1000) |> 
+#'   set_temperature(0.8) |>
+#'   encapsulate()
+#' 
+#' @param workflow_obj the previous workflow object that you want to build on
+#' @param workflow_obj_to_add the workflow object you want to add on top of the existing one
+#' @param type the type of step you want to add to the existing workflow. Defaults to "chain". 
+#' @export
+add_workflow_step <- function(workflow_obj, workflow_obj_to_add, type="chain") {
   
   #check current type of workflow: if it's just a single one we call it atomic.
   
@@ -2218,7 +2251,24 @@ validate_single_workflow <- function(workflow_obj) {
 }
   
 
-
+#' Encapsulates a workflow for it to be used to process prompts
+#'
+#' @description
+#' `encapsulate` readies a workflow to process prompts.
+#'
+#' @details
+#' This function encapsulates a workflow to get it ready to be used to process prompts.
+#'
+#' @examples
+#' myflow_template <- ai_workflow() |> 
+#' set_connector("ollama") |>
+#'   set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |> 
+#'   set_n_predict(1000) |> 
+#'   set_temperature(0.8) |>
+#'   encapsulate()
+#' 
+#' @param workflow_obj the workflow_obj that you want to encapsulate to be able to make use of it
+#' @export
 encapsulate <- function(workflow_obj) {
   
   if(!is.null(workflow_obj[["workflows"]])) {
@@ -2240,13 +2290,46 @@ encapsulate <- function(workflow_obj) {
 } 
 
 
+#' Decapsulate removes the encapsulation of a workflow to make it easier to edit
+#'
+#' @description
+#' `decapsulate` removes the encapsulation of a workflow to make it easier to edit.
+#'
+#' @details
+#' This function removes the encapsulation of a workflow to make it easier to edit.
+#'
+#' @examples
+#' myflow_template <- ai_workflow() |> 
+#' set_connector("ollama") |>
+#'   set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |> 
+#'   set_n_predict(1000) |> 
+#'   set_temperature(0.8) |>
+#'   encapsulate()
+#'   
+#' myflow_template <- myflow_template |>
+#' decapsulate() |>
+#' add_processing_skill("add_details") |>
+#' encapsulate()
+#' 
+#' @param workflow_obj the workflow_obj that you want to encapsulate to be able to make use of it
+#' @export
 decapsulate <- function(workflow_obj) {
   
   return(workflow_obj[["workflows"]][[1]])
   
 }
 
-# shortcut to only process text prompts
+#' Process Text-only Prompts starting from a workflow
+#'
+#' @description
+#' `process_text_prompts` is a way to process a vector of text prompts by starting from a workflow.
+#'
+#' @details
+#' This function provides a way to process a text vector of prompts by starting from a workflow.
+#'
+#' @param text_prompts A vector containing the text prompts to be executed by the AI workflow 
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
 process_text_prompts <- function(workflow_obj, text_prompts) {
   
   if ("glue" %in% class(text_prompts)) {
@@ -2256,7 +2339,7 @@ process_text_prompts <- function(workflow_obj, text_prompts) {
   if (is.vector(text_prompts)) {
     object_prompt_to_pass <-  lapply(as.list(text_prompts), function(x) { list(text=x[1]) })
     #print(object_prompt_to_pass)
-    return(process_prompts_new(workflow_obj, prompts = object_prompt_to_pass))
+    return(process_prompts(workflow_obj, prompts = object_prompt_to_pass))
   }
   
 }
