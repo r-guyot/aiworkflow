@@ -449,6 +449,7 @@ get_ollama_chat_completion <- function(ollama_connection,
           arguments <- list()
           tool_result <- list()
           i <- 0
+          #print(result_list[[one_prompt]]$message$tool_calls)
           for (one_tool in result_list[[one_prompt]]$message$tool_calls) {
             i <- i + 1
             function_name_found <- one_tool$`function`$name
@@ -497,8 +498,9 @@ get_ollama_chat_completion <- function(ollama_connection,
             current_length <- length(messages_to_send)
             
             # add the answer from the tool that comes from the function call. Note that llama3.1 at least excepts some kind of JSON output.
-            messages_to_send[[current_length+1]] <- list(role="tool",content=one_tool_result)
+            messages_to_send[[current_length+1]] <- list(role="tool", content=one_tool_result)
           }
+          
           
           data_to_send <- list(
             model=model,
@@ -506,6 +508,8 @@ get_ollama_chat_completion <- function(ollama_connection,
             stream=F,
             options=options_combined
           )
+          
+          #print(data_to_send)
           
           result <- req |> 
             httr2::req_body_json(data = data_to_send
