@@ -107,7 +107,8 @@ Now let's build a workflow that will integrate this tool calling capability, usi
 wflow_tool <- ai_workflow() |>
   set_connector("ollama")  |>
   set_temperature(0) |>
-  set_model(model_name= "llama3.2:latest") |>
+  set_n_predict(2000) |>
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
   set_system_prompt("you are an AI assistant capable of research recent disasters information with a tool connected to the Internet.") |>
   add_tools_declaration(tools = tool_list) |>
   encapsulate()
@@ -119,7 +120,7 @@ Now that the workflow is ready, we can try it out. While you won't see the inter
 ```{r, testing prompt}
 
 wflow_tool |> 
-  process_text_prompts(text_prompts = "Tell me what recent disasters have happened in Mexico, especially in 2024?") |> 
+  process_text_prompts(text_prompts = "Tell me what recent disasters have happened in Mexico, as well as the date of their occurence") |> 
   pull_final_text_answer()
 
 ```
@@ -131,11 +132,12 @@ You can see the difference versus the same kind of workflow, with no tools suppo
 wflow_no_tool <- ai_workflow() |>
   set_connector("ollama")  |>
   set_temperature(0) |>
-  set_model(model_name= "llama3.2:latest") |>
+  set_n_predict(2000) |>
+  set_model(model_name= "llama3.1:8b-instruct-q5_K_M") |>
   encapsulate()
 
 wflow_no_tool |> 
-  process_text_prompts("Tell me what recent disasters have happened in Mexico, especially in 2024?") |> 
+  process_text_prompts("Tell me what recent disasters have happened in Mexico, as well as the date of their occurence") |> 
   pull_final_text_answer()
 
 ```
