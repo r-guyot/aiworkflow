@@ -494,7 +494,19 @@ pull_final_text_answer <- function(workflow) {
     text_answer <- sapply(workflow[["res"]][[current_length]], function(x) x$text)
     return(text_answer)
   } else {
-    cli::cli_abort("No result found through the workflow.")
+    cli::cli_abort("No text result found through the workflow.")
+  }
+  
+}
+
+pull_final_image_answer <- function(workflow) {
+  
+  if ("res" %in% names(workflow)) {
+    current_length <- length(workflow[["res"]])
+    image_answer <- sapply(workflow[["res"]][[current_length]], function(x) x$image)
+    return(image_answer)
+  } else {
+    cli::cli_abort("No image result found through the workflow.")
   }
   
 }
@@ -2237,7 +2249,7 @@ validate_single_workflow <- function(workflow_obj) {
   # check if we have the key components, i.e. a connector and a model
   if ("connector" %in% names(workflow_contents) & "model" %in% names(workflow_contents)) {
     # check if model is not NA, or that it's a comfyui workflow
-    if (!is.na(workflow_contents[["model"]]) | "comfyui_workflow" %in% workflow_contents) {
+    if (!is.na(workflow_contents[["model"]]) | "comfyui_workflow" %in% names(workflow_contents)) {
     return(TRUE)
     } else {
       cli::cli_alert_warning("Your workflow does not appear to have a model assigned.")
