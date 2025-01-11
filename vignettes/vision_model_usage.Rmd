@@ -147,7 +147,7 @@ And you get:
 
 > `r gsub(emotions, pattern='\n',replacement=' ')`
 
-Here's another example so you can get an idea of how it changes. This time we will use this pic of Dizzy Gillespie:
+Here's another example so you can get an idea of how it changes. This time we will use [this pic](https://www.loc.gov/resource/music.musgottlieb-03141/?r=-0.572,-0.087,2.145,1.455,0) of [Dizzy Gillespie](https://en.wikipedia.org/wiki/Dizzy_Gillespie):
 
 ```{r, dizzy}
 
@@ -168,7 +168,50 @@ emotions_dizzy <- describer |>
 
 And you get:
 
-> `r gsub(dizzy, pattern='\n',replacement=' ')`
+> `r gsub(emotions_dizzy, pattern='\n',replacement=' ')`
+
+### Reading handwriting
+
+Let's see what vision models can do with handwritten letters. 
+We will be using [a letter from WW1 era](https://en.wikipedia.org/wiki/File:Hand_written_letter_of_recognition_for_world_war_1_pow_from_king_george_v_1918_sent_to_lance_corporal_james_cordingley.jpg) as an example.
+
+```{r, captcha}
+
+letter <- system.file("images", "historical_letter.jpg", package="aiworkflow")
+
+```
+
+![](`r letter`)
+
+Since we are not asking the model to be very creative here, we want to keep the temperature as low as possible. Let's define a new workflow.
+
+```{r, workflow with vision model}
+
+letter_reader <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_temperature(0.1) |>
+  add_vision_capability() |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+```
+
+
+```{r, workflow with vision model}
+
+letter_text <- letter_reader |>
+  process_prompts(prompts = list(list(text="This is a handwritten letter. Extract the whole text from it, without repetition. Answer concisely. There is no need to add comments before or after the text of the letter. Focus on the handwritten text only.",
+                                      image=letter))) |>
+  pull_final_text_answer()
+
+```
+
+We get the following result:
+
+> `r gsub(letter_text, pattern='\n',replacement=' ')`
+
+Seems to work well enough!
 
 
 ## Example with Image Resizing
