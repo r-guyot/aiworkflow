@@ -77,7 +77,7 @@ You get the following description:
 
 > `r gsub(description,pattern='\n',replacement=' ')`
 
-## Beyond the simple description
+## Use Cases Beyond Descriptions
 
 ### Counting entities
 
@@ -137,8 +137,9 @@ You can ask to confirm the emotion coming from an image.
 ```{r, emotions}
 
 emotions <- describer |>
-  process_prompts(prompts = list(list(text="Describe the emotions coming from the image, and if it is positive or negative. Answer concisely.",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="Describe the emotions coming from the image, and if it is positive or negative. Answer concisely.",
+    image=image_path))) |>
   pull_final_text_answer()
 
 ```
@@ -160,8 +161,9 @@ dizzy <- system.file("images", "dizzy_gillespie.jpg", package="aiworkflow")
 ```{r, emotions_dizzy}
 
 emotions_dizzy <- describer |>
-  process_prompts(prompts = list(list(text="Describe the emotions coming from the image, and if it is positive or negative. Answer concisely.",
-                                      image=dizzy))) |>
+  process_prompts(prompts = list(list(
+    text="Describe the emotions coming from the image, and if it is positive or negative. Answer concisely.",
+    image=dizzy))) |>
   pull_final_text_answer()
 
 ```
@@ -175,33 +177,33 @@ And you get:
 Let's see what vision models can do with handwritten letters. 
 We will be using [a letter from WW1 era](https://en.wikipedia.org/wiki/File:Hand_written_letter_of_recognition_for_world_war_1_pow_from_king_george_v_1918_sent_to_lance_corporal_james_cordingley.jpg) as an example.
 
-```{r, captcha}
+```{r, letter from ww1}
 
 letter <- system.file("images", "historical_letter.jpg", package="aiworkflow")
 
 ```
 
-![](`r letter`)
+<img src="`r letter`" alt="letter" width="100%"/>
 
 Since we are not asking the model to be very creative here, we want to keep the temperature as low as possible. Let's define a new workflow.
 
-```{r, workflow with vision model}
+```{r, workflow to read letter}
 
 letter_reader <- ai_workflow() |>
   set_connector("ollama") |>
-  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_model("llama3.2-vision") |>
   set_temperature(0.1) |>
-  add_vision_capability() |>
+  add_vision_capability(max_image_dimension = 600) |>
   set_n_predict(2000) |>
   encapsulate() 
 
 ```
 
 
-```{r, workflow with vision model}
+```{r, vision model applied on letter}
 
 letter_text <- letter_reader |>
-  process_prompts(prompts = list(list(text="This is a handwritten letter. Extract the whole text from it, without repetition. Answer concisely. There is no need to add comments before or after the text of the letter. Focus on the handwritten text only.",
+  process_prompts(prompts = list(list(text="This is a handwritten letter. Extract the WHOLE message with high accuracy. Keep all the parts as they are, without making them shorter. There is no need to add comments before or after the text of the letter.",
                                       image=letter))) |>
   pull_final_text_answer()
 
@@ -211,7 +213,125 @@ We get the following result:
 
 > `r gsub(letter_text, pattern='\n',replacement=' ')`
 
-Seems to work well enough!
+You will notice that the transcription is not perfect. This is expected, as the vision models are trained to work on a wide range of images and not just focusing on OCR. Note that some models perform better at OCR than others (moondream, for example, performs very poorly) and you probably need to test things by yourself in order to validate what is the right model for your use case.
+
+### Reading graphs
+
+We can also ask vision models to describe data included in charts or graphs. Since this is rather specific use case, we modify the system prompt a little bit to make sure it will focus on understanding the data behind the charts.
+
+```{r, workflow to read letter}
+
+chart_analyzer <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("llama3.2-vision") |>
+  set_temperature(0.1) |>
+  set_system_prompt("You are an AI model specialized in reading data from charts and graphs. You focus on finding trends, and you answer by using figures and data whenever possible.") |>
+  add_vision_capability() |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+```
+Let's provide it with a chart of the [Operating Systems share over time](https://flatworldknowledge.lardbucket.org/books/designing-business-information-systems-apps-websites-and-more/s13-02-representing-industry-informat.html), between 2009 and 2010. 
+
+```{r, chart image}
+
+os_chart <- system.file("images", "operating_system_share.png", package="aiworkflow")
+
+```
 
 
-## Example with Image Resizing
+![](`r os_chart`)
+
+```{r, visin model applied on chart}
+
+chart_explanation <- chart_analyzer |>
+  process_prompts(prompts = list(list(text="Explain what this chart represents, and what we can conclude from it. If there are several trends please cover them as well in your explanation.",
+                                      image=os_chart))) |>
+  pull_final_text_answer()
+
+```
+
+We get the following description:
+
+> `r gsub(chart_explanation, pattern='\n',replacement=' ')`
+
+A pretty accurate statement in this case.
+
+## Automatic Image Resizing
+
+In order to speed up the inference from the model, you can specify your workflow to resize images that are bigger than a certain dimension on the fly, before they are fed to the model. You can do this by using the parameter *max_image_dimension* inside the add_vision_capability function. The number you provide will be the maximum image dimension (x or y, whichever is greater) that we will feed to the model. This functionality uses the excellent *magick* library behind the scenes.
+
+In the example below we will resize Dizzy's picture to 400 pixels.
+
+```{r, workflow with vision model, with resizing to 400 pixels}
+
+describer_400 <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_temperature(0.1) |>
+  add_vision_capability(max_image_dimension = 400) |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+```
+
+
+```{r, testing resizing at 400}
+
+dizzy_400 <- describer_400 |>
+  process_prompts(prompts = list(list(text="Describe what is pictured in this image, in one paragraph.",
+                                      image=dizzy))) |>
+  pull_final_text_answer()
+
+```
+
+We get the following description:
+
+> `r gsub(dizzy_400, pattern='\n',replacement=' ')`
+
+It still works well at 400px, as you can see. Let's try now by shrinking the picture down to 200 pixels.
+
+```{r, workflow with vision model, with resizing set at 200}
+
+describer_200 <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_temperature(0.1) |>
+  add_vision_capability(max_image_dimension = 200) |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+dizzy_200 <- describer_200 |>
+  process_prompts(prompts = list(list(text="Describe what is pictured in this image, in one paragraph.",
+                                      image=dizzy))) |>
+  pull_final_text_answer()
+
+```
+
+We get the following description:
+
+> `r gsub(dizzy_200, pattern='\n',replacement=' ')`
+
+Impressive! We did not lose much information apparently. Let's go down even further to 50 pixels.
+
+```{r, workflow with vision model, with resizing set at 50}
+
+describer_50 <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_temperature(0.1) |>
+  add_vision_capability(max_image_dimension = 50) |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+dizzy_50 <- describer_50 |>
+  process_prompts(prompts = list(list(text="Describe what is pictured in this image, in one paragraph.",
+                                      image=dizzy))) |>
+  pull_final_text_answer()
+
+```
+At 50 pixels, we are reaching the limit:
+
+> `r gsub(dizzy_50, pattern='\n',replacement=' ')`
+
+The description is now severely impaired - we went too far in reducing the image size.
