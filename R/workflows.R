@@ -471,7 +471,7 @@ display_intermediate_answer <- function(workflow) {
 #' `pull_final_answer` is a function to extract the final answer from a series of workflows
 #'
 #' @details
-#' This function will extract the final text result that's usually coming from a series of workflows.
+#' This function will extract the final result from a series of workflows, as a list. The list can contain several types of data.
 #'
 #' @param workflow A workflow object containing all parameters describing the flow required
 #' @export
@@ -486,7 +486,16 @@ pull_final_answer <- function(workflow) {
   
 }
 
-
+#' Pull Final Text Answer
+#'
+#' @description
+#' `pull_final_text_answer` is a function to extract the final textual answer from a series of workflows
+#'
+#' @details
+#' This function will extract the final text result that's usually coming from a series of workflows. It will ignore outputs of a different type.
+#'
+#' @param workflow A workflow object containing all parameters describing the flow required
+#' @export
 pull_final_text_answer <- function(workflow) {
   
   if ("res" %in% names(workflow)) {
@@ -499,6 +508,16 @@ pull_final_text_answer <- function(workflow) {
   
 }
 
+#' Pull Final Image Answer
+#'
+#' @description
+#' `pull_final_image_answer` is a function to extract the final image resulting from a series of workflows
+#'
+#' @details
+#' This function will extract the final resulting image from a series of workflows. It will ignore outputs of a different type.
+#'
+#' @param workflow A workflow object containing all parameters describing the flow required
+#' @export
 pull_final_image_answer <- function(workflow) {
   
   if ("res" %in% names(workflow)) {

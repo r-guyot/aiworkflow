@@ -13,5 +13,5 @@ pull_final_answer(workflow)
 \code{pull_final_answer} is a function to extract the final answer from a series of workflows
 }
 \details{
-This function will extract the final text result that's usually coming from a series of workflows.
+This function will extract the final result from a series of workflows, as a list. The list can contain several types of data.
 }
