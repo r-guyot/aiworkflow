@@ -219,13 +219,13 @@ You will notice that the transcription is not perfect. This is expected, as the 
 
 We can also ask vision models to describe data included in charts or graphs. Since this is rather specific use case, we modify the system prompt a little bit to make sure it will focus on understanding the data behind the charts.
 
-```{r, workflow to read letter}
+```{r, workflow to read graphs}
 
 chart_analyzer <- ai_workflow() |>
   set_connector("ollama") |>
   set_model("llama3.2-vision") |>
-  set_temperature(0.1) |>
-  set_system_prompt("You are an AI model specialized in reading data from charts and graphs. You focus on finding trends, and you answer by using figures and data whenever possible.") |>
+  set_temperature(0) |>
+  set_system_prompt("You are an AI model specialized in reading data from charts and graphs.") |>
   add_vision_capability() |>
   set_n_predict(2000) |>
   encapsulate() 
@@ -239,13 +239,13 @@ os_chart <- system.file("images", "operating_system_share.png", package="aiworkf
 
 ```
 
+<img src="`r os_chart`" alt="chart of os share" width="100%"/>
 
-![](`r os_chart`)
 
-```{r, visin model applied on chart}
+```{r, vision model applied on chart}
 
 chart_explanation <- chart_analyzer |>
-  process_prompts(prompts = list(list(text="Explain what this chart represents, and what we can conclude from it. If there are several trends please cover them as well in your explanation.",
+  process_prompts(prompts = list(list(text="Explain what this chart represents, and what we can conclude from it. Keep your explanation in one paragraph.",
                                       image=os_chart))) |>
   pull_final_text_answer()
 

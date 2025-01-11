@@ -223,6 +223,21 @@ cfy_set_checkpoint <- function(workflow_obj, checkpoint) {
   return(workflow_obj) 
 }
 
+
+cfy_set_lora <- function(workflow_obj, lora_name) {
+  
+  for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
+    name <- names(workflow_obj[["comfyui_workflow"]][i])
+    
+    if ("inputs" %in% names(workflow_obj[["comfyui_workflow"]][[i]])) {
+      if ("lora_name" %in% names(workflow_obj[["comfyui_workflow"]][[i]][["inputs"]]) ) {
+        workflow_obj[["comfyui_workflow"]][[name]][["inputs"]][["ckpt_name"]] <- lora_name
+      }
+    }
+  }
+  return(workflow_obj) 
+}
+
 cfy_set_cfg <- function(workflow_obj, cfg) {
   
   if (is.character(cfg)) { cfg <- as.integer(cfg) }
@@ -501,6 +516,18 @@ cfy_get_model_checkpoints <- function(workflow_obj) {
   }
 }
 
+
+cfy_get_model_loras <- function(workflow_obj) {
+  
+  ws <- websocket::WebSocket$new(glue::glue("ws://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/ws?clientID={workflow_obj[['client_id']]}"))
+  req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/models/loras"))
+  result <- req |> httr2::req_perform() 
+  ws$close
+  if (result$status_code==200) {
+    loras <- result |> httr2::resp_body_json()
+    return(unlist(loras))
+  }
+}
 
 
 cfy_get_image <- function(workflow_obj, image_filename) {
