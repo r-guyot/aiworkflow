@@ -21,9 +21,16 @@ library(magick)
 
 ## Basic Example
 
-This package supports the usage of vision models. Vision models are specific models that are trained to accept images as inputs. Since most of them also support text inputs, you need to declare that you want to use their vision capabilities.
+This package supports the usage of vision models. Vision models are specific models that are trained to accept images as inputs. Since most of them also support text inputs, you need to declare that you want to use their vision capabilities. Note that the package has no knowledge of the availability of vision capabilities for each model. You need to check by yourself, as most models only accept text inputs. This being said, the following models have vision capabilities and can be used with the ollama connector, at the time of writing:
 
-You do this by adding the add_vision_capability() as part of your workflow definition.
+- minicpm-v
+- moondream
+- llava
+- llava-llama3
+- llava-phi3
+- llama3.2-vision
+
+Once you have selected a model that is suitable for vision processing, you need to add the add_vision_capability() as part of your workflow definition for the image input to be processed.
 
 Here is a short example:
 
@@ -39,7 +46,7 @@ describer <- ai_workflow() |>
 
 ```
 
-This is a picture from the Library of Congress from the civil war era (public domain, see <https://www.loc.gov/resource/ppmsca.67667/>)
+The below picture is from the Library of Congress from the civil war era (public domain, see <https://www.loc.gov/resource/ppmsca.67667/>)
 
 ```{r, sample image}
 
@@ -47,15 +54,121 @@ image_path <- system.file("images", "congress_library_civil_war.jpg", package="a
 
 ```
 
-![sample picture](`r image_path`)
+This is what the picture included in our package looks like:
+
+![](`r image_path`)
+
+Now we use the vision model minicpm-v to get a description of this image. Note that this time, we provide a prompt with two inputs:
+
+- a text input which is our question related to the image.
+- an image input which is the path to the image we feed to the model. 
+
 
 ```{r, describing the image with a vision model}
 
-describer |>
+description <- describer |>
   process_prompts(prompts = list(list(text="describe this image with high accuracy",
                                       image=image_path))) |>
   pull_final_text_answer()
 
 ```
+
+You get the following description:
+
+> `r gsub(description,pattern='\n',replacement=' ')`
+
+## Beyond the simple description
+
+### Counting entities
+
+You can use image models to count the number of people in a picture:
+
+```{r, counting people with vision model}
+
+people_count <- describer |>
+  process_prompts(prompts = list(list(text="count how many people are in this picture. Answer very concisely.",
+                                      image=image_path))) |>
+  pull_final_text_answer()
+
+```
+
+You get the following answer:
+
+> `r gsub(people_count, pattern='\n',replacement=' ')`
+
+### Probing
+
+You can ask questions such as what kind of camera was used to produce this picture:
+
+```{r, camera check}
+
+camera_check <- describer |>
+  process_prompts(prompts = list(list(text="what kind of camera was used to produce this picture? Answer in one paragraph only.",
+                                      image=image_path))) |>
+  pull_final_text_answer()
+
+```
+
+And you get:
+
+> `r gsub(camera_check, pattern='\n',replacement=' ')`
+
+### Colors
+
+You can ask to extract the main color(s) from a picture.
+
+```{r, colors}
+
+main_colors <- describer |>
+  process_prompts(prompts = list(list(text="Give the hexadecimal values of the main colors from this picture. Answer concisely.",
+                                      image=image_path))) |>
+  pull_final_text_answer()
+
+```
+
+And you get:
+
+> `r gsub(main_colors, pattern='\n',replacement=' ')`
+
+### Emotions
+
+You can ask to confirm the emotion coming from an image.
+
+```{r, emotions}
+
+emotions <- describer |>
+  process_prompts(prompts = list(list(text="Describe the emotions coming from the image, and if it is positive or negative. Answer concisely.",
+                                      image=image_path))) |>
+  pull_final_text_answer()
+
+```
+
+And you get:
+
+> `r gsub(emotions, pattern='\n',replacement=' ')`
+
+Here's another example so you can get an idea of how it changes. This time we will use this pic of Dizzy Gillespie:
+
+```{r, dizzy}
+
+dizzy <- system.file("images", "dizzy_gillespie.jpg", package="aiworkflow")
+
+```
+
+![](`r dizzy`)
+
+```{r, emotions_dizzy}
+
+emotions_dizzy <- describer |>
+  process_prompts(prompts = list(list(text="Describe the emotions coming from the image, and if it is positive or negative. Answer concisely.",
+                                      image=dizzy))) |>
+  pull_final_text_answer()
+
+```
+
+And you get:
+
+> `r gsub(dizzy, pattern='\n',replacement=' ')`
+
 
 ## Example with Image Resizing
