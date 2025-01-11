@@ -9,7 +9,7 @@ add_vision_capability(workflow_obj, max_image_dimension = NA)
 \arguments{
 \item{workflow_obj}{A workflow object containing all parameters describing the workflow required}
 
-\item{max_image_dimension}{A numerical value (defaults to 672 if not provided) that defines the largest dimension (width or height) of the pictures to be sent to the model.}
+\item{max_image_dimension}{A numerical value (defaults to NA if not provided) that defines the largest dimension (width or height) of the pictures to be sent to the model.}
 }
 \description{
 \code{add_vision_capability} lets you declare that this model can support the description or extraction of information from images. Only few models support such capabilities.

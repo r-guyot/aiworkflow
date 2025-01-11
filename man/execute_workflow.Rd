@@ -4,7 +4,7 @@
 \alias{execute_workflow}
 \title{Execute an AI workflow}
 \usage{
-execute_workflow(prompts_vector, images_vector = NA, workflow_obj)
+execute_workflow(prompts_vector, images_vector = NA_character_, workflow_obj)
 }
 \arguments{
 \item{prompts_vector}{A vector containing the prompts to be executed by the AI workflow}

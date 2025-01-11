@@ -15,7 +15,8 @@ set_connector(workflow_obj, connector)
 \code{set_connector} sets the connector type expected for the server calls. This can for example be an Ollama server or a Llama.cpp server.
 }
 \details{
-Set the connector required to operate the workflow. A connector is a server that will be reached by an API. It can either be a local or a remote server.
+Set the connector required to operate the workflow.
+A connector is a server that will be reached by an API. It can either be a local or a remote server.
 }
 \examples{
 my_workflow <- ai_workflow() |> 

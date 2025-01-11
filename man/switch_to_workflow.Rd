@@ -4,10 +4,10 @@
 \alias{switch_to_workflow}
 \title{Switch to workflow}
 \usage{
-switch_to_workflow(workflow, new_workflow)
+switch_to_workflow(workflow_obj, new_workflow)
 }
 \arguments{
-\item{workflow}{A workflow object containing all parameters describing the flow required}
+\item{workflow_obj}{A workflow object containing all parameters describing the flow required}
 
 \item{new_workflow}{A workflow object to execute after the last one}
 }

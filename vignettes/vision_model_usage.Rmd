@@ -1,0 +1,61 @@
+---
+title: "Vision Models Usage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vision Models Usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aiworkflow)
+library(magick)
+```
+
+## Basic Example
+
+This package supports the usage of vision models. Vision models are specific models that are trained to accept images as inputs. Since most of them also support text inputs, you need to declare that you want to use their vision capabilities.
+
+You do this by adding the add_vision_capability() as part of your workflow definition.
+
+Here is a short example:
+
+```{r, workflow with vision model}
+
+describer <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_temperature(0.5) |>
+  add_vision_capability() |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+```
+
+This is a picture from the Library of Congress from the civil war era (public domain, see <https://www.loc.gov/resource/ppmsca.67667/>)
+
+```{r, sample image}
+
+image_path <- system.file("images", "congress_library_civil_war.jpg", package="aiworkflow")
+
+```
+
+![sample picture](`r image_path`)
+
+```{r, describing the image with a vision model}
+
+describer |>
+  process_prompts(prompts = list(list(text="describe this image with high accuracy",
+                                      image=image_path))) |>
+  pull_final_text_answer()
+
+```
+
+## Example with Image Resizing
