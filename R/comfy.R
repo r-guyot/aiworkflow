@@ -47,7 +47,11 @@ cfy_randomize_camera_angle <- function(prompt_text, accent=1.5) {
   
 }
 
-
+#' ComfyUI: Find the Node of the Negative Prompt
+#'
+#' @description
+#' `cfy_find_pos_neg_prompt_node` lets you find the node reference of the negative prompt from ComfyUI.
+#' @export
 cfy_find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
   
   if (!polarity %in% c("positive","negative")) {
@@ -66,6 +70,11 @@ cfy_find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
   
 }
 
+#' ComfyUI: Set Positive Prompt for Image Generation
+#'
+#' @description
+#' `cfy_set_positive_prompt` lets you set the positive prompt to use to generate images in ComfyUI.
+#' @export
 cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
   
   node_id <- cfy_find_pos_neg_prompt_node(workflow_obj, polarity = "positive")
@@ -77,6 +86,11 @@ cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
   
 }
 
+#' ComfyUI: Set Negative Prompt for Image Generation
+#'
+#' @description
+#' `cfy_set_negative_prompt` lets you set the negative prompt to use to generate images in ComfyUI.
+#' @export
 cfy_set_negative_prompt <- function(workflow_obj, negative_prompt) {
   
   node_id <- cfy_find_pos_neg_prompt_node(workflow_obj, polarity = "negative")
@@ -237,7 +251,11 @@ cfy_set_checkpoint <- function(workflow_obj, checkpoint) {
   return(workflow_obj) 
 }
 
-
+#' ComfyUI: set LORA 
+#'
+#' @description
+#' `cfy_set_lora` lets you set the LORA to use for the present comfyUI workflow
+#' @export
 cfy_set_lora <- function(workflow_obj, lora_name) {
   
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
@@ -252,7 +270,11 @@ cfy_set_lora <- function(workflow_obj, lora_name) {
   return(workflow_obj) 
 }
 
-
+#' ComfyUI: set LORA Model Strength
+#'
+#' @description
+#' `cfy_set_lora_model_strength` lets you set the strength of the LORAL model for the present comfyUI workflow
+#' @export
 cfy_set_lora_model_strength <- function(workflow_obj, strength_model) {
 
     for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
@@ -268,7 +290,11 @@ cfy_set_lora_model_strength <- function(workflow_obj, strength_model) {
   
 }
 
-
+#' ComfyUI: set Strength of the CLIP for LORA
+#'
+#' @description
+#' `cfy_set_lora_clip_strength` lets you set the strength of the CLIP Modification by the LORA for the present comfyUI workflow
+#' @export
 cfy_set_lora_clip_strength <- function(workflow_obj, strength_clip) {
   
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
@@ -285,6 +311,11 @@ cfy_set_lora_clip_strength <- function(workflow_obj, strength_clip) {
   
 }
 
+#' ComfyUI: set cfg (guidance)
+#'
+#' @description
+#' `cfy_set_cfg` lets you set the guidance (cfg) for the present comfyUI workflow
+#' @export
 cfy_set_cfg <- function(workflow_obj, cfg) {
   
   if (is.character(cfg)) { cfg <- as.integer(cfg) }
@@ -302,6 +333,11 @@ cfy_set_cfg <- function(workflow_obj, cfg) {
   return(workflow_obj) 
 }
 
+#' ComfyUI: set number of steps for image generation
+#'
+#' @description
+#' `cfy_set_steps` lets you set the number of steps to generate an image with the present comfyUI workflow
+#' @export
 cfy_set_steps <- function(workflow_obj, steps=20) {
   
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
@@ -316,6 +352,11 @@ cfy_set_steps <- function(workflow_obj, steps=20) {
   return(workflow_obj) 
 }
 
+#' ComfyUI: set custom workflow
+#'
+#' @description
+#' `cfy_set_custom_workflow` lets you load a specific json file that contains a custom comfyui workflow
+#' @export
 cfy_set_custom_workflow <- function(workflow_obj, comfyui_workflow_json_filepath) {
   
   if (file.exists(comfyui_workflow_json_filepath)) {
@@ -333,6 +374,11 @@ cfy_set_custom_workflow <- function(workflow_obj, comfyui_workflow_json_filepath
   
 }
 
+#' ComfyUI: set a negative prompt for a simple ComfyUI workflow
+#'
+#' @description
+#' `cfy_set_simple_workflow_negative_prompt` lets you set the negative prompt for a simple ComfyUI workflow
+#' @export
 cfy_set_simple_workflow_negative_prompt <- function(workflow_obj, negative_prompt) {
   
   if (!"comfyui_workflow" %in% names(workflow_obj)) {
@@ -347,6 +393,11 @@ cfy_set_simple_workflow_negative_prompt <- function(workflow_obj, negative_promp
   return(workflow_obj)
 }
 
+#' ComfyUI: Set up a very simple ComfyUI workflow
+#'
+#' @description
+#' `cfy_set_simple_workflow` lets you set most simple ComfyUI workflow possible
+#' @export
 cfy_set_simple_worfklow <- function(workflow_obj, 
                                         checkpoint=NA,
                                         steps=20,
@@ -470,20 +521,14 @@ cfy_set_simple_worfklow <- function(workflow_obj,
 }
 
 
-
-
-
-
+#' ComfyUI: Queue Prompt
+#'
+#' @description
+#' `cfy_queue_prompt` lets you queue the prompt to generate the image with the current ComfyUI workflow.
+#' @export
 cfy_queue_prompt <- function(workflow_obj, prompt_json) {
   
-  #comfy_workflow <- list()
-  #comfy_workflow[["client_id"]] <- client_id
-  #prompt_json <- fromJSON(txt=prompt_text, simplifyVector = F)
-  
   data_prep <- list("prompt"=prompt_json, "client_id"=workflow_obj[["client_id"]])
-  
-  #comfy_workflow[["ip"]] <- "127.0.0.1"
-  #comfy_workflow[["port"]] <- "8188"
   
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/prompt"))
   
@@ -499,6 +544,11 @@ cfy_queue_prompt <- function(workflow_obj, prompt_json) {
 
 }
 
+#' ComfyUI: Get History
+#'
+#' @description
+#' `cfy_get_history` lets you get the history of the images generated by the current ComfyUI workflow.
+#' @export
 cfy_get_history <- function(workflow_obj, prompt_id) {
   
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/history/{prompt_id}"))
@@ -510,7 +560,11 @@ cfy_get_history <- function(workflow_obj, prompt_id) {
   
 }
 
-
+#' ComfyUI: Process Prompts
+#'
+#' @description
+#' `cfy_process_prompt` lets you process the prompts to generate the image with the current ComfyUI workflow.
+#' @export
 cfy_process_prompts <- function(workflow_obj, prompt) {
 
   #comfy_workflow <- img_gen
@@ -551,6 +605,11 @@ cfy_process_prompts <- function(workflow_obj, prompt) {
 }
 
 
+#' ComfyUI: Get Model Checkpoints
+#'
+#' @description
+#' `cfy_get_model_checkpoints` lets you get a list of available checkpoint models from ComfyUI.
+#' @export
 cfy_get_model_checkpoints <- function(workflow_obj) {
   
   ws <- websocket::WebSocket$new(glue::glue("ws://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/ws?clientID={workflow_obj[['client_id']]}"))
@@ -564,6 +623,11 @@ cfy_get_model_checkpoints <- function(workflow_obj) {
 }
 
 
+#' ComfyUI: Get LORA Models list
+#'
+#' @description
+#' `cfy_get_model_loras` lets you get a list of available LORA models from ComfyUI.
+#' @export
 cfy_get_model_loras <- function(workflow_obj) {
   
   ws <- websocket::WebSocket$new(glue::glue("ws://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/ws?clientID={workflow_obj[['client_id']]}"))
@@ -576,7 +640,11 @@ cfy_get_model_loras <- function(workflow_obj) {
   }
 }
 
-
+#' ComfyUI: Get Generated Image
+#'
+#' @description
+#' `cfy_get_image` lets you get a generated image from ComfyUI.
+#' @export
 cfy_get_image <- function(workflow_obj, image_filename) {
   #print(image_filename)
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/view?filename={image_filename}"))
@@ -591,7 +659,11 @@ cfy_get_image <- function(workflow_obj, image_filename) {
 }
 
 
-
+#' ComfyUI: Check the queued prompts statuses
+#'
+#' @description
+#' `cfy_check_queue_prompt_status` lets you check the status of the queued prompts from ComfyUI.
+#' @export
 cfy_check_queue_prompt_status <- function(workflow_obj, prompt_id) {
   
   req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/queue"))
@@ -609,7 +681,11 @@ cfy_check_queue_prompt_status <- function(workflow_obj, prompt_id) {
   }
 }
   
-
+#' ComfyUI: Get Pictures List
+#'
+#' @description
+#' `cfy_get_pictures_list` lets you get a list pictures already generated from ComfyUI.
+#' @export
 cfy_get_pictures_list <- function(workflow_obj, prompt_id) {  
   history <- workflow_obj |> cfy_get_history(prompt_id = prompt_id)
   history <- history[[1]]
