@@ -88,6 +88,11 @@ cfy_set_negative_prompt <- function(workflow_obj, negative_prompt) {
   
 }
 
+#' ComfyUI: set image size
+#'
+#' @description
+#' `cfy_set_image_size` lets you set the image size for the present comfyUI workflow
+#' @export
 cfy_set_image_size <- function(workflow_obj, resolution) {
   
   resolution_accepted <- c("1024x1024",
@@ -118,7 +123,11 @@ cfy_set_image_size <- function(workflow_obj, resolution) {
 
 
 
-
+#' ComfyUI: set sampler
+#'
+#' @description
+#' `cfy_set_sampler` lets you set the sampler for the present comfyUI workflow
+#' @export
 cfy_set_sampler <- function(workflow_obj, sampler) {
   
   sampler_accepted <- c("euler",
@@ -147,12 +156,17 @@ cfy_set_sampler <- function(workflow_obj, sampler) {
   return(workflow_obj)
 }
 
-
+#' ComfyUI: set scheduler 
+#'
+#' @description
+#' `cfy_set_scheduler` lets you set the scheduler for the present comfyUI workflow
+#' @export
 cfy_set_scheduler <- function(workflow_obj, scheduler) {
   
   scheduler_accepted <- c("normal",
                         "exponential",
-                        "karras","simple")
+                        "karras",
+                        "simple")
   
   if (!scheduler %in% scheduler_accepted) {
     cli::cli_abort("Error: scheduler needs to meet one of these values: '{paste(scheduler_accepted,collapse=', ')}'.")

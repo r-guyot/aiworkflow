@@ -35,13 +35,13 @@ basic_workflow_path <- system.file("comfyui_workflows", "cfy_default_wflow_w_lor
 img_gen <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
-  cfy_set_seed() |>
+  cfy_set_seed(123456) |>
   cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #best one
   cfy_set_steps(steps = 25) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
   cfy_set_image_size(resolution = "768x1344") |>
-  cfy_set_sampler("dpmpp_2m_sde_gpu") |>
-  cfy_set_scheduler("karras") |>
+  cfy_set_sampler(sampler = "dpmpp_2m_sde_gpu") |>
+  cfy_set_scheduler(scheduler = "karras") |>
   encapsulate()
 
 ```
@@ -52,12 +52,18 @@ We use the pull_final_image_answer() function to collect the resulting image fro
 
 ```{r, generating image}
 
-dog_img <- img_gen |>
-  process_text_prompts("A dog sitting on the porch of a house on a sunny day") |>
+actor_img <- img_gen |>
+  process_text_prompts("An hollywood actor, upper body, wearing black suit, gray background") |>
   pull_final_image_answer()
 
+```
+```{r showing image}
+
+actor_img
 
 ```
+
+
 ## Applying LORAs
 
 The basic workflow we have loaded contains a LORA loader node. 
@@ -73,8 +79,9 @@ It's simple. You can specify it with the cfy_set_lora function.
 img_gen_pixel <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
-  cfy_set_seed() |>
-  cfy_set_lora(lora_name = "pixel-art-xl-v1.1.safetensors") |>
+  cfy_set_seed(123456) |>
+  cfy_set_lora(lora_name = "pixel_base_model.safetensors") |>
+  cfy_set_lora_model_strength(strength_model = 0.8) |>
   cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #best one
   cfy_set_steps(steps = 25) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
@@ -92,20 +99,10 @@ Each LORA is trained for a specific set of keywords in the CLIP node to be activ
 In our case, the *pixel-art-xl-v1.1* LORA is activate if you use the word *pixel art*.
 
 
-```{r, generating image}
+```{r, generating image with pixel art lora}
 
-dog_img_pixel_keyword <- img_gen_pixel |>
-  process_text_prompts("A dog sitting on the porch of a house on a sunny day, pixel art") |>
-  pull_final_image_answer()
-
-
-```
-You can see that if we do not use the keyword, the picture comes back to a photographic one:
-
-```{r, generating image}
-
-dog_img_no_keyword <- img_gen_pixel |>
-  process_text_prompts("A dog sitting on the porch of a house on a sunny day") |>
+actor_img_pixel_keyword <- img_gen_pixel |>
+  process_text_prompts("An hollywood actor, upper body, wearing black suit, gray background, pixel art") |>
   pull_final_image_answer()
 
 ```
@@ -114,13 +111,12 @@ You can also specify the strength of the LORA model.
 
 ```{r, image gen workflow with lora low strength}
 
-img_gen_pixel_low <- ai_workflow() |> 
+img_gen_pixel_low_lora <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
-  cfy_set_seed() |>
-  cfy_set_lora(lora_name = "pixel-art-xl-v1.1.safetensors") |>
-  cfy_set_lora_model_strength(strength_model = 0.1) |>
-  cfy_set_seed_change(seed_change = "random") |>
+  cfy_set_seed(123456) |>
+  cfy_set_lora(lora_name = "pixel_base_model.safetensors") |>
+  cfy_set_lora_model_strength(strength_model = 0.3) |>
   cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #best one
   cfy_set_steps(steps = 25) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
@@ -135,22 +131,22 @@ img_gen_pixel_low <- ai_workflow() |>
 
 ```{r, generating image low lora}
 
-dog_img_pixel_keyword_low_lora <- img_gen_pixel_low |>
-  process_text_prompts("A dog sitting on the porch of a house on a sunny day, pixel art") |>
+actor_img_pixel_keyword_low_lora_strength <- img_gen_pixel_low_lora |>
+  process_text_prompts("An hollywood actor, upper body, wearing black suit, gray background, pixel art") |>
   pull_final_image_answer()
 
 
 ```
 
 
+```{r, image gen workflow with lora medium strength}
 
-```{r, image gen workflow with lora very low strength}
-
-img_gen_pixel_high <- ai_workflow() |> 
+img_gen_pixel_medium_lora <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
-  cfy_set_lora(lora_name = "pixel-art-xl-v1.1.safetensors") |>
-  cfy_set_lora_model_strength(strength_model = 0.7) |>
+  cfy_set_seed(123456) |>
+  cfy_set_lora(lora_name = "pixel_base_model.safetensors") |>
+  cfy_set_lora_model_strength(strength_model = 0.6) |>
   cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #best one
   cfy_set_steps(steps = 25) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
@@ -161,10 +157,14 @@ img_gen_pixel_high <- ai_workflow() |>
 
 ```
 
-```{r, test with different strengh}
 
-dog_img_pixel_keyword_high_lora <- img_gen_pixel |>
-  process_text_prompts("A dog sitting on the porch of a house on a sunny day, (pixel: 0.8)") |>
+```{r, generating image medium lora}
+
+actor_img_pixel_keyword_medium_lora_strength <- img_gen_pixel_medium_lora |>
+  process_text_prompts("An hollywood actor, upper body, wearing black suit, gray background, pixel art") |>
   pull_final_image_answer()
 
+
 ```
+
+
