@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+library(magick)
 library(aiworkflow)
 ```
 
@@ -57,22 +58,25 @@ actor_img <- img_gen |>
   pull_final_image_answer()
 
 ```
+
+We get the resulting image:
+
 ```{r showing image}
 
-actor_img
+actor_img[[1]]
 
 ```
 
 
 ## Applying LORAs
 
-The basic workflow we have loaded contains a LORA loader node. 
+The basic workflow we have loaded contains a LORA loader node (a single one in this case).
 
 We can first get the list of loras available. 
 
 ### Adding the LORA to the workflow
 
-It's simple. You can specify it with the cfy_set_lora function.
+It's simple. You can specify it with the cfy_set_lora function, and the cfy_set_lora_model_strength lets you specify the strength of the LORA model to apply. Usually you want this to be between 0.5 and 1.0, but this depends heavily on the LORA model used.
 
 ```{r, image gen workflow with lora}
 
@@ -107,7 +111,16 @@ actor_img_pixel_keyword <- img_gen_pixel |>
 
 ```
 
-You can also specify the strength of the LORA model.
+We get the resulting image, with a pixelated look now, provided by the LORA:
+
+```{r showing image, pixelated}
+
+actor_img_pixel_keyword[[1]]
+
+```
+
+
+Let's change the strength of the LORA model.
 
 ```{r, image gen workflow with lora low strength}
 
@@ -128,16 +141,23 @@ img_gen_pixel_low_lora <- ai_workflow() |>
 ```
 
 
-
-```{r, generating image low lora}
+```{r, generating image low intensity lora}
 
 actor_img_pixel_keyword_low_lora_strength <- img_gen_pixel_low_lora |>
   process_text_prompts("An hollywood actor, upper body, wearing black suit, gray background, pixel art") |>
   pull_final_image_answer()
 
+```
+
+We get the resulting image with a pixel art LORA applied at low strength (0.2):
+
+```{r showing image at low LORA strength}
+
+actor_img_pixel_keyword_low_lora_strength[[1]]
 
 ```
 
+Let's check what happens when we specify it to be used at medium strength (0.6):
 
 ```{r, image gen workflow with lora medium strength}
 
@@ -167,4 +187,12 @@ actor_img_pixel_keyword_medium_lora_strength <- img_gen_pixel_medium_lora |>
 
 ```
 
+We get the resulting image with a pixel art LORA applied at medium strength:
 
+```{r showing image at medium LORA strength}
+
+actor_img_pixel_keyword_medium_lora_strength[[1]]
+
+```
+
+You can clearly see that the higher the strength of the LORA applied, the more pixelated the final picture looks like. Since the *right amount* of pixelization is entirely subjective, it is up to you decide in this case what looks best.
