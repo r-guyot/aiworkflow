@@ -201,10 +201,14 @@ cfy_set_scheduler <- function(workflow_obj, scheduler) {
 
 
 
-
+#' ComfyUI: set Seed Change Parameter 
+#'
+#' @description
+#' `cfy_set_seed_change` lets you set the seed change parameter to use for the present comfyUI workflow
+#' @export
 cfy_set_seed_change <- function(workflow_obj, seed_change) {
   
-  accepted_values <- c("fixed","incremental","random")
+  accepted_values <- c("fixed","increment","decrement","randomize")
   
   if (seed_change %in% accepted_values) {
     workflow_obj[["seed_change"]] <- seed_change
@@ -214,7 +218,11 @@ cfy_set_seed_change <- function(workflow_obj, seed_change) {
 }
 
 
-
+#' ComfyUI: set Seed
+#'
+#' @description
+#' `cfy_set_seed` lets you set the seed to use for the present comfyUI workflow
+#' @export
 cfy_set_seed <- function(workflow_obj,seed=NA) {
   
   if (is.na(seed)) {
@@ -236,7 +244,11 @@ cfy_set_seed <- function(workflow_obj,seed=NA) {
 　return(workflow_obj) 
 }
 
-
+#' ComfyUI: set Checkpoint
+#'
+#' @description
+#' `cfy_set_checkpoint` lets you set the Checkpoint Model to use for the present comfyUI workflow
+#' @export
 cfy_set_checkpoint <- function(workflow_obj, checkpoint) {
 
   for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
