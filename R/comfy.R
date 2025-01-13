@@ -68,7 +68,7 @@ cfy_find_pos_neg_prompt_node <- function(workflow_obj,polarity) {
 
 cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
   
-  node_id <- cfy_find_pos_neg_prompt_node(workflow_obj,polarity = "positive")
+  node_id <- cfy_find_pos_neg_prompt_node(workflow_obj, polarity = "positive")
   #print(node_id)
   if (workflow_obj[["comfyui_workflow"]][[node_id]][["class_type"]]=="CLIPTextEncode") {
     workflow_obj[["comfyui_workflow"]][[node_id]][["inputs"]][["text"]] <- positive_prompt
@@ -79,7 +79,7 @@ cfy_set_positive_prompt <- function(workflow_obj, positive_prompt) {
 
 cfy_set_negative_prompt <- function(workflow_obj, negative_prompt) {
   
-  node_id <- cfy_find_pos_neg_prompt_node(workflow_obj,polarity = "negative")
+  node_id <- cfy_find_pos_neg_prompt_node(workflow_obj, polarity = "negative")
   #print(node_id)
   if (workflow_obj[["comfyui_workflow"]][[node_id]][["class_type"]]=="CLIPTextEncode") {
     workflow_obj[["comfyui_workflow"]][[node_id]][["inputs"]][["text"]] <- negative_prompt
@@ -231,11 +231,44 @@ cfy_set_lora <- function(workflow_obj, lora_name) {
     
     if ("inputs" %in% names(workflow_obj[["comfyui_workflow"]][[i]])) {
       if ("lora_name" %in% names(workflow_obj[["comfyui_workflow"]][[i]][["inputs"]]) ) {
-        workflow_obj[["comfyui_workflow"]][[name]][["inputs"]][["ckpt_name"]] <- lora_name
+        workflow_obj[["comfyui_workflow"]][[name]][["inputs"]][["lora_name"]] <- lora_name
       }
     }
   }
   return(workflow_obj) 
+}
+
+
+cfy_set_lora_model_strength <- function(workflow_obj, strength_model) {
+
+    for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
+    name <- names(workflow_obj[["comfyui_workflow"]][i])
+    
+    if ("inputs" %in% names(workflow_obj[["comfyui_workflow"]][[i]])) {
+      if ("lora_name" %in% names(workflow_obj[["comfyui_workflow"]][[i]][["inputs"]]) ) {
+        workflow_obj[["comfyui_workflow"]][[name]][["inputs"]][["strength_model"]] <- strength_model
+      }
+    }
+  }
+  return(workflow_obj) 
+  
+}
+
+
+cfy_set_lora_clip_strength <- function(workflow_obj, strength_clip) {
+  
+  for (i in seq_along(workflow_obj[["comfyui_workflow"]])) {
+    name <- names(workflow_obj[["comfyui_workflow"]][i])
+    
+    if ("inputs" %in% names(workflow_obj[["comfyui_workflow"]][[i]])) {
+      if ("lora_name" %in% names(workflow_obj[["comfyui_workflow"]][[i]][["inputs"]]) ) {
+        workflow_obj[["comfyui_workflow"]][[name]][["inputs"]][["strength_clip"]] <- strength_clip
+      }
+    }
+  }
+  return(workflow_obj) 
+  
+  
 }
 
 cfy_set_cfg <- function(workflow_obj, cfg) {
