@@ -639,8 +639,12 @@ cfy_get_model_checkpoints <- function(workflow_obj) {
   }
 }
 
-
-cfy_get_available_model_checkpoints <- function(ip_addr="127.0.0.1", port="8188") {
+#' ComfyUI: Get Available Model Checkpoints
+#'
+#' @description
+#' `cfy_get_available_model_checkpoints` lets you get a list of available checkpoint models from ComfyUI.
+#' @export
+cfy_get_available_model_checkpoints <- function(comfyui_ip_addr="127.0.0.1", comfyui_port="8188") {
   
   client_id <- uuid::UUIDgenerate()
   ws <- websocket::WebSocket$new(glue::glue("ws://{ip_addr}:{port}/ws?clientID={client_id}"))
@@ -654,8 +658,12 @@ cfy_get_available_model_checkpoints <- function(ip_addr="127.0.0.1", port="8188"
 
 }
 
-
-cfy_get_available_model_loras <- function(ip_addr="127.0.0.1", port="8188") {
+#' ComfyUI: Get Available Model LORAs
+#'
+#' @description
+#' `cfy_get_available_model_loras` lets you get a list of available checkpoint models from ComfyUI.
+#' @export
+cfy_get_available_model_loras <- function(comfyui_ip_addr="127.0.0.1", comfyui_port="8188") {
   
   client_id <- uuid::UUIDgenerate()
   ws <- websocket::WebSocket$new(glue::glue("ws://{ip_addr}:{port}/ws?clientID={client_id}"))

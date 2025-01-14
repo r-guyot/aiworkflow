@@ -1,0 +1,150 @@
+---
+title: "Combining Vision, LLMs and Image Generation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Combining Vision, LLMs and Image Generation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aiworkflow)
+library(magick)
+```
+
+## Objective
+
+In this vignette we will look at how we can leverage this package to do cool stuff. We are going to build a workflow that will analyze an existing picture, and then expand on that picture to make it into a more complete description, and use that description to generate a new image. 
+
+Let's go!
+
+### Building the describer part
+
+```{r, workflow with vision model}
+
+describer <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("minicpm-v:8b-2.6-q5_K_M") |>
+  set_temperature(0.5) |>
+  add_vision_capability() |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+```
+
+```{r, sample image of Eugene}
+
+image_path <- system.file("images", "Eugene_Delacroix.jpg", package="aiworkflow")
+
+```
+
+This is a picture of the famous French painter, Eugene Delacroix.
+
+![](`r image_path`)
+
+Let's recreate a picture based on that that portrait.
+
+```{r, describing the image with a vision model}
+
+description <- describer |>
+  process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
+                                      image=image_path))) |>
+  pull_final_text_answer()
+
+```
+
+### Adding details
+
+```{r, workflow with vision model}
+
+detailer <- ai_workflow() |>
+  set_connector("ollama") |>
+  set_model("llama3.2:latest") |>
+  set_temperature(0.8) |>
+  set_processing_skill("add_details") |>
+  set_n_predict(2000) |>
+  encapsulate() 
+
+```
+
+
+```{r, describing the image with a vision model}
+
+description_w_details <- detailer |>
+  process_text_prompts(text_prompts = description) |>
+  pull_final_text_answer()
+
+```
+
+### Generating the new image
+
+```{r, image gen workflow}
+
+# we define a first workflow to use
+img_gen <- ai_workflow() |> 
+  set_connector("comfyui") |>
+  cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
+  cfy_set_seed(123456) |>
+  cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #a good model to use
+  cfy_set_steps(steps = 25) |>
+  cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
+  cfy_set_image_size(resolution = "768x1344") |>
+  cfy_set_sampler(sampler = "dpmpp_2m_sde_gpu") |>
+  cfy_set_scheduler(scheduler = "karras") |>
+  encapsulate()
+
+```
+
+```{r, generating image}
+
+new_image <- img_gen |>
+  process_text_prompts(description_w_details) |>
+  pull_final_image_answer()
+
+```
+
+```{r showing new image, out.width="50%",echo=FALSE}
+
+new_image[[1]]
+
+```
+
+
+## Bringing all the pieces in one workflow
+
+I kept the best part for last.
+You can integrate all of these pieces into a single workflow.
+
+```{r, single workflow definition}
+
+full_workflow <- describer |>
+  add_workflow_step(detailer) |>
+  add_workflow_step(img_gen)
+
+```
+
+And you can now do the exact same thing with a single instruction:
+
+
+```{r, running the single workflow}
+
+new_image_2 <- full_workflow |>
+  process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
+                                      image=image_path)))
+
+```
+
+And you get the following image:
+
+```{r showing new image 2, out.width="50%",echo=FALSE}
+
+new_image_2[[1]]
+
+```
