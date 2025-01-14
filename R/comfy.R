@@ -640,6 +640,36 @@ cfy_get_model_checkpoints <- function(workflow_obj) {
 }
 
 
+cfy_get_available_model_checkpoints <- function(ip_addr="127.0.0.1", port="8188") {
+  
+  client_id <- uuid::UUIDgenerate()
+  ws <- websocket::WebSocket$new(glue::glue("ws://{ip_addr}:{port}/ws?clientID={client_id}"))
+  req <- httr2::request(glue::glue("http://{ip_addr}:{port}/models/checkpoints"))
+  result <- req |> httr2::req_perform() 
+  ws$close
+  if (result$status_code==200) {
+    checkpoints <- result |> httr2::resp_body_json()
+    return(unlist(checkpoints))
+  }
+
+}
+
+
+cfy_get_available_model_loras <- function(ip_addr="127.0.0.1", port="8188") {
+  
+  client_id <- uuid::UUIDgenerate()
+  ws <- websocket::WebSocket$new(glue::glue("ws://{ip_addr}:{port}/ws?clientID={client_id}"))
+  req <- httr2::request(glue::glue("http://{ip_addr}:{port}/models/loras"))
+  result <- req |> httr2::req_perform() 
+  ws$close
+  if (result$status_code==200) {
+    checkpoints <- result |> httr2::resp_body_json()
+    return(unlist(checkpoints))
+  }
+  
+}
+
+
 #' ComfyUI: Get LORA Models list
 #'
 #' @description

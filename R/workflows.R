@@ -424,7 +424,7 @@ switch_to_workflow <- function(workflow_obj, new_workflow) {
   }
   
   if (workflow_obj[["workflows"]][[current_length_wflow+1]][["connector"]]=="comfyui") {
-    print("found comfy")
+    cli::cli_alert(text = "ComfyUI workflow")
     
     # get the result from the last workflow as a prompt
     prompt_to_use <- workflow_obj[["res"]][[current_length]]
