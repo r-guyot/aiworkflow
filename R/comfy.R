@@ -593,9 +593,14 @@ cfy_process_prompts <- function(workflow_obj, prompt) {
   prompt_id <- workflow_obj |> cfy_queue_prompt(workflow_obj[["comfyui_workflow"]])
   prompt_id <- prompt_id$prompt_id
   
+  i <- 0
+  moving <- ""
+  cli::cli_progress_message(msg = "Image generating...{moving}")
   while(cfy_check_queue_prompt_status(workflow_obj, prompt_id)=="ongoing") {
     Sys.sleep(2)
-    print("ongoing...")
+    i <- i + 1
+    moving <- paste0(rep(".",i),collapse="")
+    cli::cli_progress_update()
   }
   
   pics_list <- cfy_get_pictures_list(workflow_obj, prompt_id)

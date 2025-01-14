@@ -19,25 +19,91 @@ library(magick)
 library(aiworkflow)
 ```
 
+## Preliminary Note
+
+The image generation process relies on ComfyUI, and for now it has been tailored to work well with SDXL models. Support for FLUX and other models will come down the road as well. For now, you can still have a lot of fun with the numerous SDXL models available out there.
 
 ## Setup and First Workflow
 
-In order to be able to generate images using this package, you need to have ComfyUI installed on your machine, and already active as an API service (which should be the default).
+In order to be able to generate images using this package, you need to have [ComfyUI](https://www.comfy.org/en/) installed on your machine or at least a machine on your network, and already active as an API service (which should be the default).
 
-ComfyUI works with its own workflows, that you can create by hand if you want.
+*ComfyUI* works with its own workflows, that you can create by hand if you want nad load with the corresponding JSON file. 
 In this package we have prepared a few workflows that you can use.
 
 ### Creating the workflow
 
-```{r, image gen workflow}
+You can create a workflow by starting from a default template.
+In this package we have already included *cfy_default_wflow_w_lora.json* which is a basic template that contains:
 
+- a checkpoint loader
+- a lora loader 
+- 1 CLIP field for positive prompt
+- 1 CLIP field for negative prompt
+- A Ksampler node
+- A final node to save the picture
+
+Before you can use ComfyUI to generate images, you need to download some models. In our example below, we chose to go with:
+
+- Checkpoint: JuggernautXL
+- LORA: Pixel Base
+
+You can find such models and more on https://civitai.com/ (careful, this site contains a lot of NSFW content if you enable certain filters, so be warned).
+
+One of the most simple workflows you can create looks like this - you need a connector, comfyui, a comfyui workflow, here we use the default template from the package, and finally we add a checkpoint for image inference. Don't forget to encapsulate() the workflow after you have finished defining it.
+
+```{r, image gen workflow, super simple}
+
+# we load the default workflow from the package
 basic_workflow_path <- system.file("comfyui_workflows", "cfy_default_wflow_w_lora.json", package="aiworkflow")
 
+# the most basic workflow definition
+img_gen_basic <- ai_workflow() |> 
+  set_connector("comfyui") |>
+  cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
+  cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |>
+  encapsulate()
+
+```
+
+Then, creating an image as as simple as feeding it a prompt:
+
+```{r, generating image of dog}
+
+dog_img <- img_gen_basic |>
+  process_text_prompts("A friendly dog, looking at viewer, yellow background") |>
+  pull_final_image_answer()
+
+```
+
+And we get this:
+
+```{r showing image of dog,out.width="50%",echo=FALSE}
+
+dog_img[[1]]
+
+```
+
+A slightly more elaborate workflow would touch on several parameters such as:
+
+- number of steps for image generation: more than 30 are recommended for usual SDXL models.
+- negative prompt definition, to explicitely say what you don't want to see
+- image format (this needs to contain a max of 1024*1024 pixels for SDXL models, but you can change the format)
+- the sampler to use
+- the scheduler to use
+- the seed (the same seed and exact same parameters will always give the same image)
+
+and more... 
+
+In our case we set the following parameters (and we fix the seed here):
+
+```{r, image gen workflow}
+
+# we define a first workflow to use
 img_gen <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
   cfy_set_seed(123456) |>
-  cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #best one
+  cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #a good model to use
   cfy_set_steps(steps = 25) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
   cfy_set_image_size(resolution = "768x1344") |>
@@ -61,7 +127,7 @@ actor_img <- img_gen |>
 
 We get the resulting image:
 
-```{r showing image}
+```{r showing image,out.width="50%",echo=FALSE}
 
 actor_img[[1]]
 
@@ -113,7 +179,7 @@ actor_img_pixel_keyword <- img_gen_pixel |>
 
 We get the resulting image, with a pixelated look now, provided by the LORA:
 
-```{r showing image, pixelated}
+```{r showing image pixelated, out.width="50%",echo=FALSE}
 
 actor_img_pixel_keyword[[1]]
 
@@ -151,7 +217,7 @@ actor_img_pixel_keyword_low_lora_strength <- img_gen_pixel_low_lora |>
 
 We get the resulting image with a pixel art LORA applied at low strength (0.2):
 
-```{r showing image at low LORA strength}
+```{r showing image at low LORA strength,out.width="50%",echo=FALSE}
 
 actor_img_pixel_keyword_low_lora_strength[[1]]
 
@@ -189,7 +255,7 @@ actor_img_pixel_keyword_medium_lora_strength <- img_gen_pixel_medium_lora |>
 
 We get the resulting image with a pixel art LORA applied at medium strength:
 
-```{r showing image at medium LORA strength}
+```{r showing image at medium LORA strength,out.width="50%",echo=FALSE}
 
 actor_img_pixel_keyword_medium_lora_strength[[1]]
 
