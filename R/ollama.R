@@ -746,6 +746,7 @@ unload_model <- function(workflow_obj) {
     url <- glue::glue("{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/api/generate")
     data <- list("model"=workflow_obj[["model"]], "keep_alive"=0)
   }
+  
   if ("connector" %in% names(workflow_obj[["workflow"]])) {
     if (workflow_obj[["workflow"]][["connector"]]!="ollama") {
       cli::cli_abort("Error: this function to unload a model only works with Ollama.")

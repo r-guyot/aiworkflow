@@ -647,8 +647,8 @@ cfy_get_model_checkpoints <- function(workflow_obj) {
 cfy_get_available_model_checkpoints <- function(comfyui_ip_addr="127.0.0.1", comfyui_port="8188") {
   
   client_id <- uuid::UUIDgenerate()
-  ws <- websocket::WebSocket$new(glue::glue("ws://{ip_addr}:{port}/ws?clientID={client_id}"))
-  req <- httr2::request(glue::glue("http://{ip_addr}:{port}/models/checkpoints"))
+  ws <- websocket::WebSocket$new(glue::glue("ws://{comfyui_ip_addr}:{comfyui_port}/ws?clientID={client_id}"))
+  req <- httr2::request(glue::glue("http://{comfyui_ip_addr}:{comfyui_port}/models/checkpoints"))
   result <- req |> httr2::req_perform() 
   ws$close
   if (result$status_code==200) {
@@ -674,6 +674,21 @@ cfy_get_available_model_loras <- function(comfyui_ip_addr="127.0.0.1", comfyui_p
     checkpoints <- result |> httr2::resp_body_json()
     return(unlist(checkpoints))
   }
+  
+}
+
+#' ComfyUI: Unload model
+#'
+#' @description
+#' `cfy_unload_model` lets you unload a model stored in VRAM to free memory.
+#' @export
+cfy_unload_model <- function(workflow_obj) {
+  
+  ws <- websocket::WebSocket$new(glue::glue("ws://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/ws?clientID={workflow_obj[['client_id']]}"))
+  req <- httr2::request(glue::glue("http://{workflow_obj[['ip_addr']]}:{workflow_obj[['port']]}/free"))
+  result <- req |> httr2::req_body_json(list("unload_models"=TRUE,"free_memory"=TRUE)) |>
+    httr2::req_perform() 
+  ws$close
   
 }
 

@@ -57,7 +57,7 @@ Let's recreate a picture based on that that portrait.
 ```{r, describing the image with a vision model}
 
 description <- describer |>
-  process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
   pull_final_text_answer()
 
@@ -70,7 +70,7 @@ description <- describer |>
 detailer <- ai_workflow() |>
   set_connector("ollama") |>
   set_model("llama3.2:latest") |>
-  set_temperature(0.5) |>
+  set_temperature(0.1) |>
   set_seed(123456789) |>
   set_processing_skill("add_details") |>
   set_n_predict(2500) |>
@@ -99,9 +99,10 @@ basic_workflow_path <- system.file("comfyui_workflows", "cfy_default_wflow_w_lor
 img_gen <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
-  cfy_set_seed(435435346761) |>
+  cfy_set_seed(1234) |>
   cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #a good model to use
   cfy_set_steps(steps = 25) |>
+  cfy_set_cfg(cfg = 5) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
   cfy_set_image_size(resolution = "768x1344") |>
   cfy_set_sampler(sampler = "dpmpp_2m_sde_gpu") |>
@@ -133,8 +134,9 @@ You can integrate all of these pieces into a single workflow.
 ```{r, single workflow definition}
 
 full_workflow <- describer |>
-  add_workflow_step(detailer) |>
-  add_workflow_step(img_gen)
+#  add_workflow_step(detailer) |>
+  add_workflow_step(img_gen) |>
+  unload_models_automatically()
 
 ```
 
@@ -144,7 +146,7 @@ And you can now do the exact same thing with a single instruction:
 ```{r, running the single workflow}
 
 new_image_2 <- full_workflow |>
-  process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
   pull_final_image_answer()
 
@@ -162,8 +164,9 @@ Let's run the workflow again but change all the seeds across the workflow using 
 
 ```{r, running the single workflow with a different seed}
 
-new_image_3 <- full_workflow |> change_all_seeds(fixed_seed = 2135878667821) |>
-  process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
+new_image_3 <- full_workflow |> 
+  change_all_seeds(fixed_seed = 213213654) |>
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
   pull_final_image_answer()
 
@@ -180,4 +183,66 @@ new_image_3[[1]]
 ## More Examples
 
 Let me give you more examples of what can be done in this way. 
+
+```{r, running the single workflow on another kind of picture}
+
+image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
+
+new_image_4 <- full_workflow |> 
+  change_all_seeds(fixed_seed = 213213654) |>
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+                                      image=image_path))) |>
+  pull_final_image_answer()
+
+```
+```{r showing new image 4, out.width="50%",echo=FALSE}
+
+new_image_4[[1]]
+
+```
+But we can also use a different model to completely change the style of the end picture.
+Let's for example use a model that is made for anime. 
+
+
+```{r, running the single workflow with a different seed}
+
+# we define a workflow to generate anime pictures
+anime_img_gen <- ai_workflow() |> 
+  set_connector("comfyui") |>
+  cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
+  cfy_set_seed(1234) |>
+  cfy_set_checkpoint(checkpoint ="animaPencilXL_v100.safetensors" ) |> #anime model
+  cfy_set_steps(steps = 30) |>
+  cfy_set_cfg(cfg = 5) |>
+  cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
+  cfy_set_image_size(resolution = "768x1344") |>
+  cfy_set_sampler(sampler = "euler") |>
+  cfy_set_scheduler(scheduler = "normal") |>
+  encapsulate()
+
+full_workflow_anime <- describer |> 
+  add_workflow_step(anime_img_gen) |>
+  unload_models_automatically() 
+  
+```
+
+
+```{r, running the single workflow with a different seed}
+
+image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
+
+new_image_5 <- full_workflow_anime |> 
+  change_all_seeds(fixed_seed = 2123) |>
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+                                      image=image_path))) |>
+  pull_final_image_answer()
+
+```
+
+
+```{r showing new image 5, out.width="50%",echo=FALSE}
+
+new_image_5[[1]]
+
+```
 

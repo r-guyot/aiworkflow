@@ -2120,8 +2120,9 @@ process_prompts <- function(workflow_obj, prompts) {
   
   if ("workflows" %in% names(workflow_obj)) {
     
-    workflow_length <- length(workflow_obj[["workflows"]])
     
+    
+    workflow_length <- length(workflow_obj[["workflows"]])
     workflow_obj[["prompts"]] <- prompts
     
     # p describes the prompts
@@ -2175,13 +2176,22 @@ process_prompts <- function(workflow_obj, prompts) {
         if (is.na(prompt_img) & ("img" %in% required_inputs)) { cli::cli_abort("This model requires image input but this input is missing") }
         
         if (workflow_obj[["workflows"]][[i]][["connector"]]=="comfyui") {
-          print("found comfy")
+          cli::cli_alert("ComfyUI workflow")
           if (i > length(workflow_obj[["res"]])) {
             #print("yoman pic!")
             workflow_obj[["res"]][[i]] <- list()
           }
           workflow_obj[["res"]][[i]][[p]]  <- list(image=cfy_process_prompts(workflow_obj = workflow_obj[["workflows"]][[i]],
                                         prompt = prompt_txt))
+          
+          # unload model if the configuration to do so is present
+          if ("auto_model_unload" %in% names(workflow_obj)) {
+            if (workflow_obj[["auto_model_unload"]]==TRUE) {
+              cli::cli_alert("Unloading Model...")
+              cfy_unload_model(workflow_obj[["workflows"]][[i]])
+            }}
+          
+          
         }
         
 
@@ -2216,8 +2226,15 @@ process_prompts <- function(workflow_obj, prompts) {
         workflow_obj[["res"]][[i]][[p]] <- list(text=execute_workflow(prompts_vector = prompt_txt, 
                                                             images_vector = prompt_img, 
                                                             workflow_obj = workflow_obj[["workflows"]][[i]]))
-        }
         
+        # unload model if the configuration to do so is present
+        if ("auto_model_unload" %in% names(workflow_obj)) {
+        if (workflow_obj[["auto_model_unload"]]==TRUE) {
+          cli::cli_alert("Unloading Model...")
+            unload_model(workflow_obj[["workflows"]][[i]])
+        }}
+        
+        }
       }
     }
     
@@ -2400,13 +2417,9 @@ change_all_seeds <- function(workflow_obj, fixed_seed=NA) {
     for (i in 1:length(workflow_obj[["workflows"]])) {
       
       if ("comfyui_workflow" %in% names(workflow_obj[["workflows"]][[i]])) {
-        
         workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> cfy_set_seed()
-        
       } else {
-        
         workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> set_seed()
-        
       }
       
     }
@@ -2418,15 +2431,11 @@ change_all_seeds <- function(workflow_obj, fixed_seed=NA) {
     if (is.numeric(fixed_seed)) {
       
       for (i in 1:length(workflow_obj[["workflows"]])) {
-        
+    
         if ("comfyui_workflow" %in% names(workflow_obj[["workflows"]][[i]])) {
-          
           workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> cfy_set_seed(seed = fixed_seed)
-          
         } else {
-          
           workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> set_seed(seed = fixed_seed)
-          
         }
         
       }
@@ -2438,9 +2447,12 @@ change_all_seeds <- function(workflow_obj, fixed_seed=NA) {
       cli::cli_abort("Seed needs to be numeric.")
     }
     
-    
   }
+}
+
+unload_models_automatically <- function(workflow_obj) {
   
+  workflow_obj[["auto_model_unload"]] <- TRUE
+  return(workflow_obj)
   
-    
 }
