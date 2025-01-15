@@ -21,9 +21,11 @@ library(magick)
 
 ## Objective
 
-In this vignette we will look at how we can leverage this package to do cool stuff. We are going to build a workflow that will analyze an existing picture, and then expand on that picture to make it into a more complete description, and use that description to generate a new image. 
+In this vignette we will look at how we can leverage this package to do cool stuff. We are going to build a workflow that will analyze an existing picture, and then expand on that picture to make it into a more complete description, and use that description to generate a new image. The idea is to generate a new image that takes many elements from the original one - it will not be identical, but it's likely going to be able to replicate some of its looks, posture, and style - into a clean new one.
 
 Let's go!
+
+## First, a step-by-step approach
 
 ### Building the describer part
 
@@ -33,6 +35,7 @@ describer <- ai_workflow() |>
   set_connector("ollama") |>
   set_model("minicpm-v:8b-2.6-q5_K_M") |>
   set_temperature(0.5) |>
+  set_seed(123456789) |>
   add_vision_capability() |>
   set_n_predict(2000) |>
   encapsulate() 
@@ -62,20 +65,21 @@ description <- describer |>
 
 ### Adding details
 
-```{r, workflow with vision model}
+```{r, workflow with a llm to detail the description}
 
 detailer <- ai_workflow() |>
   set_connector("ollama") |>
   set_model("llama3.2:latest") |>
-  set_temperature(0.8) |>
+  set_temperature(0.5) |>
+  set_seed(123456789) |>
   set_processing_skill("add_details") |>
-  set_n_predict(2000) |>
+  set_n_predict(2500) |>
   encapsulate() 
 
 ```
 
 
-```{r, describing the image with a vision model}
+```{r, improving the image description}
 
 description_w_details <- detailer |>
   process_text_prompts(text_prompts = description) |>
@@ -87,11 +91,15 @@ description_w_details <- detailer |>
 
 ```{r, image gen workflow}
 
+# we load the default workflow from the package
+basic_workflow_path <- system.file("comfyui_workflows", "cfy_default_wflow_w_lora.json", package="aiworkflow")
+
+
 # we define a first workflow to use
 img_gen <- ai_workflow() |> 
   set_connector("comfyui") |>
   cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
-  cfy_set_seed(123456) |>
+  cfy_set_seed(435435346761) |>
   cfy_set_checkpoint(checkpoint ="juggernautXL_v8Rundiffusion.safetensors" ) |> #a good model to use
   cfy_set_steps(steps = 25) |>
   cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
@@ -137,14 +145,39 @@ And you can now do the exact same thing with a single instruction:
 
 new_image_2 <- full_workflow |>
   process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
-                                      image=image_path)))
+                                      image=image_path))) |>
+  pull_final_image_answer()
 
 ```
 
-And you get the following image:
+And you get the following image - which is identical to the one we have already generated, as we had fixed the seed.
 
 ```{r showing new image 2, out.width="50%",echo=FALSE}
 
 new_image_2[[1]]
 
 ```
+
+Let's run the workflow again but change all the seeds across the workflow using the change_all_seeds function.
+
+```{r, running the single workflow with a different seed}
+
+new_image_3 <- full_workflow |> change_all_seeds(fixed_seed = 2135878667821) |>
+  process_prompts(prompts = list(list(text="describe this image with high accuracy, in one paragraph.",
+                                      image=image_path))) |>
+  pull_final_image_answer()
+
+```
+
+And we get the following picture:
+
+```{r showing new image 3, out.width="50%",echo=FALSE}
+
+new_image_3[[1]]
+
+```
+
+## More Examples
+
+Let me give you more examples of what can be done in this way. 
+

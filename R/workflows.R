@@ -923,7 +923,14 @@ set_frequency_penalty <- function(workflow_obj, frequency_penalty) {
 #' set_model(model_name="llama3:8b-instruct-q5_0") |> 
 #' set_seed(12312312312)
 #' @export
-set_seed <- function(workflow_obj, seed) {
+set_seed <- function(workflow_obj, seed=NA_integer_) {
+  
+  if (is.na(seed)) {
+    
+    workflow_obj[["seed"]] <- seed <- sample(1:10e12,1)
+      return(workflow_obj)
+  }
+  
   if (is.numeric(seed)) {
     workflow_obj[["seed"]] <- seed
     return(workflow_obj)
@@ -2373,4 +2380,67 @@ process_text_prompts <- function(workflow_obj, text_prompts) {
     return(process_prompts(workflow_obj, prompts = object_prompt_to_pass))
   }
   
+}
+
+#' Change all seeds across a workflow at once
+#'
+#' @description
+#' `change_all_seeds` is a way to change all seeds at once for a workflow
+#'
+#' @details
+#' This function provides a way to change all seeds at once for a workflow, either randomly or with a fixed seed.
+#'
+#' @param fixed_seed A numerical value (defaults to NA, which means a random seed is generated) to fix the new seed. 
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
+change_all_seeds <- function(workflow_obj, fixed_seed=NA) {
+  
+  if (is.na(fixed_seed)) {
+    
+    for (i in 1:length(workflow_obj[["workflows"]])) {
+      
+      if ("comfyui_workflow" %in% names(workflow_obj[["workflows"]][[i]])) {
+        
+        workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> cfy_set_seed()
+        
+      } else {
+        
+        workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> set_seed()
+        
+      }
+      
+    }
+    
+    return(workflow_obj)
+    
+  } else {
+    
+    if (is.numeric(fixed_seed)) {
+      
+      for (i in 1:length(workflow_obj[["workflows"]])) {
+        
+        if ("comfyui_workflow" %in% names(workflow_obj[["workflows"]][[i]])) {
+          
+          workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> cfy_set_seed(seed = fixed_seed)
+          
+        } else {
+          
+          workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |> set_seed(seed = fixed_seed)
+          
+        }
+        
+      }
+      
+      return(workflow_obj)
+      
+    } else {
+      
+      cli::cli_abort("Seed needs to be numeric.")
+    }
+    
+    
+  }
+  
+  
+    
 }

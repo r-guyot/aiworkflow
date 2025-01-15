@@ -4,7 +4,7 @@
 \alias{set_seed}
 \title{Set the seed of the model used by the workflow.}
 \usage{
-set_seed(workflow_obj, seed)
+set_seed(workflow_obj, seed = NA_integer_)
 }
 \arguments{
 \item{workflow_obj}{an ai_workflow object created by ai_workflow() in the first place.}
