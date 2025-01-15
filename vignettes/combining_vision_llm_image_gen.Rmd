@@ -59,7 +59,7 @@ Let's recreate a picture based on that that portrait.
 description <- describer |>
   process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
-  pull_final_text_answer()
+  pull_final_text_answer() 
 
 ```
 
@@ -115,7 +115,7 @@ img_gen <- ai_workflow() |>
 
 new_image <- img_gen |>
   process_text_prompts(description_w_details) |>
-  pull_final_image_answer()
+  pull_final_image_answer() 
 
 ```
 
