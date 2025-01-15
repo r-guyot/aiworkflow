@@ -134,7 +134,7 @@ You can integrate all of these pieces into a single workflow.
 ```{r, single workflow definition}
 
 full_workflow <- describer |>
-#  add_workflow_step(detailer) |>
+  add_workflow_step(detailer) |>
   add_workflow_step(img_gen) |>
   unload_models_automatically()
 
@@ -204,7 +204,7 @@ But we can also use a different model to completely change the style of the end 
 Let's for example use a model that is made for anime. 
 
 
-```{r, running the single workflow with a different seed}
+```{r, defining an anime image gen model}
 
 # we define a workflow to generate anime pictures
 anime_img_gen <- ai_workflow() |> 
@@ -227,7 +227,7 @@ full_workflow_anime <- describer |>
 ```
 
 
-```{r, running the single workflow with a different seed}
+```{r, running the workflow on a new picture}
 
 image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
 

@@ -2450,6 +2450,16 @@ change_all_seeds <- function(workflow_obj, fixed_seed=NA) {
   }
 }
 
+#' Unload models automatically inside a workflow
+#'
+#' @description
+#' `unload_models_automatically` takes care of freeing memory after each model has been used, in order to avoid out of memory problems.
+#'
+#' @details
+#' This function provides a parameter to free memory after each model has been used, in order to avoid out of memory problems.
+#'
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
 unload_models_automatically <- function(workflow_obj) {
   
   workflow_obj[["auto_model_unload"]] <- TRUE
