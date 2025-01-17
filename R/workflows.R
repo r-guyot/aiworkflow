@@ -1073,13 +1073,13 @@ set_processing_skill <- function(workflow_obj, processing_skill, ...) {
 #' @examples
 #' create_custom_processing_skill("write_poem.txt")
 #' @export
-create_custom_processing_skill <- function(filepath, system_prompt=NA, chat_prompt=NA, final_guidance=NA) {
+create_custom_processing_skill <- function(filepath, system_prompt=NA_character_, chat_prompt=NA_character_, final_guidance=NA_character_) {
 
   if (tools::file_ext(basename(filepath)) !="txt") {
     cli::cli_abort("The target file needs to be have a .txt extension.")
   }
 
-  if ((!is.na(system_prompt) & !is.na(chat_prompt) & !is.na(final_guidance))) {
+  if ((!is.na(system_prompt) & !is.na(chat_prompt))) {
     processing_skill_template <- paste0("@SYSTEM\n",
                                         system_prompt,
                                         "\n\n\n@CHAT\n",
@@ -2133,6 +2133,7 @@ process_prompts <- function(workflow_obj, prompts) {
       # i tracks the position in the current workflow
       for (i in 1:workflow_length) {
         
+        # define what should the prompt to use at every stage
         if (i==1) {
           #print(names(one_prompt))
         if ("text" %in% names(one_prompt)) {
@@ -2158,6 +2159,24 @@ process_prompts <- function(workflow_obj, prompts) {
         
         #print(prompt_txt)
         #print(prompt_img)
+        
+        # activate autoprompt to drastically improve the result of simple questions
+        if ("auto_prompt" %in% names(workflow_obj[["workflows"]][[i]])) {
+          if (workflow_obj[["workflows"]][[i]][["auto_prompt"]]==TRUE) {
+            
+            cli::cli_alert("Activating AutoPrompt")
+            temporary_workflow <- workflow_obj[["workflows"]][[i]] |> 
+              set_processing_skill("autoprompt") 
+            
+           new_system_prompt <- execute_workflow(prompts_vector = prompt_txt, 
+                                       images_vector = prompt_img, 
+                                       workflow_obj = temporary_workflow)
+            
+            workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |>
+              set_system_prompt(new_system_prompt)
+            
+          }
+        }
         
         # for txt to img we can have a default text prompt possible
         if ("default_text_prompt" %in% names(workflow_obj[["workflows"]][[i]])) {
@@ -2386,7 +2405,7 @@ decapsulate <- function(workflow_obj) {
 #' @param workflow_obj A workflow object containing all parameters describing the flow required
 #' @export
 process_text_prompts <- function(workflow_obj, text_prompts) {
-  
+
   if ("glue" %in% class(text_prompts)) {
     text_prompts <- as.vector(text_prompts)
   }
@@ -2463,6 +2482,23 @@ change_all_seeds <- function(workflow_obj, fixed_seed=NA) {
 unload_models_automatically <- function(workflow_obj) {
   
   workflow_obj[["auto_model_unload"]] <- TRUE
+  return(workflow_obj)
+  
+}
+
+#' Add autoprompt
+#'
+#' @description
+#' `add_autoprompt` takes care of setting a better system prompt adapted to your specific question or task at hand, automatically, by asking the LLM to generate a system prompt adapted to your request.
+#'
+#' @details
+#' This function takes care of setting a better system prompt adapted to your specific question or task at hand, automatically, by asking the LLM to generate a system prompt adapted to your request.
+#'
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
+add_autoprompt <- function(workflow_obj) {
+  
+  workflow_obj[["auto_prompt"]] <- TRUE
   return(workflow_obj)
   
 }
