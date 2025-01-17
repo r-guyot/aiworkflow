@@ -2502,3 +2502,10 @@ add_autoprompt <- function(workflow_obj) {
   return(workflow_obj)
   
 }
+
+add_auto_few_shots <- function(workflow_obj) {
+  
+  workflow_obj[["auto_few_shots"]] <- TRUE
+  return(workflow_obj)
+  
+}
