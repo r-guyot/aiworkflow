@@ -2174,9 +2174,32 @@ process_prompts <- function(workflow_obj, prompts) {
             
             workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |>
               set_system_prompt(new_system_prompt)
-            
+           
+            # takes care of adding auto guidance if needed
+            if ("auto_guidance" %in% names(workflow_obj[["workflows"]][[i]])) {
+              
+              if (workflow_obj[["workflows"]][[i]][["auto_guidance"]]==TRUE) {
+                
+                cli::cli_alert("Activating AutoGuidance")
+                temporary_workflow <- workflow_obj[["workflows"]][[i]] |> 
+                  set_processing_skill("auto_guidance") 
+                
+               guidance <- execute_workflow(prompts_vector = new_system_prompt, 
+                                                      images_vector = prompt_img, 
+                                                      workflow_obj = temporary_workflow)
+                 
+               new_system_prompt_w_guidance <- glue::glue("{new_sys_prompt}\n\n{guidance}")
+               
+                workflow_obj[["workflows"]][[i]] <- workflow_obj[["workflows"]][[i]] |>
+                  set_system_prompt(new_system_prompt_w_guidance)
+                
+              }
+            }
           }
         }
+        
+        
+        
         
         # for txt to img we can have a default text prompt possible
         if ("default_text_prompt" %in% names(workflow_obj[["workflows"]][[i]])) {
@@ -2503,9 +2526,20 @@ add_autoprompt <- function(workflow_obj) {
   
 }
 
-add_auto_few_shots <- function(workflow_obj) {
+#' Add autoprompt
+#'
+#' @description
+#' `add_auto_guidance` takes care of adding a part in the system prompt to improve the format of the answer in terms of structure
+#'
+#' @details
+#' This function takes care of adding a part in the system prompt to improve the format of the answer in terms of structure, automatically, by asking the LLM to generate an additional guidance relevant to your request.
+#'
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
+add_auto_guidance <- function(workflow_obj) {
   
-  workflow_obj[["auto_few_shots"]] <- TRUE
+  workflow_obj[["auto_guidance"]] <- TRUE
   return(workflow_obj)
   
 }
+
