@@ -46,6 +46,7 @@ In its current version it brings the following features:
 - client for Ollama to run local LLM operations
 - client for Qdrant database to store vector embeddings
 - support for vision models (moondream, llava:v1.6, minicpm tested and working) through Ollama
+- support for image generation through ComfyUI
 - support for basic RAG
 - support for tool calling for LLMs that support it (like Llama3.1)
 - support for local vector embeddings database using a feather file
@@ -67,15 +68,10 @@ The goal is to have this published on CRAN once this is robust enough and in a m
 
 Ultimately the idea of this package is to expand to more backends to run LLMs:
 
-
 - llama.cpp
 - VLLM
 - llamafile
 
-
-### Image Generation Support
-
-This package will eventually also support image generation through the ComfyUI API (most likely).
 
 ## Contributions
 

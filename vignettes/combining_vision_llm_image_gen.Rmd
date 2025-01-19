@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r knitr options, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -34,7 +34,7 @@ Let's go!
 describer <- ai_workflow() |>
   set_connector("ollama") |>
   set_model("minicpm-v:8b-2.6-q5_K_M") |>
-  set_temperature(0.5) |>
+  set_temperature(0) |> #set at 0 for the vignette, but we recommend to set a value between 0.1 and 0.5 usually
   set_seed(123456789) |>
   add_vision_capability() |>
   set_n_predict(2000) |>
@@ -70,7 +70,7 @@ description <- describer |>
 detailer <- ai_workflow() |>
   set_connector("ollama") |>
   set_model("llama3.2:latest") |>
-  set_temperature(0.1) |>
+  set_temperature(0) |> #set at 0 for the vignette, but we recommend to set a value between 0.1 and 0.5 usually
   set_seed(123456789) |>
   set_processing_skill("add_details") |>
   set_n_predict(2500) |>
@@ -87,7 +87,15 @@ description_w_details <- detailer |>
 
 ```
 
+This is the new description we get:
+
+> `r description_w_details`
+
+Now let's move on to generate an image.
+
 ### Generating the new image
+
+First we need to set up our workflow for image generation using *ComfyUI* (we have a separate vignette focused on this topic if you want to know more). 
 
 ```{r, image gen workflow}
 
@@ -110,6 +118,7 @@ img_gen <- ai_workflow() |>
   encapsulate()
 
 ```
+Then we can generate the new image by using pipes and sending the description we have just created as a prompt for the image.
 
 ```{r, generating image}
 
@@ -118,13 +127,14 @@ new_image <- img_gen |>
   pull_final_image_answer() 
 
 ```
+And this is the image we get out of this workflow:
 
 ```{r showing new image, out.width="50%",echo=FALSE}
 
 new_image[[1]]
 
 ```
-
+While we have built this step by step, this package can make things easier. Keep on reading.
 
 ## Bringing all the pieces in one workflow
 
@@ -165,7 +175,7 @@ Let's run the workflow again but change all the seeds across the workflow using 
 ```{r, running the single workflow with a different seed}
 
 new_image_3 <- full_workflow |> 
-  change_all_seeds(fixed_seed = 213213654) |>
+  change_all_seeds(fixed_seed = 14213213654) |>
   process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
   pull_final_image_answer()
@@ -182,11 +192,20 @@ new_image_3[[1]]
 
 ## More Examples
 
-Let me give you more examples of what can be done in this way. 
+Let me give you more examples of what can be done in this way. Let's load a color picture this time.
 
-```{r, running the single workflow on another kind of picture}
+```{r, a new picture that we will use}
 
 image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
+
+```
+
+![](`r image_path`)
+
+Now let's try to create a picture that will take inspiration from this photograph.
+We will reuse the full_workflow we have established before, and we can easily generate a picture in this way:
+
+```{r, running the single workflow on another kind of picture}
 
 new_image_4 <- full_workflow |> 
   change_all_seeds(fixed_seed = 213213654) |>
@@ -195,11 +214,15 @@ new_image_4 <- full_workflow |>
   pull_final_image_answer()
 
 ```
+And this is the result:
+
 ```{r showing new image 4, out.width="50%",echo=FALSE}
 
 new_image_4[[1]]
 
 ```
+As you can see it took inspiration in many ways. It's not completely identical, but the hair color, the general pose, and background colors are well respected.
+
 But we can also use a different model to completely change the style of the end picture.
 Let's for example use a model that is made for anime. 
 
@@ -220,6 +243,7 @@ anime_img_gen <- ai_workflow() |>
   cfy_set_scheduler(scheduler = "normal") |>
   encapsulate()
 
+# now we integrate this workflow together with the describer we have set up earlier.
 full_workflow_anime <- describer |> 
   add_workflow_step(anime_img_gen) |>
   unload_models_automatically() 
@@ -227,12 +251,12 @@ full_workflow_anime <- describer |>
 ```
 
 
-```{r, running the workflow on a new picture}
+```{r, running the anime workflow this time on the same picture}
 
 image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
 
 new_image_5 <- full_workflow_anime |> 
-  change_all_seeds(fixed_seed = 2123) |>
+  change_all_seeds(fixed_seed = 212343432) |>
   process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
   pull_final_image_answer()
@@ -246,3 +270,24 @@ new_image_5[[1]]
 
 ```
 
+And with another seed:
+
+```{r, running the anime workflow this time on the same picture, with another seed}
+
+image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
+
+new_image_6 <- full_workflow_anime |> 
+  change_all_seeds(fixed_seed = 154453898123561) |>
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+                                      image=image_path))) |>
+  pull_final_image_answer()
+
+```
+
+You get yet another version:
+
+```{r showing new image 6, out.width="50%",echo=FALSE}
+
+new_image_6[[1]]
+
+```

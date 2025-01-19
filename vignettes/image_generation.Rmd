@@ -21,14 +21,16 @@ library(aiworkflow)
 
 ## Preliminary Note
 
-The image generation process relies on ComfyUI, and for now it has been tailored to work well with SDXL models. Support for FLUX and other models will come down the road as well. For now, you can still have a lot of fun with the numerous SDXL models available out there.
+The image generation process relies on ComfyUI, and for now it has been tailored to work well with [SDXL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0) models and its derivatives. Support for [FLUX](https://huggingface.co/black-forest-labs/FLUX.1-dev) and other models will come down the road as well. For now, you can still have a lot of fun with the numerous SDXL models available out there.
 
 ## Setup and First Workflow
 
-In order to be able to generate images using this package, you need to have [ComfyUI](https://www.comfy.org/en/) installed on your machine or at least a machine on your network, and already active as an API service (which should be the default).
+In order to be able to generate images using this package, you need to have [ComfyUI](https://www.comfy.org/en/) installed on your machine or at least a machine on your network, and already active as an API service (which should be the default). The ComfyUI connector from this package will assume that it runs on the IP 127.0.0.1 and on the port 8188, but this can be customized accordingly just like do for the textual workflows.
 
-*ComfyUI* works with its own workflows, that you can create by hand if you want nad load with the corresponding JSON file. 
-In this package we have prepared a few workflows that you can use.
+*ComfyUI* operates with its own JSON-based workflows, that you can create by hand if you want and load with the corresponding JSON file. 
+In this package we have prepared a few workflows that you can use without having to do anything on your own.
+
+In our case you need to probably download a few models if you want to follow this vignette, as *ComfyUI* does not bring anything by default. 
 
 ### Creating the workflow
 
@@ -44,12 +46,12 @@ In this package we have already included *cfy_default_wflow_w_lora.json* which i
 
 Before you can use ComfyUI to generate images, you need to download some models. In our example below, we chose to go with:
 
-- Checkpoint: JuggernautXL
+- Checkpoint: JuggernautXL (you can get it on this [HuggingFace repo](https://huggingface.co/RunDiffusion/Juggernaut-XL-v8/tree/main))
 - LORA: Pixel Base
 
 You can find such models and more on https://civitai.com/ (careful, this site contains a lot of NSFW content if you enable certain filters, so be warned).
 
-One of the most simple workflows you can create looks like this - you need a connector, comfyui, a comfyui workflow, here we use the default template from the package, and finally we add a checkpoint for image inference. Don't forget to encapsulate() the workflow after you have finished defining it.
+One of the most simple workflows you can create looks like this - you need a connector for *ComfyUI*, a comfyui workflow, here we use the default template from the package, and finally we add a checkpoint for image inference. Don't forget to encapsulate() the workflow after you have finished defining it.
 
 ```{r, image gen workflow, super simple}
 
@@ -262,3 +264,96 @@ actor_img_pixel_keyword_medium_lora_strength[[1]]
 ```
 
 You can clearly see that the higher the strength of the LORA applied, the more pixelated the final picture looks like. Since the *right amount* of pixelization is entirely subjective, it is up to you decide in this case what looks best.
+
+## Generating Images with Prompt Guidance
+
+We can first setup a LLM workflow that will help improve our initial input.
+
+```{r, more details}
+
+sdxl_prompter <- ai_workflow() |>
+  set_connector(connector = "ollama") |>
+  set_model(model_name = "llama3.1:8b-instruct-q5_K_M") |>
+  set_processing_skill(processing_skill = "write_sdxl_prompt_v2") |>
+  set_n_predict(1500) |>
+  set_seed(123454565) |>
+  set_temperature(0) |>
+  encapsulate()
+
+
+```
+
+let's get an anime model this time around
+
+```{r, anime model}
+# we define a first workflow to use
+img_gen_anime <- ai_workflow() |> 
+  set_connector("comfyui") |>
+  cfy_set_custom_workflow(comfyui_workflow_json_filepath = basic_workflow_path) |>
+  cfy_set_seed(123456) |>
+  cfy_set_checkpoint(checkpoint ="animaPencilXL_v100.safetensors" ) |> #a good model to use
+  cfy_set_steps(steps = 30) |>
+  cfy_set_negative_prompt(negative_prompt = "watermark, bad quality, worst quality, bad hands, blur, low resolution, low quality, malformed limbs, missing limbs") |>
+  cfy_set_image_size(resolution = "768x1344") |>
+  cfy_set_sampler(sampler = "dpmpp_2m_sde_gpu") |>
+  cfy_set_scheduler(scheduler = "karras") |>
+  encapsulate()
+
+```
+
+You can then make a workflow that will include image generation following the SDXL prompter.
+
+```{r, making the workflow to enhance the prompt quality}
+
+expanded_sdxl_prompt_wflow <- sdxl_prompter |>
+  add_workflow_step(img_gen_anime)
+
+```
+
+We can then generate two images, as a comparison:
+
+```{r, using simple image gen anime}
+
+image_girl_simple_workflow <- img_gen_anime |> 
+  process_text_prompts("A young woman, black hair, walking outside in the streets of Tokyo during the day, wearing jeans and a coat, looking at the viewer.") |>
+  pull_final_image_answer()
+
+```
+
+This is the first result:
+
+```{r girl image with simple sdxl workflow,out.width="50%",echo=FALSE}
+
+image_girl_simple_workflow[[1]]
+
+```
+
+Now we can run the workflow that tries to improve the prompt:
+
+```{r, using the workflow to create a better prompt}
+
+image_girl_expanded_workflow_result <- expanded_sdxl_prompt_wflow |> 
+  process_text_prompts("A young woman, black hair, walking outside in the streets of Tokyo during the day, wearing jeans and a coat, looking at the viewer.") 
+
+# to get the result of the expanded SDXL prompt
+improved_prompt <- image_girl_expanded_workflow_result[["res"]][[1]][[1]][["text"]]
+
+# to get the final image
+image_girl_optimized_workflow <- image_girl_expanded_workflow_result |> pull_final_image_answer()
+
+```
+You can see that the revised and expanded prompt became the following:
+
+> `r improved_prompt`
+
+And now you get this image based on that prompt:
+
+
+```{r girl image after improved sdxl workflow,out.width="50%",echo=FALSE}
+
+image_girl_optimized_workflow[[1]]
+
+```
+
+You are left to judge whether it's better or not. Sometimes you get something more interesting this way, sometimes you don't. Since it tends to add some extra details compared to your intial prompt, it may give you something you did not want in the first place, so prompt adherence may go down as a result.
+
