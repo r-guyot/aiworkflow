@@ -29,6 +29,32 @@ get_qdrant_connection <- function(endpoint="http://localhost", port=6333, api_ke
   }
 }
 
+#' Set a Qdrant connection as part of a workflow
+#'
+#' @description
+#' `set_qdrant_connector` configures a workflow with a connection tp a qdrant instance.
+#''
+#' @details
+#' Configures a workflow to use a connection to qdrant.
+#' If you are using the API key to connect to Qdrant, you need to specify it in the api_key parameter.
+#'
+#' @param endpoint the URL pointing to the qdrant instance. Defaults to http://localhost
+#' @param port the port to use to connect to the qdrant instance. Defaults to 6333
+#' @param api_key optional for security. Defaults to NA. If given, it will use an API key to connect to the Qdrant.
+#' 
+#' @export
+set_qdrant_connector <- function(workflow_obj, endpoint="http://localhost", port=6333, api_key=NA_character_) {
+  
+  workflow_obj[["embeddings_storage"]] <- list()
+  workflow_obj[["embeddings_storage"]][["connector"]] <- "qdrant"
+  workflow_obj[["embeddings_storage"]][["endpoint"]] <- endpoint
+  workflow_obj[["embeddings_storage"]][["port"]] <- port
+  workflow_obj[["embeddings_storage"]][["api_key"]] <- api_key
+  return(workflow_obj)
+  
+}
+
+
 #' Qdrant: Check if the Connection is valid
 #'
 #' @description

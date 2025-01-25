@@ -2543,3 +2543,20 @@ add_auto_guidance <- function(workflow_obj) {
   
 }
 
+
+#' Act as Embedder
+#'
+#' @description
+#' `act_as_embedder` sets a flag to mention that the workflow is going to work as an embedder
+#'
+#' @details
+#' This function sets a flag to ensure that this workflow works only to produce embeddings
+#'
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @export
+act_as_embedder <- function(workflow_obj) {
+  
+  workflow_obj[["embedder"]] <- TRUE
+  return(workflow_obj)    
+
+}
