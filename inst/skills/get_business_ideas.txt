@@ -91,7 +91,7 @@ You are given the following business context. Work out your magic to find new bu
 {text_to_replace}
 ===
 
-Answer only with your list of new business ideas, along with the desired properties mentioned for each of them:
+Answer only with your list (at least 5!) of new business ideas, along with the desired properties mentioned for each of them:
 
 - The actual business idea
 - The target audience
