@@ -809,7 +809,16 @@ set_qdrant_collection <- function(workflow_obj, collection_name=NA_character_,ve
   
   # check if collection exists or not
   if (qdrant_check_collection_existence(conn = conn,collection_name = collection_name)==TRUE) {
-    print("yo it exists already")
+    cli::cli_alert("The collection {collection_name} already exists. We will use it.")
+    collection_details <- qdrant_get_collection_details(conn = conn,collection_name = collection_name)
+    collection_vector_size <- collection_details$result$config$params$vectors$size
+    collection_vector_distance <- collection_details$result$config$params$vectors$distance
+    if (distance!=collection_vector_distance) {
+      cli::cli_abort("The distance for {collection_name} is already set to {collection_vector_distance} and you cannot change it to {distance}.")
+    }
+    if (vector_size!=collection_vector_size) {
+      cli::cli_abort("The vector size for {collection_name} is already set to {collection_vector_size} and you cannot change it to {vector_size}.")
+    }
     return(workflow_obj)
   } else {
     qdrant_create_new_collection(conn,
