@@ -42,10 +42,10 @@ format: revealjs
 
 @CHAT
 Now, write a quarto revealjs presentation following the context required below, in {n_slides} slides.
-Follow the quarto syntax strictly. Don't put too many bullet points on a single slide. 
+Follow the quarto syntax strictly. Avoid adding too bullet points on a single slide. 
 
 ===
 {text_to_replace} 
 ===
 
-Remember: Do not add extra comments! Just the quarto output we need.
+Provide just the quarto output we need, and nothing else.

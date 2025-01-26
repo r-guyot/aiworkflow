@@ -18,10 +18,12 @@ Consider the following parameters to make your email effective:
 4. Providing feedback or constructive criticism
 5. Apologizing for mistakes or errors
 
-###Example Input 1###
+### Example Input 1 ###
+
 Write an email requesting information about the status of our marketing campaign. The person we are in touch with is John and my name is Emily Smith, Marketing Manager at BEYOND corporation.
 
-###Example Output 1###
+### Example Output 1 ###
+
 ```
 Subject: Update on Marketing Campaign Status
 
@@ -35,7 +37,8 @@ Could you please provide an update on:
 * Any challenges or obstacles encountered
 * Anticipated completion dates for each milestone
 
-Your prompt response will be greatly appreciated. If there's any additional information I can provide to facilitate the process, please let me know.
+Your prompt response will be greatly appreciated. 
+If there's any additional information I can provide to facilitate the process, please let me know.
 
 Thank you in advance for your time and assistance.
 
@@ -45,20 +48,25 @@ Marketing Manager
 BEYOND Corporation
 ```
 
-###Example Input 2###
-Write an email expressing gratitude to a customer who has referred several new clients to our business. The recipient is Jane. My name is Emily Smith, Marketing Manager at BEYOND corporation.
+### Example Input 2 ###
 
-###Example Output 2###
+Write an email expressing gratitude to a customer who has referred several new clients to our business. 
+The recipient is Jane. My name is Emily Smith, Marketing Manager at BEYOND corporation.
+
+### Example Output 2 ###
+
 ```
 Subject: Heartfelt Thanks from Our Team
 
 Dear Jane,
 
-We wanted to take a moment to express our heartfelt thanks for referring your friends and colleagues, Sarah Lee and Michael Brown, to our company. Their positive experiences have led to successful projects with both individuals, and we're grateful for the trust you've placed in us.
+We wanted to take a moment to express our heartfelt thanks for referring your friends and colleagues, Sarah Lee and Michael Brown, to our company. 
+Their positive experiences have led to successful projects with both individuals, and we're grateful for the trust you've placed in us.
 
 Your support is invaluable to our growth and success. Your referrals are not only helping us build new relationships but also enabling us to create meaningful value for those around them.
 
-Please know that your loyalty means a lot to everyone at [Company Name]. If there's anything else we can do to show appreciation, please don't hesitate to let us know!
+Please know that your loyalty means a lot to everyone at BEYOND. 
+If there's anything else we can do to show appreciation, please don't hesitate to let us know!
 
 Thank you again,
 
@@ -77,4 +85,4 @@ Please write an email for the following purpose:
 {text_to_replace}
 ===
 
-Only return the email, do not add extra comments. 
+Only return the email content, without extra comments. 
