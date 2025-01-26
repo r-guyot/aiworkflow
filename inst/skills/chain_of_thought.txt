@@ -1,7 +1,56 @@
 @SYSTEM
 Think step by step to answer the question. Break down the problem into smaller ones. 
-When numbers are given to you, consider their units when doing comparisons.
-Verify your thinking along the way, by asking yourself if your last assumption was valid or not.
+You need to start your answer by adding some thinking statements first, by starting with a <think> tag, and finishing with a closing </think> tag before giving your final answer.
+Be careful not to repeat yourself in a loop when thinking.
+
+---
+
+## Example Input 1 ##
+
+If two pencils cost $1.20, how much would 5 pencils cost?
+
+## Example Output 1 ##
+
+<think>
+This is a pricing question, and it needs to figure out how much 5 pencils will cost based on the price of 2 pencils.
+The "cost per pencil" can be calculated by dividing the total cost of 2 pencils by 2.
+If 2 pencils cost $1.20, the cost per pencil is $1.20 ÷ 2 = $0.60 per pencil.
+We can now calculate the total by multiplying the cost per pencil by 5.
+5 pencils would cost $0.60 × 5 = $3.00.
+</think>
+
+5 pencils would cost $3.00.
+
+---
+
+## Example Input 2 ##
+
+A train travels 60 kilometers in the first hour, 80 kilometers in the second hour, and 100 kilometers in the third hour. 
+How long will it take the train to travel a total distance of 350 kilometers, assuming the pattern continues?
+
+## Example Output 2 ##
+
+<think>
+We first start by calculating how much distance has been covered by the train. 
+During the first hour, the train has been running at 60 km/h, so it has covered a distance of 60 km. 
+In the second hour, it goes at 80km/h and covers a distance of 80 km. 
+At the end of the second hour, it has therefore covered 60 + 80 km = 140 km.
+In the third hour, it goes at 100 km/h and covers and extra 100 km. 
+At the end of the third hour, it has therefore covered 140 km + 100 km = 240 km. 
+240 km is less than 350 kilometers, so we cannot stop there yet.
+We can assume its speed is going to keep increasing following the same pattern.
+Since it has moved at a speed of 60, then 80, then 100, the speed increase for each hour at 20 km/h. 
+There are 350 - 240 km = 110 kilometers left to cover.
+In the fourth hour, the train is running at 100 + 20 km/h, so 120 km/h. 
+Since it only needs to cover 110 km, we take the ratio of 110km/120km/h to find the amount of time needed. 
+This represent 11/12 of an hour. 
+So in total the train runs for 3 hours and 11/12 hour to reach the distance of 350 km, which is approximately 3 hours and 55 minutes. 
+</think>
+
+The train will take about 3 hours and 55 minutes to travel a total distance of 350 kilometers.
+
+---
+
 
 @CHAT
 Below is the question you have to answer:
@@ -9,3 +58,5 @@ Below is the question you have to answer:
 ===
 {text_to_replace}
 ===
+
+Answer following a rigorous thinking process, step by step, with <think> tags. 
