@@ -49,7 +49,7 @@ set_qdrant_connector <- function(workflow_obj, endpoint="http://localhost", port
   workflow_obj[["embeddings_storage"]][["connector"]] <- "qdrant"
   workflow_obj[["embeddings_storage"]][["endpoint"]] <- endpoint
   workflow_obj[["embeddings_storage"]][["port"]] <- port
-  workflow_obj[["embeddings_storage"]][["api_key"]] <- api_key
+  if(!is.na(api_key)) { workflow_obj[["embeddings_storage"]][["api_key"]] <- api_key }
   return(workflow_obj)
   
 }
@@ -76,7 +76,7 @@ set_qdrant_connector <- function(workflow_obj, endpoint="http://localhost", port
 #' conn <- get_qdrant_connection()
 #' qdrant_check_connection_validity(conn,silent=FALSE)
 #' @export
-qdrant_check_connection_validity <- function(conn,silent=TRUE) {
+qdrant_check_connection_validity <- function(conn, silent=TRUE) {
   
   #check_conn <- qdrant_list_all_collections(conn)
   
@@ -85,7 +85,7 @@ qdrant_check_connection_validity <- function(conn,silent=TRUE) {
   if ("api_key" %in% names(conn)) {
     api_key <- conn[["api_key"]]
   }
-  
+
   req <- httr2::request(base_url = glue::glue("{endpoint}:{port}/collections"))
   req <- req |> httr2::req_headers("Accept"="application/json")
   req <- req |> add_api_key_header(conn = conn)
@@ -110,7 +110,7 @@ qdrant_check_connection_validity <- function(conn,silent=TRUE) {
 #'
 #' @details
 #' Adds a security header to connect to Qdrant instance with an API key.
-#' The API key value is provided by the connection object obtained with get_qdrant_connection().
+#' The API key value is provided by the connection object obtained with get_qdrant_connection(), or wwith the environment variable QDRANT_API_KEY.
 #' This function returns the request object along with the necessary header.
 #'
 #' @param conn a connection object created by get_qdrant_connection()
@@ -122,7 +122,17 @@ add_api_key_header <- function(req, conn) {
     req <- req |> httr2::req_headers("api-key"=api_key)
     return(req)
   } else {
+    
+    # use the environment value if available
+    if (Sys.getenv("QDRANT_API_KEY")!="") {
+      api_key <- Sys.getenv("QDRANT_API_KEY")
+      req <- req |> httr2::req_headers("api-key"=api_key)
+      return(req)
+    } else {
+    
+    # if no api key is found either spelled out or in env variable, return request without
     return(req)
+    }
   }
   
 }
@@ -317,10 +327,10 @@ qdrant_create_new_collection <- function(conn, collection_name=NA_character_,vec
   req <- req |> add_api_key_header(conn = conn)
   req <- req |> httr2::req_perform()
   if (req$status_code==200) {
-    cli_alert("Collection {collection_name} was just created on the qdrant instance.")
+    cli::cli_alert("Collection {collection_name} was just created on the qdrant instance with a vector size of {vectors[['size']]} and distance set as {vectors[['distance']]}.")
   }
   } else {
-    cli_alert("You need to provide a collection name")
+    cli::cli_abort("You need to provide a collection name")
   }
   } else { stop("Connection to Qdrant could not be established.")}
 
@@ -786,4 +796,54 @@ convert_embeddings_to_qdrant_format <- function(input) {
   })
   
   return(list(points = points_list))
+}
+
+set_qdrant_collection <- function(workflow_obj, collection_name=NA_character_,vector_size=384,distance="Cosine") {
+  
+  workflow_obj[["embeddings_storage"]][["qdrant_collection"]] <- list()
+  workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["name"]] <- collection_name
+  workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["vector_size"]] <- vector_size
+  workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["vector_size"]] <- distance
+  
+  conn <- get_qdrant_connection_from_workflow(workflow_obj)
+  
+  # check if collection exists or not
+  if (qdrant_check_collection_existence(conn = conn,collection_name = collection_name)==TRUE) {
+    print("yo it exists already")
+    return(workflow_obj)
+  } else {
+    qdrant_create_new_collection(conn,
+                                 collection_name = collection_name,
+                                 vectors = list(size=vector_size,distance=distance))
+    return(workflow_obj)
+  }
+  
+}
+
+
+get_qdrant_connection_from_workflow <- function(workflow_obj) {
+  
+  # set connection for testing
+  if (!"embeddings_storage" %in% names(workflow_obj)) {
+    cli::cli_abort("You need to first set up a qdrant connector as part of your workflow before adding the qdrant collection.")
+  }
+  
+  if (workflow_obj[["embeddings_storage"]][["connector"]]=="qdrant") {
+    
+    if ("api_key" %in% names(workflow_obj[["embeddings_storage"]])) {
+      api_key <- workflow_obj[["embeddings_storage"]][["api_key"]]
+    } else {
+      api_key <- NA_character_
+    }
+    
+    conn <- get_qdrant_connection(endpoint = workflow_obj[["embeddings_storage"]][["endpoint"]],
+                                  port = workflow_obj[["embeddings_storage"]][["port"]],
+                                  api_key = api_key)
+    
+    return(conn)
+    
+  } else {
+    cli::cli_abort("Your workflow does not accept a qdrant connector right now.")
+  }
+  
 }
