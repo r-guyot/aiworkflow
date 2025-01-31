@@ -2560,3 +2560,46 @@ act_as_embedder <- function(workflow_obj) {
   return(workflow_obj)    
 
 }
+
+
+#' Set chunk splitter mode
+#'
+#' @description
+#' `set_chunk_splitter_mode` sets a specific method to be able to process text into embeddings, such as sentence splitter
+#'
+#' @details
+#' This function sets a specific method to be able to process text into embeddings, such as sentence splitter, or paragraph splitting.
+#'
+#' @param workflow_obj A workflow object containing all parameters describing the flow required
+#' @param mode A string that describes the desired mode. Currently accepting "sentence" or "paragraph".
+#' @export
+set_chunk_splitter_mode <- function(workflow_obj, mode) {
+  
+  workflow_obj[["chunk_splitter"]] <- list()
+  workflow_obj[["chunk_splitter"]][["mode"]] <- mode
+  cli::cli_alert("Chunks will be splitted with the following mode: {mode}")
+  return(workflow_obj)    
+  
+}
+
+
+ingest_documents <- function(workflow_obj, list_of_documents) {
+  
+  if (workflow_obj[["workflows"]][[1]][["connector"]]=="ollama") {
+  
+    for (one_document_path in list_of_documents) {
+      
+    embeddings <- generate_document_embeddings(ollama_connection = get_ollama_connection(ip_ad = workflow_obj[["workflows"]][[1]][["ip_addr"]]),
+                                 splitter = workflow_obj[["workflows"]][[1]][["chunk_splitter"]][["mode"]],
+                                 model = workflow_obj[["workflows"]][[1]][["model"]],
+                                 document_path = one_document_path)
+    
+    #metadata as well to be added here
+    
+    print(embeddings)
+    
+    }
+      
+  }
+  
+}

@@ -803,7 +803,7 @@ set_qdrant_collection <- function(workflow_obj, collection_name=NA_character_,ve
   workflow_obj[["embeddings_storage"]][["qdrant_collection"]] <- list()
   workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["name"]] <- collection_name
   workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["vector_size"]] <- vector_size
-  workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["vector_size"]] <- distance
+  workflow_obj[["embeddings_storage"]][["qdrant_collection"]][["distance"]] <- distance
   
   conn <- get_qdrant_connection_from_workflow(workflow_obj)
   
