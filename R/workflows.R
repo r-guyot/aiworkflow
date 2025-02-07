@@ -2585,11 +2585,15 @@ set_chunk_splitter_mode <- function(workflow_obj, mode) {
 
 ingest_documents <- function(workflow_obj, list_of_documents) {
   
+  # taking care of ollama
   if (workflow_obj[["workflows"]][[1]][["connector"]]=="ollama") {
   
+    embeddings <- list()
+    
     for (one_document_path in list_of_documents) {
-      
-    embeddings <- generate_document_embeddings(ollama_connection = get_ollama_connection(ip_ad = workflow_obj[["workflows"]][[1]][["ip_addr"]]),
+    
+    # generate embeddings for one document
+    embeddings[[one_document_path]] <- generate_document_embeddings(ollama_connection = get_ollama_connection(ip_ad = workflow_obj[["workflows"]][[1]][["ip_addr"]]),
                                  splitter = workflow_obj[["workflows"]][[1]][["chunk_splitter"]][["mode"]],
                                  model = workflow_obj[["workflows"]][[1]][["model"]],
                                  document_path = one_document_path)
@@ -2599,6 +2603,8 @@ ingest_documents <- function(workflow_obj, list_of_documents) {
     print(embeddings)
     
     }
+    
+    return(embeddings)
       
   }
   
