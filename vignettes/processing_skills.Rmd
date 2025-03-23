@@ -144,7 +144,7 @@ There is another way to chain workflow together, using the `add_workflow_step()`
 # you start from the first workflow here
 myflow_chained <-
   myflow_positive |>
-  add_workflow_step_new(myflow_more_details)
+  add_workflow_step(myflow_more_details)
   
 ```
 
@@ -176,8 +176,8 @@ myflow_translate_to_spanish <- ai_workflow() |>
 
 myflow_chained <-
   myflow_positive |>
-  add_workflow_step_new(myflow_more_details) |>
-  add_workflow_step_new(myflow_translate_to_spanish)
+  add_workflow_step(myflow_more_details) |>
+  add_workflow_step(myflow_translate_to_spanish)
 
 ```
 
@@ -193,6 +193,6 @@ myflow_chained |>
 
 ```
 
-Note that the quality of the Spanish translation in this case will depend heavily on how well the model you have selected can handle this kind of tasks. Not all models are equal when it comes to multilingual capabilities.
+Note that the quality of the Spanish translation in this case will depend heavily on how well the model you have selected can handle this kind of tasks. Not all models are equal when it comes to their multilingual capabilities.
 
 
