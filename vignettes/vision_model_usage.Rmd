@@ -213,7 +213,7 @@ We get the following result:
 
 > `r gsub(letter_text, pattern='\n',replacement=' ')`
 
-You will notice that the transcription is not perfect. This is expected, as the vision models are trained to work on a wide range of images and not just focusing on OCR. Note that some models perform better at OCR than others (moondream, for example, performs very poorly) and you probably need to test things by yourself in order to validate what is the right model for your use case.
+You will notice that the transcription is not perfect. This is expected, as the vision models are trained to work on a wide range of images and not just focusing on OCR. Note that some models perform better at OCR than others (*moondream*, for example, performs very poorly) and you probably need to test things by yourself in order to validate what is the right model for your use case.
 
 ### Reading graphs
 
@@ -334,4 +334,4 @@ At 50 pixels, we are reaching the limit:
 
 > `r gsub(dizzy_50, pattern='\n',replacement=' ')`
 
-The description is now severely impaired - we went too far in reducing the image size.
+The description is now severely impaired - we went too far in reducing the image size, and the most important features are not detected. Depending on your use case, you can use the max_image_dimension to increase the inference without losing too many details. Be aware of not going too far.
