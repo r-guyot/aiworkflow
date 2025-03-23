@@ -2598,9 +2598,15 @@ ingest_documents <- function(workflow_obj, list_of_documents) {
                                  model = workflow_obj[["workflows"]][[1]][["model"]],
                                  document_path = one_document_path)
     
+    embeddings <- convert_embeddings_to_qdrant_format(embeddings[[one_document_path]])
+    
+    if (workflow_obj[["workflows"]][[1]][["embeddings_storage"]][["connector"]] =="qdrant") {
+      qdrant_conn <- get_qdrant_connection_from_workflow(workflow_obj$workflows[[1]])
+      qdrant_upsert_points(conn = qdrant_conn,points = embeddings,generate_id = TRUE,
+                           collection_name = workflow_obj$workflows[[1]][["embeddings_storage"]][["qdrant_collection"]][["name"]])
+    }
     #metadata as well to be added here
     
-    print(embeddings)
     
     }
     
