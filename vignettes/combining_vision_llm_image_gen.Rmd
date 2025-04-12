@@ -200,7 +200,12 @@ image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiw
 
 ```
 
-![](`r image_path`)
+```{r new picture displayed, out.width="50%",echo=FALSE}
+
+magick::image_read(image_path)
+
+```
+
 
 Now let's try to create a picture that will take inspiration from this photograph.
 We will reuse the full_workflow we have established before, and we can easily generate a picture in this way:
@@ -277,7 +282,7 @@ And with another seed:
 image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiworkflow")
 
 new_image_6 <- full_workflow_anime |> 
-  change_all_seeds(fixed_seed = 154453898123561) |>
+  change_all_seeds(fixed_seed = 15445389837586) |>
   process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
                                       image=image_path))) |>
   pull_final_image_answer()
@@ -291,3 +296,39 @@ You get yet another version:
 new_image_6[[1]]
 
 ```
+
+Let's run another picture on the same workflow. This time it's a full body pose.
+
+
+```{r, a new picture using a different perspective}
+
+image_path <- system.file("images", "pexels-alanakatok-31556429.jpg", package="aiworkflow")
+
+```
+
+```{r new picture from back displayed, out.width="50%",echo=FALSE}
+
+magick::image_read(image_path)
+
+```
+We use the full_workflow_anime created above.
+
+```{r, running the anime workflow this time on the new picture}
+
+new_image_7 <- full_workflow_anime |> 
+  change_all_seeds(fixed_seed = 1234) |>
+  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors, and position of the camera vs the subject",
+                                      image=image_path))) |>
+  pull_final_image_answer()
+
+```
+
+And you get a fairly nice image in the same style as the original one.
+
+```{r showing new image 7, out.width="50%",echo=FALSE}
+
+new_image_7[[1]]
+
+```
+
+As you can see, when using a SDXL model, there is chance of bleeding - the color of the dress transfers easily to the hair of the person. 
