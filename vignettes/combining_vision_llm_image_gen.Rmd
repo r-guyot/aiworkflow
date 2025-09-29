@@ -57,8 +57,9 @@ Let's recreate a picture based on that that portrait.
 ```{r, describing the image with a vision model}
 
 description <- describer |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+    image=image_path))) |>
   pull_final_text_answer() 
 
 ```
@@ -156,8 +157,9 @@ And you can now do the exact same thing with a single instruction:
 ```{r, running the single workflow}
 
 new_image_2 <- full_workflow |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+    image=image_path))) |>
   pull_final_image_answer()
 
 ```
@@ -176,8 +178,9 @@ Let's run the workflow again but change all the seeds across the workflow using 
 
 new_image_3 <- full_workflow |> 
   change_all_seeds(fixed_seed = 14213213654) |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+    image=image_path))) |>
   pull_final_image_answer()
 
 ```
@@ -214,8 +217,9 @@ We will reuse the full_workflow we have established before, and we can easily ge
 
 new_image_4 <- full_workflow |> 
   change_all_seeds(fixed_seed = 213213654) |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+    image=image_path))) |>
   pull_final_image_answer()
 
 ```
@@ -262,8 +266,9 @@ image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiw
 
 new_image_5 <- full_workflow_anime |> 
   change_all_seeds(fixed_seed = 212343432) |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+    image=image_path))) |>
   pull_final_image_answer()
 
 ```
@@ -283,8 +288,9 @@ image_path <- system.file("images", "pexels-alipazani-2787341.jpg", package="aiw
 
 new_image_6 <- full_workflow_anime |> 
   change_all_seeds(fixed_seed = 15445389837586) |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors. Use only a short paragraph",
+    image=image_path))) |>
   pull_final_image_answer()
 
 ```
@@ -317,8 +323,9 @@ We use the full_workflow_anime created above.
 
 new_image_7 <- full_workflow_anime |> 
   change_all_seeds(fixed_seed = 1234) |>
-  process_prompts(prompts = list(list(text="describe this image by focusing on the subject, the look, the pose, and the colors, and position of the camera vs the subject",
-                                      image=image_path))) |>
+  process_prompts(prompts = list(list(
+    text="describe this image by focusing on the subject, the look, the pose, and the colors, and position of the camera vs the subject",
+    image=image_path))) |>
   pull_final_image_answer()
 
 ```
