@@ -194,7 +194,7 @@ Let's ask Snoop Dogg to answer a math problem:
 
 myflow_math <- ai_workflow() |>
   set_connector("ollama")  |>
-  set_model(model_name= "llama3.2:latest") |> 
+  set_model(model_name=  "llama3.1:8b-instruct-q5_K_M") |> 
   set_n_predict(1000) |>
   set_temperature(0.2) |> 
   set_style_of_voice("Snoop Dogg") |> 
@@ -215,7 +215,7 @@ Now you can see the difference it makes when not having it equipped with the sam
 
 myflow_clueless_at_math <- ai_workflow() |>
   set_connector("ollama")  |>
-  set_model(model_name= "llama3.2:latest") |> 
+  set_model(model_name=  "llama3.1:8b-instruct-q5_K_M") |> 
   set_n_predict(1000) |>
   set_temperature(0.2) |> 
   set_style_of_voice("Snoop Dogg") |>
