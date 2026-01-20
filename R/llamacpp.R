@@ -420,3 +420,69 @@ get_llamacpp_completion <- function(llamacpp_connection,
     }
   }
 }
+
+
+load_llamacpp_model <- function(llamacpp_connection, model_name) {
+  
+  require(httr2)
+  require(jsonlite)
+  
+  # Construct URL for model unloading
+  load_url <- paste0("http://", llamacpp_connection$ip_ad, ":", 
+                       llamacpp_connection$port, "/models/load")
+  
+  # Build request body
+  body <- list(model = model_name)
+  
+  # Make POST request
+  response <- request(load_url) |>
+    req_headers("Content-Type" = "application/json") |>
+    req_body_json(body) |>
+    req_method("POST") |>
+    req_timeout(60) |>
+    req_error(is_error = function(resp) FALSE) |>
+    req_perform()
+  
+  # Check response
+  if (resp_status(response) == 200) {
+    cat(paste0("Model '", model_name, "' loaded successfully.\n"))
+    return(TRUE)
+  } else {
+    warning(paste0("Failed to load model. Status: ", resp_status(response), 
+                   "\nResponse: ", resp_body_string(response)))
+    return(FALSE)
+  }
+}
+
+
+unload_llamacpp_model <- function(llamacpp_connection, model_name) {
+  
+  require(httr2)
+  require(jsonlite)
+  
+  # Construct URL for model unloading
+  unload_url <- paste0("http://", llamacpp_connection$ip_ad, ":", 
+                       llamacpp_connection$port, "/models/unload")
+  
+  # Build request body
+  body <- list(model = model_name)
+  
+  # Make POST request
+  response <- request(unload_url) |>
+    req_headers("Content-Type" = "application/json") |>
+    req_body_json(body) |>
+    req_method("POST") |>
+    req_timeout(60) |>
+    req_error(is_error = function(resp) FALSE) |>
+    req_perform()
+  
+  # Check response
+  if (resp_status(response) == 200) {
+    cat(paste0("Model '", model_name, "' unloaded successfully.\n"))
+    return(TRUE)
+  } else {
+    warning(paste0("Failed to unload model. Status: ", resp_status(response), 
+                   "\nResponse: ", resp_body_string(response)))
+    return(FALSE)
+  }
+}
